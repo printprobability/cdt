@@ -10,9 +10,14 @@
         "postinstall": "nuxt prepare"
     },
     "dependencies": {
+        "@mdi/font": "^7.4.47",
         "nuxt": "^3.10.1",
         "openseadragon": "^4.1.0",
         "vue": "^3.4.15",
         "vue-router": "^4.2.5"
+    },
+    "devDependencies": {
+        "vite-plugin-vuetify": "^2.0.1",
+        "vuetify": "^3.5.3"
     }
 }
