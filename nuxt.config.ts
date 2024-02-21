@@ -10,6 +10,11 @@ export default defineNuxtConfig({
         transpile: ["vuetify"],
     },
 
+    css: [
+    
+        "@/assets/scss/custom.scss"
+    ],
+
     devtools: {
 
         enabled: false
