@@ -35,12 +35,10 @@
                         </v-col>
 
                         <v-col cols="9">
-                            <client-only>
-                                <AnnotatedImage
-                                    :id="character.id"
-                                    :image_info_url="`${character.page.image.iiifBase}/info.json`"
-                                    :overlay="character.absoluteCoords" />
-                            </client-only>
+                            <AnnotatedImage
+                                :id="character.id"
+                                :image_info_url="`${character.page.image.iiifBase}/info.json`"
+                                :overlay="character.absoluteCoords" />
                         </v-col>
                         
                     </v-row>
