@@ -1,12 +1,14 @@
 <template>
 
-    <v-select
-        id="input-character-book"
-        :debounce="500"
-        :options="all_books"
-        :value="value"
-        @input="$emit('input', $event)"
-        label="Book" />
+    <div>
+        <v-select
+            id="input-character-book"
+            :debounce="500"
+            :options="all_books"
+            :value="value"
+            @input="$emit('input', $event)"
+            label="Book" />
+    </div>
 
 </template>
   

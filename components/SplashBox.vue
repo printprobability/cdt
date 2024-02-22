@@ -1,4 +1,5 @@
 <template>
+
     <!-- <b-media>
 
         <template #aside>
@@ -14,7 +15,7 @@
 
     </b-media> -->
 
-    <VMedia :imageSrc="image" :imageAlt="alt">
+    <VMedia :imageAlt="alt" :imageSrc="image">
 
         <template #content>
             <div class="ml-4">

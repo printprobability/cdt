@@ -19,6 +19,7 @@
                 <NuxtLink :to="book_link">{{ n_chars }}</NuxtLink>
             </p>
         </template>
+        
     </VMedia>
 
 </template>
