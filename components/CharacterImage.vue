@@ -7,40 +7,55 @@
                 'charachter-image': true,
                 border: selected,
                 'border-primary': selected,
-                'border-5': selected,
-            }" :id="character.id" :src="character.image.webUrl" :alt="character.label" :height="90"
+                'border-5': selected }"
+                :id="character.id"
+                :alt="character.label"
+                :height="90"
+                :src="character.image.webUrl"
                 @mouseover="$emit('hover', $event)" />
         </NuxtLink>
 
         <!-- TO BE RE-IMPLEMENTED -->
-        <v-popover :target="character.id" triggers="hover" placement="top" :delay="pop_delay">
+        <!-- <v-popover :target="character.id" triggers="hover" placement="top" :delay="pop_delay">
             <template #title>
                 <NuxtLink :to="{ name: 'characters-id', params: { id: character.id } }">
                     {{ character.label }}
                 </NuxtLink>
             </template>
             <CharacterCard :character="character" />
-        </v-popover>
+        </v-popover> -->
 
     </div>
 
 </template>
   
 <script>
+
 export default {
+
     props: {
+
         character: Object,
         selected: {
+
             type: Boolean,
             default: false,
-        },
+        }
     },
+
     data() {
+
         return {
-            pop_delay: { show: 400, hide: 200 },
+
+            pop_delay: {
+                
+                hide: 200,
+                show: 400
+            }
         };
-    },
+    }
 };
+
 </script>
   
 <style scoped>
