@@ -26,3 +26,4 @@ logs
 # Local directories
 content/
 public/img/iiif/
+static/
