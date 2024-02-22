@@ -1,6 +1,8 @@
 <template>
 
-    <div :id="id" class="osd"></div>
+    <ClientOnly>
+        <div :id="id" class="osd"></div>
+    </ClientOnly>
 
 </template>
   
