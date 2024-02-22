@@ -4,9 +4,11 @@
 
         <div class="d-flex flex-no-wrap">
 
-            <v-avatar class="ma-3" size="125" rounded="0">
-                <img class="border" :src="imageSrc" :alt="imageAlt" />
-            </v-avatar>
+            <slot name="image">
+                <v-avatar class="ma-3" size="125" rounded="0">
+                    <img class="border" :src="imageSrc" :alt="imageAlt" />
+                </v-avatar>
+            </slot>
 
             <slot name="content"></slot>
 
