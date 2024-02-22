@@ -12,9 +12,9 @@
 
             <v-col cols="3">
                 <h3>Filter</h3>
-                <b-form>
+                <v-form>
                     <slot name="filter"></slot>
-                </b-form>
+                </v-form>
             </v-col>
 
             <v-col cols="9">
