@@ -58,10 +58,9 @@ export default {
             } else if ( this.total_rows == 1 ) {
 
                 return "1 result";
-            } else {
-
-                return "No results";
             }
+
+            return "No results";
         },
     },
 };
