@@ -1,7 +1,7 @@
 <template>
 
     <ClientOnly>
-        <vue-slider
+        <!-- <vue-slider
             ref="slider"
             id="input-book-date"
             :data-label="Date"
@@ -11,22 +11,28 @@
             :value="value"
             @change="$emit('input', $event)"
             tooltip="always"
-            tooltipPlacement="bottom" />
+            tooltipPlacement="bottom" /> -->
+
+        <v-range-slider
+            ref="slider"
+            id="input-book-date"
+            :v-model="value"
+            :label="Date"
+            :min="1600"
+            :max="1800"
+            @change="$emit('input', $event)">
+            
+            <v-tooltip
+                activator="parent"
+                location="bottom">"always"</v-tooltip>
+        </v-range-slider>
     </ClientOnly>
 
 </template>
   
 <script>
 
-import VueSlider from "vue-slider-component";
-import "vue-slider-component/theme/antd.css";
-
 export default {
-
-    components: {
-    
-        VueSlider
-    },
 
     props: {
 
