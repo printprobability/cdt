@@ -1,7 +1,7 @@
 <template>
     <v-app>
 
-        <v-app-bar>
+        <v-app-bar class="shadow-sm">
 
             <v-app-bar-title
                 class="dldt-navbar-title"
@@ -9,11 +9,27 @@
                 :to="{ name: 'index' }"
             ></v-app-bar-title>
 
-            <v-list-item class="dldt-navbar-link px-2">Books</v-list-item>
-            <v-list-item class="dldt-navbar-link px-2" :to="{ name: 'characters' }">Characters</v-list-item>
+            <v-list-item class="dldt-navbar-link px-2" :to="{ name: 'books' }">Books</v-list-item>
+            <v-list-item class="dldt-navbar-link px-2">Characters</v-list-item>
             <v-list-item class="dldt-navbar-link px-2">Groupings</v-list-item>
             <v-list-item class="dldt-navbar-link px-2">Data</v-list-item>
             <v-list-item class="dldt-navbar-link pl-2 pr-3">About</v-list-item>
+
+            <!-- <div class="d-flex ml-auto">
+                <v-list-item>Books</v-list-item>
+                <v-list-item>Characters</v-list-item>
+                <v-list-item>Groupings</v-list-item>
+                <v-list-item>Data</v-list-item>
+                <v-list-item>About</v-list-item>
+            </div> -->
+
+            <!-- <v-list>
+                <v-list-item class="dldt-navbar-link px-2" :to="{ name: 'books' }">Books</v-list-item>
+                <v-list-item class="dldt-navbar-link px-2">Characters</v-list-item>
+                <v-list-item class="dldt-navbar-link px-2">Groupings</v-list-item>
+                <v-list-item class="dldt-navbar-link px-2">Data</v-list-item>
+                <v-list-item class="dldt-navbar-link pl-2 pr-3">About</v-list-item>
+            </v-list> -->
 
             <!-- <v-list-item :to="{ name: 'books' }">Books</v-list-item>
             <v-list-item :to="{ name: 'characters' }">Characters</v-list-item>
@@ -39,8 +55,27 @@
                 </v-app-bar> -->
 
                 <AlphaAlert v-if="$siteConfig.alpha" :contact="$siteConfig.contact" />
+
                 <slot />
+                
             </v-container>
         </v-main>
     </v-app>
 </template>
+
+<script setup>
+
+    const { $siteConfig } = useNuxtApp();
+
+    useHead({ title: `${$siteConfig.maintitle} - ${$siteConfig.subtitle}` });
+
+</script>
+
+<style>
+
+    .shadow-sm {
+
+        box-shadow: 0 .125rem .25rem rgba(0,0,0,.075)!important;
+    }
+
+</style>
