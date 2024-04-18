@@ -1,4 +1,5 @@
 {
     // https://nuxt.com/docs/guide/concepts/typescript
+    "exclude": ["./.nuxt/*", "./assets/*", "./node_modules/*", "./public/*"],
     "extends": "./.nuxt/tsconfig.json"
 }
