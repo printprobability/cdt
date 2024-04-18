@@ -51,7 +51,7 @@ export default defineNuxtPlugin((nuxtApp) => {
                         alt: "Ornate I character",
                         to: { name: "groupings" }
                     },
-                    {
+                    /*{
                         title: "Learn about the project",
                         text: "Learn about the motivation and methodology of the \"Dictionary\", meet the project team, and find associated publications and machine-readable data",
                         image: "/img/s.jpg",
@@ -64,7 +64,7 @@ export default defineNuxtPlugin((nuxtApp) => {
                         image: "/img/m.jpg",
                         alt: "Ornate M",
                         to: { name: "articles-slug", params: { slug: "data" } }
-                    },
+                    }*/
                 ]
             }
         }
