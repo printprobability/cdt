@@ -37,7 +37,7 @@ export default {
 
     head: {
 
-        titleTemplate: "Grouping Search - %s",
+        titleTemplate: "Grouping Search - %s"
     },
 
     data() {
@@ -59,19 +59,36 @@ export default {
 
     async fetch() {
 
-        this.groupings = await this.$content("groupings")
-            .where({ $and: await this.query })
+        // this.groupings = await this.$content("groupings")
+        //     .where({ $and: await this.query })
+        //     .search(this.form.text)
+        //     .only(["id", "label", "notes", "characters"])
+        //     .limit(this.page_size)
+        //     .skip((this.page - 1) * this.page_size)
+        //     .fetch();
+
+        // const filtered_groupings = await this.$content("groupings")
+        //     .where({ $and: await this.query })
+        //     .search(this.form.text)
+        //     .only([])
+        //     .fetch();
+
+        const resolved_query = await this.query;
+
+        this.groupings = await useAsyncData("groupings", () => queryContent("groupings")
+            .where({ $and: resolved_query })
             .search(this.form.text)
             .only(["id", "label", "notes", "characters"])
             .limit(this.page_size)
             .skip((this.page - 1) * this.page_size)
-            .fetch();
+            .fetch());
 
-        const filtered_groupings = await this.$content("groupings")
-            .where({ $and: await this.query })
+        const filtered_groupings = await useAsyncData("groupings", () => queryContent("groupings")
+            .where({ $and: resolved_query })
             .search(this.form.text)
             .only([])
-            .fetch();
+            .fetch());
+
         this.groupings_count = filtered_groupings.length;
     },
 
@@ -82,10 +99,14 @@ export default {
             // NOTE: Maybe change this to !==
             if ( this.form.book != "any" ) {
 
-                const book_characters = await this.$content("characters")
+                // const book_characters = await this.$content("characters")
+                //     .where({ book: { $eq: this.form.book } })
+                //     .only(["id"])
+                //     .fetch();
+
+                const book_characters = await useFetch(() => queryContent("characters")
                     .where({ book: { $eq: this.form.book } })
-                    .only(["id"])
-                    .fetch();
+                    .only(["id"]));                
 
                 return {
 
@@ -104,10 +125,19 @@ export default {
             // NOTE: Maybe change this to !==
             if ( this.form.character_class != "any" ) {
 
-                const class_characters = await this.$content("characters")
+                // const class_characters = await this.$content("characters")
+                //     .where({ characterClass: { $eq: this.form.character_class } })
+                //     .only(["id"])
+                //     .fetch();
+
+                // const class_characters = await useAsyncData("characters", () => queryContent("characters")
+                //     .where({ characterClass: { $eq: this.form.character_class } })
+                //     .only(["id"])
+                //     .fetch());
+
+                const class_characters = await useFetch(() => queryContent("characters")
                     .where({ characterClass: { $eq: this.form.character_class } })
-                    .only(["id"])
-                    .fetch();
+                    .only(["id"]));                 
 
                 return {
 
@@ -136,10 +166,10 @@ export default {
                 );
 
                 return [{ characters: { $containsAny: intersection } }];
-            } else if (!!cc_q) {
+            } else if ( !!cc_q ) {
 
                 return [cc_q];
-            } else if (!!book_q) {
+            } else if ( !!book_q ) {
 
                 return [book_q];
             }

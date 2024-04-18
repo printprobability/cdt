@@ -1,6 +1,10 @@
 <template>
 
-    <InterfaceList title="Browse Characters" v-model="page" :total_rows="characters_count" :page_size="page_size">
+    <InterfaceList
+        v-model="page"
+        :page_size="page_size"
+        :total_rows="characters_count"
+        title="Browse Characters">
 
         <template #intro>
             <p>{{ $siteConfig.browsecopy.characters }}</p>
@@ -21,15 +25,27 @@
     
 </template>
   
-<script>
+<!-- <script setup>
 
-// import _ from "lodash";
+useHead({
+
+    titleTemplate: "Character Search - %s"
+});
+
+</script> -->
+
+
+<script>
 
 export default {
 
+    setup() {
+
+    },
+
     head: {
 
-        titleTemplate: "Character Search - %s",
+        titleTemplate: "Character Search - %s"
     },
 
     data() {
@@ -50,18 +66,22 @@ export default {
 
     async fetch() {
 
-        this.characters = await this.$content("characters")
+        console.log("In InterfaceList fetch");
+
+        this.characters = await useAsyncData("characters", () => queryContent("characters")
             .where({ $and: this.query_array })
             .only(["id", "label", "image", "characterClass"])
             .sortBy("characterClass")
             .limit(this.page_size)
             .skip((this.page - 1) * this.page_size)
-            .fetch();
+            .fetch()
+        );
 
-        const filtered_characters = await this.$content("characters")
+        const filtered_characters = await useAsyncData("characters", () => queryContent("characters")
             .where({ $and: this.query_array })
             .only([])
-            .fetch();
+            .fetch()
+        );
         this.characters_count = filtered_characters.length;
     },
 

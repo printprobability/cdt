@@ -80,11 +80,82 @@ export default {
         };
     },
 
+    // async asyncData({ $content, params }) {
+
+    //     const grouping = await $content("groupings", params.id).fetch();
+
+    //     const characters = await $content("characters")
+    //         .where({ id: { $in: grouping.characters } })
+    //         .sortBy("book", "characterClass")
+    //         .only(["id", "image", "label", "book", "characterClass"])
+    //         .fetch();
+
+    //     const book_grouped_characters = _.groupBy(characters, (x) => x.book);
+
+    //     var books = await $content("books")
+    //         .where({ id: { $in: Object.keys(book_grouped_characters) } })
+    //         .sortBy("pqTitle")
+    //         .only(["id", "pqTitle"])
+    //         .fetch();
+
+    //     // Add character data to each book object
+    //     for ( var i = 0; i < books.length; i++ ) {
+
+    //         books[i]["characters"] = book_grouped_characters[books[i].id];
+    //     }
+
+    //     const class_grouped_characters = _.groupBy(
+
+    //         characters,
+    //         (x) => x.characterClass
+    //     );
+
+    //     const GROUP_DICT = {
+
+    //         cl: "Lowercase",
+    //         cu: "Uppercase",
+    //         nu: "Number",
+    //         // pu: "Puncutation" // Currently unused
+    //     };
+
+    //     const fetched_character_classes = await $content("classes")
+    //         .only(["classname", "label", "group"])
+    //         .where({ classname: { $in: Object.keys(class_grouped_characters) } })
+    //         .sortBy("label")
+    //         .fetch();
+
+    //     // Group character classes by overarching groups
+    //     const all_character_classes = Object.entries(GROUP_DICT).map((group) => {
+
+    //         return {
+
+    //             group: group[1],
+    //             classes: fetched_character_classes
+    //                 .filter((c) => c.group == group[0])
+    //                 .map((c) => {
+
+    //                     // Add character data to classes
+    //                     // NOTE: Is there some reason for this 'newdict' var? Hoisting?
+    //                     var newdict = c;
+    //                     newdict.characters = class_grouped_characters[c.classname];
+    //                     return newdict;
+    //                 }),
+    //         };
+    //     });
+
+    //     return {
+
+    //         grouping,
+    //         books,
+    //         all_character_classes,
+    //     };
+    // }
+
     async asyncData({ $content, params }) {
 
-        const grouping = await $content("groupings", params.id).fetch();
+        const grouping = await queryContent("groupings", params.id).fetch();
 
-        const characters = await $content("characters")
+        const characters = await queryContent("characters")
             .where({ id: { $in: grouping.characters } })
             .sortBy("book", "characterClass")
             .only(["id", "image", "label", "book", "characterClass"])
@@ -92,7 +163,7 @@ export default {
 
         const book_grouped_characters = _.groupBy(characters, (x) => x.book);
 
-        var books = await $content("books")
+        var books = await queryContent("books")
             .where({ id: { $in: Object.keys(book_grouped_characters) } })
             .sortBy("pqTitle")
             .only(["id", "pqTitle"])
@@ -100,6 +171,7 @@ export default {
 
         // Add character data to each book object
         for ( var i = 0; i < books.length; i++ ) {
+            
             books[i]["characters"] = book_grouped_characters[books[i].id];
         }
 
@@ -117,7 +189,7 @@ export default {
             // pu: "Puncutation" // Currently unused
         };
 
-        const fetched_character_classes = await $content("classes")
+        const fetched_character_classes = await queryContent("classes")
             .only(["classname", "label", "group"])
             .where({ classname: { $in: Object.keys(class_grouped_characters) } })
             .sortBy("label")
@@ -148,7 +220,7 @@ export default {
             books,
             all_character_classes,
         };
-    },
+    }
 };
 
 </script>

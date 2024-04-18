@@ -14,7 +14,6 @@
 
         <!-- Ways of browsing the site's contents and About -->
             <v-row v-for="pair in paired_boxes.pairs" :key="pair.id" class="d-flex mb-2">
-                <!-- <v-col cols="2"></v-col> -->
                 <v-col cols="6" v-for="box in pair.boxes" :key="box.image">
                     <SplashBox
                         :alt="box.alt"
@@ -23,21 +22,20 @@
                         :text="box.text"
                         :to="box.to"/>
                 </v-col>
-                <!-- <v-col cols="2"></v-col> -->
+                
             </v-row>
 
         <!--  Data download -->
         <v-row v-if="!!paired_boxes.final_row" class="d-flex align-self-center">
-            <!-- <v-col cols="4"></v-col>  -->
-            <v-col cols="6">
+            
+            <!-- <v-col cols="6">
                 <SplashBox
                     :alt="paired_boxes.final_row.alt"
                     :image="paired_boxes.final_row.image"
                     :title="paired_boxes.final_row.title"
                     :text="paired_boxes.final_row.text"
                     :to="paired_boxes.final_row.to"/>
-            </v-col>
-            <!-- <v-col cols="4"></v-col> -->
+            </v-col> -->
         </v-row>
 
     </v-container>

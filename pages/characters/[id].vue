@@ -75,20 +75,23 @@ export default {
         };
     },
 
-    components: {
-
-        AnnotatedImage: () => import("~/client-components/AnnotatedImage.vue"),
-    },
-
     async asyncData({ $content, params }) {
 
-        const character = await $content("characters", params.id).fetch();
-        const book = await $content("books", character.book).fetch();
-        const groupings = await $content("groupings")
+        // const character = await $content("characters", params.id).fetch();
+        // const book = await $content("books", character.book).fetch();
+        // const groupings = await $content("groupings")
+        //     .where({
+        //         characters: { $contains: params.id },
+        //     })
+        //     .fetch();
+
+        const character = await queryContent("characters", params.id).fetch();
+        const book = await queryContent("books", character.book).fetch();
+        const groupings = await queryContent("groupings")
             .where({
                 characters: { $contains: params.id },
             })
-            .fetch();
+            .fetch();        
 
         return {
             

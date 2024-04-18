@@ -93,7 +93,7 @@
 
 import _ from "lodash";
 
-export default {
+export default defineNuxtComponent({
 
     head() {
 
@@ -115,13 +115,21 @@ export default {
 
     async asyncData({ $content, params }) {
 
-        const book = await $content("books", params.id).fetch();
+         const book = await $content("books", params.id).fetch();
 
-        const characters = await $content("characters")
+         const characters = await $content("characters")
+             .where({ book: params.id })
+             .only(["id", "page", "label", "image", "characterClass"])
+             .sortBy("page.sequence")
+             .fetch();
+
+        //const book = await queryContent("books", params.id).$fetch(`books/${params.id}`);
+
+        /*const characters = await useAsyncData("characters", () => queryContent("characters")
             .where({ book: params.id })
             .only(["id", "page", "label", "image", "characterClass"])
             .sortBy("page.sequence")
-            .fetch();
+        );*/       
 
         return { book, characters };
     },
@@ -175,7 +183,7 @@ export default {
         // Set the inital selected class to the first available class in this book
         this.selected_character_class = this.characters[0].characterClass;
     }
-};
+});
 
 </script>
   
