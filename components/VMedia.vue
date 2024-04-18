@@ -2,11 +2,13 @@
 
     <v-card flat>
 
+        <p v-if="props.title">{{ props.title }}</p>
+
         <div class="d-flex flex-no-wrap">
 
             <slot name="image">
                 <v-avatar class="ma-3" size="125" rounded="0">
-                    <img class="border" :src="imageSrc" :alt="imageAlt" />
+                    <v-img class="border" :src="imageSrc" :alt="imageAlt"></v-img>
                 </v-avatar>
             </slot>
 
@@ -18,15 +20,13 @@
 
 </template>
 
-<script>
+<script setup>
 
-export default {
+const props = defineProps({
 
-    props: {
-
-        imageAlt: String,
-        imageSrc: String
-    }
-};
+    imageAlt: String,
+    imageSrc: String,
+    title: String
+});
 
 </script>

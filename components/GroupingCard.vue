@@ -3,9 +3,7 @@
     <v-container>
 
         <h3>
-            <NuxtLink :to="grouping_link">
-                {{ grouping.label }}
-            </NuxtLink>
+            <NuxtLink :to="grouping_link">{{ props.grouping.label }}</NuxtLink>
         </h3>
 
         <div class="d-flex flex-wrap">
@@ -22,60 +20,46 @@
 
 </template>
   
-<script>
+<script setup>
 
-export default {
+    import { ref } from "vue";
 
-    props: {
+    // Props
+
+    const props = defineProps({
 
         grouping: Object,
         selected_character_id: String
-    },
+    });
+    
+    // Data
 
-    data() {
+    const characters = await useAsyncData("myCharacters", () => queryContent("characters")
+        .where({ id: { $in: props.grouping.characters }})
+        .sortBy("characterClass")
+        .only(["id", "image", "label"])
+        .limit(10)
+        .find()
+    );
 
-        return {
+    // Methods
 
-            characters: []
-        };
-    },
+    function is_selected_character(p_char_id) {
 
-    async fetch() {
-
-        // this.characters = await this.$content("characters")
-        //     .where({ id: { $in: this.grouping.characters } })
-        //     .sortBy("characterClass")
-        //     .only(["id", "image", "label"])
-        //     // .limit(10)
-        //     .fetch();
-
-        this.characters = await useFetch(() => queryContent("characters")
-            .where({ id: { $in: this.grouping.characters } })
-            .sortBy("characterClass")
-            .only(["id", "image", "label"])
-        );       
-    },
-
-    methods: {
-
-        is_selected_character(char_id) {
-
-            return char_id == this.selected_character_id;
-        },
-    },
-    computed: {
-
-        grouping_link() {
-
-            return { name: "groupings-id", params: { id: this.grouping.id } };
-        },        
-
-        n_chars() {
-
-            return this.grouping.characters.length;
-        }
+        return p_char_id === props.selected_character_id;
     }
-};
+
+    // Computed
+
+    const grouping_link = computed(() => {
+
+        return { name: "groupings-id", params: { id: props.grouping.id } };
+    });
+
+    const n_chars = computed(() => {
+
+        return props.grouping.characters.length;
+    });
 
 </script>
   

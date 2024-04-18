@@ -1,95 +1,87 @@
 <template>
 
     <div>
-        <v-select
-            id="input-character-class"
-            :debounce="500"
-            :options="all_character_classes"
-            :value="value"
-            @input="$emit('input', $event)"
-            label="Character class" />
-    </div>
+        <v-label
+            id="input-character-class-group"
+            text="Character class"></v-label>
 
+        <v-select
+            :items="all_character_classes"
+            debounce="500"
+            id="input-character-class"
+            label="Character class"
+            @input="$emit('input', $event)"></v-select>            
+    </div>
+    
 </template>
   
-<script>
+<script setup>
 
-const ANY_CHAR = {
+    import { reactive } from "vue";
 
-    text: "any",
-    value: "any"
-};
+    // Data
+    const ANY_CHAR = reactive({
+        
+        text: "any",
+        value: "any"
+    });
+    const GROUP_DICT = reactive({
 
-export default {
+        cl: "Lowercase",
+        cu: "Uppercase",
+        nu: "Number",
+        pu: "Puncutation" // Currently unused    
+    });
 
-    props: {
+    // Emits
+    const emit = defineEmits(["input"]);
 
-        allow_any: {
+    // Props
+    const props = defineProps({
 
-            type: Boolean,
-            default: true,
-        },
+        allow_any: { default: true, type: Boolean },
+        value: { default: "any", type: String },
+        where: {}
+    });
 
-        value: {
+    // Async data
+    const { data: fetched_character_classes, refresh: refreshFetchedCharacterClasses } = await useAsyncData("fetched_character_classes", () => queryContent("classes")
+        .only(["classname", "label", "group"])
+        .where(where)
+        .sortBy("label")
+        .find()
+    );
 
-            type: String,
-            default: "any",
-        },
-
-        where: {},
-    },
-
-    data() {
+    // Group character classes by overarching groups
+    const { data: all_character_classes, refresh: refreshAllCharacterClasses } = useAsyncData("allCharacterClasses", () => reactive(Object.entries(GROUP_DICT).map((group) => {
 
         return {
 
-            all_character_classes: []
+            label: group[1],
+            options: fetched_character_classes
+                .filter((c) => c.group == group[0])
+                .map((c) => {
+                    return {
+
+                        text: c.label,
+                        value: c.classname
+                    };
+                }),
         };
-    },
+    })));
 
-    async fetch() {
-    // async setup() {
+    // Watchers
+    watch(all_character_classes, (p_newValue, p_oldValue) => {
 
-        const GROUP_DICT = {
+        // Only occurs one time, once 'all_character_classes' is fetched
+        if ( !!all_character_classes ) {
+        
+            // Add all characters option to the character selection list
+            if ( props.allow_any ) {
 
-            cl: "Lowercase",
-            cu: "Uppercase",
-            nu: "Number",
-            pu: "Puncutation" // Currently unused            
-        };
-
-        const fetched_character_classes = await useFetch(() => queryContent("classes")
-            .only(["classname", "label", "group"])
-            .where(this.where)
-            .sortBy("label")
-        );
-
-        // Group character classes by overarching groups
-        this.all_character_classes = Object.entries(GROUP_DICT).map((group) => {
-
-            return {
-
-                label: group[1],
-                options: fetched_character_classes
-                    .filter((c) => c.group == group[0])
-                    .map((c) => {
-
-                        return { value: c.classname, text: c.label };
-                    })
-            };
-        });
-
-        // Add all characters option to the character selection list
-        if ( this.allow_any ) {
-
-            this.all_character_classes.unshift(ANY_CHAR);
+                all_character_classes.unshift(ANY_CHAR);
+            }
         }
-    },
-
-    created() {
-
-        this.$fetch();
-    }
-};
+    }, { once: true });
 
 </script>

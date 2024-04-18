@@ -1,87 +1,95 @@
 <template>
+    
+    <v-card class="book-card">
 
-    <VMedia imageAlt="" imageSrc="">
+        <v-row style="margin: 0;">
 
-        <template #image>
-            <PageImage :page="book.coverPage" />
-        </template>
+            <v-col cols="5" >
+                <v-avatar class="ma-3" size="250" rounded="0">
+                    <PageImage :page="props.book.coverPage" />
+                </v-avatar>
+            </v-col>
 
-        <template #content>
-            <p>
-                <NuxtLink :to="book_link">
-                    <i>{{ book.pqTitle }}</i>
-                </NuxtLink>
-            </p>
+            <v-col cols="7" style="padding-right: 1em;">
+                <p class="book-card-info">
+                    <!-- <NuxtLink :to="book_link">
+                        <i>{{ props.book.pqTitle }}</i>
+                    </NuxtLink> -->
+                    <i>{{ props.book.pqTitle }}</i>
+                </p>
 
-            <p>Published: {{ edtf }}</p>
-            <p v-if="book.ppPublisher">Printed by: {{ book.ppPublisher }}</p>
-            <p>
-                <NuxtLink :to="book_link">{{ n_chars }}</NuxtLink>
-            </p>
-        </template>
-        
-    </VMedia>
+                <p class="book-card-info">Published: {{ edtf }}</p>
+
+                <p class="book-card-info" v-if="props.book.ppPublisher">Printed by: {{ props.book.ppPublisher }}</p>
+
+                <p class="book-card-info">
+                    <!-- <NuxtLink :to="book_link">{{ n_chars }}</NuxtLink> -->
+                    <i>{{ n_chars }}</i>
+                </p>
+            </v-col>
+        </v-row>
+    </v-card>
 
 </template>
-  
-<script>
 
-export default {
+<script setup>
 
-    props: {
+    import { reactive } from "vue";
 
-        book: Object,
-    },
+    // Props
+    const props = defineProps({ book: Object });
 
-    data() {
+    // Data
+    var characters = reactive([]);
+
+    // Async data
+    ({ data: characters } = await useAsyncData("myCharacters", () => queryContent("characters")
+        .where({ book: props.book.id })
+        .only([])
+        .find()
+    ));
+
+    // Computed
+    const book_link = computed(() => {
 
         return {
 
-            characters: [],
-        };
-    },
+            name: "books-id",
+            params: { id: props.book.id }
+        };    
+    });
+    const edtf = computed(() => {
 
-    async fetch() {
+        if ( props.book.pqYearEarly == props.book.pqYearLate ) {
+            
+            return props.book.pqYearEarly;
+        } else {
+            
+            return `${props.book.pqYearEarly}/${props.book.pqYearLate}`;
+        }
+    });
+    const n_chars = computed(() => {
 
-        // this.characters = await this.$content("characters")
-        //     .where({ book: { $eq: this.book.id } })
-        //     .only([])
-        //     .fetch();
-
-        this.characters = await useFetch(() => queryContent("characters")
-            .where({ book: { $eq: this.book.id } })
-            .only([])
-        );
-    },
-
-    computed: {
-
-        book_link() {
-
-            return {
-
-                name: "books-id",
-                params: {
-                    id: this.book.id
-                }
-            };
-        },
-
-        edtf() {
-
-            return ( this.book.pqYearEarly == this.book.pqYearLate ) ? 
-                this.book.pqYearEarly : 
-                `${this.book.pqYearEarly}/${this.book.pqYearLate}`;
-        },
-
-        n_chars() {
-
-            return ( this.characters.length > 1 ) ? 
-                `${this.characters.length} characters` :
-                "1 character";
-        }   
-    }
-};
+        return ( characters.length > 1 ) ? `${characters.length} characters` : "1 character";
+    });
 
 </script>
-  
+
+<style>
+
+    .book-card {
+
+        border: 1px solid rgba(0, 0, 0, 0.125) !important;
+    }
+
+    .book-card-column {
+
+        margin-top: 1em;
+    }
+
+    .book-card-info {
+
+        margin-top: 1em;
+    }
+
+</style>

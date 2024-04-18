@@ -1,28 +1,11 @@
 <template>
-
-    <b-button :href="href">
-        <b-icon icon="code-slash" aria-hidden="true" class="mr-2" />
-        {{ buttonText }}
-    </b-button>
-
+    <v-button :href="href">
+        <v-icon icon="code-slash" aria-hidden="true" class="mr-2" />Download JSON
+    </v-button>
 </template>
-  
-<script>
-export default {
 
-    name: "InterfaceJSONButton",
+<script setup>
 
-    props: {
+defineProps({ href: String });
 
-        href: String,
-    },
-
-    data() {
-
-        return {
-
-            buttonText: "Download JSON"
-        };
-    }
-};
-</script>Ï
+</script>

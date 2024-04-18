@@ -15,49 +15,51 @@
 
     </b-media> -->
 
-    <VMedia :imageAlt="alt" :imageSrc="image">
+    <!-- <VMedia :imageAlt="props.alt" :imageSrc="props.image">
 
         <template #content>
             <div class="ml-4">
                 <NuxtLink :to="to">
-                    <h2>{{ title }}</h2>
+                    <h2>{{ props.title }}</h2>
                 </NuxtLink>
-                <p class="lead">{{ text }}</p>
+                <p class="lead">{{ props.text }}</p>
             </div>
         </template>
 
-    </VMedia>
+    </VMedia> -->
 
-    <!-- <v-card flat>
+    <v-card flat>
 
         <div class="d-flex flex-no-wrap">
 
-            <v-avatar class="ma-3" size="125" rounded="0">
-                <img class="border" :src="image" />
+            <v-avatar class="ma-3" size="250" rounded="0">
+                <v-img class="border" :alt="props.alt" :src="props.image"></v-img>
             </v-avatar>
 
             <div>
-                <h2 class="splashbox-title">{{ title }}</h2>
-                <p class="lead">{{ text }}</p>
+                <NuxtLink :to="props.to">
+                    <h2 class="splashbox-title">{{ props.title }}</h2>
+                </NuxtLink>
+                <p class="lead">{{ props.text }}</p>
             </div>
 
         </div>
 
-    </v-card> -->
+    </v-card>
 
 </template>
 
-<script>
+<script setup>
 
-export default {
+    const props = defineProps({
 
-    props: {
-
-        image: String,
         alt: String,
-        to: Object,
-        title: String,
+        image: String,
         text: String,
-    }
-};
+        title: String,
+        to: Object
+    });
+
+    console.log(`props.to: ${JSON.stringify(props.to)}`);
+
 </script>

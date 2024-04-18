@@ -11,18 +11,10 @@
 
 </template>
 
-<script>
+<script setup>
 
-    export default {
+    import { ref } from "vue";
 
-        data() {
-
-            return {
-
-                alertText: "This is an alpha site. Content and style are subject to change at anytime.",
-            }
-        }
-
-    };
+    const alertText = ref("This is an alpha site. Content and style are subject to change at anytime.");
 
 </script>

@@ -1,42 +1,30 @@
 <template>
-
     <div>
         <p>
             <NuxtLink :to="character_link">
-                <v-img class="buffer_preview" :src="character.image.buffer" />
+                <v-img :src="props.character.image.buffer"></v-img>
             </NuxtLink>
         </p>
         <NuxtLink :to="character_link">See character in context</NuxtLink>
     </div>
-
 </template>
-  
-<script>
 
-export default {
+<script setup>
 
-    name: "CharacterCard",
+    // Metadata
+    definePageMeta({ name: "CharacterCard" });
 
-    props: {
+    // Props
+    const props = defineProps({ character: Object });
 
-        character: Object,
-    },
+    // Computed
+    const character_link = computed(() => {
 
-    computed: {
-
-        character_link() {
-
-
-            return {
-                name: "characters-id",
-                params: {
-
-                    id: this.character.id,
-                },
-            };
-        },
-    }
-};
+        return {
+                
+            name: "characters-id",
+            params: { id: props.character.id, }
+        };      
+    });
 
 </script>
-  

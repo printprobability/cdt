@@ -1,35 +1,29 @@
 <template>
 
     <div class="media-box">
-        <v-img class="page-cover" :src="page.image.thumbnail" :alt="page.label" />
+        <v-lazy>
+            <v-img class="page-cover" :src="page.image.thumbnail" :alt="page.label"></v-img>
+        </v-lazy>
     </div>
 
 </template>
-  
-<script>
 
-export default {
+<script setup>
 
-    props: {
-
-        page: Object,
-    },
-};
+    const props = defineProps({ page: Object });
 
 </script>
 
 <style scoped>
 
-.media-box {
-    
-    width: 215px;
-}
+    .media-box {
 
-.page-cover {
+        width: 215px;
+    }
 
-    max-width: 200px;
-    max-height: 275px;
-}
+    .page-cover {
 
+        max-height: 275px;
+        max-width: 200px;
+    }    
 </style>
-  
