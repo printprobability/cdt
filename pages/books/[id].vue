@@ -4,25 +4,30 @@
 
         <h1>{{ book.pqTitle }}</h1>
 
-        <v-card class="mb-3">
+        <v-card flat>
 
             <p>
                 Identifiers:
-                <v-list horizontal>
-                    <v-list-item v-if="book.estc">
-                        ESTC: {{ book.estc }}
-                    </v-list-item>
-                    <v-list-item v-if="book.vid">
-                        VID: {{ book.vid }}
-                    </v-list-item>
-                    <v-list-item v-if="book.eebo">
-                        EEBO: {{ book.eebo }}
-                    </v-list-item>
-                    <v-list-item v-if="book.tcp">
-                        TCP: {{ book.tcp }}
-                    </v-list-item>
-                </v-list>
+                <v-table>
+                    <tbody>
+                        <tr>
+                            <td v-if="book.estc">
+                                ESTC: {{ book.estc }}
+                            </td>
+                            <td v-if="book.vid">
+                                VID: {{ book.vid }}
+                            </td>
+                            <td v-if="book.eebo">
+                                EEBO: {{ book.eebo }}
+                            </td>
+                            <td v-if="book.tcp">
+                                TCP: {{ book.tcp }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </v-table>
             </p>
+
             <p v-if="book.pqAuthor">Author: {{ book.pqAuthor }}</p>
             <p v-if="book.colloqPrinter">Printer: {{ book.colloqPrinter }}</p>
             <p v-if="book.ppNotes">Notes: {{ book.ppNotes }}</p>
@@ -31,15 +36,15 @@
 
         <h2>Noteworthy characters</h2>
 
-        <v-card no-body>
+        <v-card flat>
 
-            <v-tabs v-model="tab">
+            <v-tabs>
 
                 <v-tab active>
                     Group by page
                     <v-card-text>
 
-                        <v-pagination
+                        <!-- <v-pagination
                             v-model="index"
                             :disabled="pages_count <= 1"
                             :limit="1"
@@ -47,21 +52,19 @@
                             :total-rows="pages_count"
                             align="center"
                             page-class="hide">
-                        </v-pagination>
+                        </v-pagination> -->
 
-                        <v-card :title="`p. ${current_page.sequence}`">
-                            <VMedia>
-                                <template #image>
-                                    <PageImage :page="current_page" />
-                                </template>
-                                <template #content>
-                                    <div class="d-flex flex-wrap">
-                                        <CharacterImage v-for="character in page_characters(current_page.id)"
-                                            :key="character.id" :character="character" />
-                                    </div>
-                                </template>
-                            </VMedia>
-                        </v-card>
+                        <VMedia :title="`p. ${current_page.sequence}`">
+                            <template #image>
+                                <PageImage :page="current_page" />
+                            </template>
+                            <template #content>
+                                <div class="d-flex flex-wrap">
+                                    <CharacterImage v-for="character in page_characters(current_page.id)"
+                                        :key="character.id" :character="character" />
+                                </div>
+                            </template>
+                        </VMedia>
 
                     </v-card-text>
                 </v-tab>
@@ -69,11 +72,11 @@
                 <v-tab>
                     Group by character class
                     <v-card-text>
-                        <MenusCharacterSelect v-model="selected_character_class" :where="class_filter" :allow_any="false" />
-                        <div class="d-flex flex-wrap">
+                        <!-- <MenusCharacterSelect v-model="selected_character_class" :allow_any="false" :where="class_filter"  /> -->
+                        <!-- <div class="d-flex flex-wrap">
                             <CharacterImage v-for="character in class_characters(selected_character_class)"
                                 :key="character.id" :character="character" />
-                        </div>
+                        </div> -->
                     </v-card-text>
                 </v-tab>
 
@@ -88,112 +91,70 @@
     </v-container>
 
 </template>
-  
-<script>
 
-import _ from "lodash";
+<script setup>
 
-export default defineNuxtComponent({
+    import _ from "lodash";
+    import { reactive, ref } from "vue";
 
-    head() {
+    const route = useRoute();
 
-        return {
+    // Data
+    var book = reactive({});
+    var characters = reactive([{ characterClass: ""}]);
+    var index = ref(1);
+    var group_type = ref("page");
 
-            titleTemplate: `Book: ${this.book.pqTitle} - %s`,
-        };
-    },
+    // Methods
+    
+    // Async loaded data
+    ({ data: book } = await useAsyncData("myBooks", () => queryContent("books", route.params.id).find()));
+    ({ data: characters } = await useAsyncData("myCharacters", () => queryContent("characters")
+        .where({ book: route.params.id })
+        .only(["id", "page", "label", "image", "characterClass"])
+        .sortBy("page.sequence")
+        .find()
+    ));      
 
-    data() {
+    // Head
+    useHead({ titleTemplate: `Book: ${book.pqTitle} - %s` });
 
-        return {
-
-            index: 1,
-            group_type: "page",
-            selected_character_class: "a_lc"
-        };
-    },
-
-    async asyncData({ $content, params }) {
-
-         const book = await $content("books", params.id).fetch();
-
-         const characters = await $content("characters")
-             .where({ book: params.id })
-             .only(["id", "page", "label", "image", "characterClass"])
-             .sortBy("page.sequence")
-             .fetch();
-
-        //const book = await queryContent("books", params.id).$fetch(`books/${params.id}`);
-
-        /*const characters = await useAsyncData("characters", () => queryContent("characters")
-            .where({ book: params.id })
-            .only(["id", "page", "label", "image", "characterClass"])
-            .sortBy("page.sequence")
-        );*/       
-
-        return { book, characters };
-    },
-
-    computed: {
-
-        class_filter() {
-
-            return {
-
-                classname: {
-
-                    $in: _.uniq(this.characters.map((c) => c.characterClass)),
-                }
-            };
-        },        
-
-        current_page() {
-            
-            return this.pages[this.index - 1];
-        },        
-
-        pages() {
-            
-            const all_pages = this.characters.map((c) => c.page);
-
-            return ( this.characters.length > 0 ) ? _.sortedUniqBy(all_pages, (p) => p.id) : [];
-        },
-
-        pages_count() {
-
-            return this.pages.length;
-        }
-    },
-
-    methods: {
-
-        class_characters(class_id) {
-
-            return this.characters.filter((c) => c.characterClass == class_id);
-        },        
-
-        page_characters(page_id) {
-
-            return this.characters.filter((c) => c.page.id == page_id);
-        }
-    },
-
-    mounted() {
-
-        // Set the inital selected class to the first available class in this book
-        this.selected_character_class = this.characters[0].characterClass;
+    // Methods
+    function page_characters(p_page_id) {
+        
+        return characters.filter((c) => c.page.id == p_page_id);
     }
-});
+    function class_characters(p_class_id) {
+        
+        return characters.filter((c) => c.characterClass == p_class_id);
+    }
+
+    // Computed
+    const class_filter = computed(() => {
+            
+        return { classname: { $in: _.uniq(characters.map((c) => c.characterClass)) } };
+    });    
+    const current_page = computed(() => pages[index - 1]);
+    const pages = computed(() => {
+
+        const all_pages = characters.map((c) => c.page);
+
+        return ( characters.length > 0 ) ? _.sortedUniqBy(all_pages, (p) => p.id) : [];
+    });
+    const pages_count = computed(() => pages.length);
+    const selected_character_class = computed(() => {
+
+        return characters.value[0].characterClass;
+    });
 
 </script>
   
+  
 <style scoped>
 
-.hide {
+    .hide {
 
-    /* Hide the numbered display buttons */
-    display: none;
-}
-
+        /* Hide the numbered display buttons */
+        display: none;
+    }
 </style>
-  

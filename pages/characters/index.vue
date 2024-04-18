@@ -1,20 +1,15 @@
 <template>
-
-    <InterfaceList
-        v-model="page"
-        :page_size="page_size"
-        :total_rows="characters_count"
-        title="Browse Characters">
+    <InterfaceList v-model="page" :page_size="page_size" :total_rows="characters_count" title="Browse Characters">
 
         <template #intro>
             <p>{{ $siteConfig.browsecopy.characters }}</p>
         </template>
 
         <template #filter>
-            <MenusCharacterSelect v-model="form.selected_character_class" />
+            <!-- <MenusCharacterSelect v-model="form.selected_character_class" /> -->
             <MenusBookSelect v-model="form.book" />
         </template>
-        
+
         <template #results>
             <div class="d-flex flex-wrap">
                 <CharacterImage v-for="character in characters" :key="character.id" :character="character" />
@@ -22,112 +17,81 @@
         </template>
 
     </InterfaceList>
-    
 </template>
-  
-<!-- <script setup>
 
-useHead({
+<script setup>
 
-    titleTemplate: "Character Search - %s"
-});
+    import _ from "lodash";
+    import { reactive, ref, watch } from "vue";
 
-</script> -->
+    // Head
 
+    useHead({ titleTemplate: "Character Search - %s"}); 
 
-<script>
+    // Data
+    var characters = ref([]);
+    var filtered_characters = ref([]);
+    const form = reactive({
 
-export default {
+        selected_character_class: "any",
+        book: "any"
+    });
+    var page = ref(1);
+    var page_size = ref(27);
 
-    setup() {
+    const query_array = computed(() => {
+        
+        // Build query conditionally
+        var query_array = [];
+        if ( "any" !== form.selected_character_class ) {
 
-    },
+            query_array.push({ characterClass: { $eq: form.selected_character_class } });
+        }
+        if ( "any" !== form.book ) {
+            
+            query_array.push({ book: { $eq: form.book } });
+        }
 
-    head: {
+        return query_array;
+    });    
 
-        titleTemplate: "Character Search - %s"
-    },
+    var refreshCharacters, refreshFilteredCharacters;
+    ({ data: characters, refresh: refreshCharacters } = await useAsyncData("myCharacters", () => queryContent("characters")
+        .where({ $and: query_array })
+        .only(["id", "label", "image", "characterClass"])
+        .sortBy("characterClass")
+        .limit(page_size)
+        .skip((page - 1) * page_size)
+        .find()
+    ));
+    ({ data: filtered_characters, refresh: refreshFilteredCharacters } = await useAsyncData("filteredCharacters", () => queryContent("characters")
+        .where({ $and: query_array })
+        .only([])
+        .find()
+    ));
 
-    data() {
+    // Methods
+    function refreshData() {
 
-        return {
+        refreshCharacters();
+        refreshFilteredCharacters();
+    }
 
-            characters: [],
-            characters_count: 0,
-            form: {
+    // Computed
+    const characters_count = computed(() => {
 
-                book: "any",
-                selected_character_class: "any"
-            },
-            page: 1,
-            page_size: 27
-        };
-    },
+        return filtered_characters.length;
+    });
 
-    async fetch() {
+    // Watchers
+    watch(form, (p_newValue, p_oldValue) => {
 
-        console.log("In InterfaceList fetch");
+        page = 1;
+        refreshData();
+    });
+    watch(page, (p_newValue, p_oldValue) => {
 
-        this.characters = await useAsyncData("characters", () => queryContent("characters")
-            .where({ $and: this.query_array })
-            .only(["id", "label", "image", "characterClass"])
-            .sortBy("characterClass")
-            .limit(this.page_size)
-            .skip((this.page - 1) * this.page_size)
-            .fetch()
-        );
+        refreshData();
+    });
 
-        const filtered_characters = await useAsyncData("characters", () => queryContent("characters")
-            .where({ $and: this.query_array })
-            .only([])
-            .fetch()
-        );
-        this.characters_count = filtered_characters.length;
-    },
-
-    watch: {
-
-        // "deep" watch the form object to catch changes to any of its parts
-        form: {
-
-            handler: function (oldVal, newVal) {
-
-                this.page = 1; // reset page on other query changes
-                this.$fetch();
-            },
-            deep: true,
-        },
-
-        page() {
-
-            this.$fetch();
-        },
-    },
-
-    computed: {
-
-        query_array() {
-
-            // Build query conditionally
-            var query_array = [];
-            if ( this.form.selected_character_class != "any" ) {
-
-                query_array.push({
-                    characterClass: { $eq: this.form.selected_character_class },
-                });
-            }
-
-            if ( this.form.book != "any" ) {
-
-                query_array.push({
-                    book: { $eq: this.form.book },
-                });
-            }
-
-            return query_array;
-        },
-    },
-};
 </script>
-  
-  

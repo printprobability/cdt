@@ -1,157 +1,169 @@
 <template>
 
-    <InterfaceList
-        :total_rows="all_books.length"
-        :page_size="page_size"
-        title="Search books"
-        v-model="page">
+    <div>
+        <InterfaceList title="Search books" v-model="page" :total_rows="books_count" :page_size="page_size">
 
-        <template #intro>
-            <p>{{ $siteConfig.browsecopy.books }}</p>
-        </template>
+            <template #intro>
+                <p style="margin-top: 1em; margin-bottom: 1em;">{{ $siteConfig.browsecopy.books }}</p>
+            </template>
 
-        <template #filter>
-            <v-text-field id="input-book-title" debounce="500" label="Title" placeholder="Aeropagitica" v-model="form.title" />
-            <v-text-field id="input-book-printer" debounce="500" label="Printer" placeholder="    Evan Tyler" v-model="form.printer" />
-            <ClientOnly>
-                <!-- <DateSlider v-model="date" /> -->
-            </ClientOnly>
-        </template>
+            <template #filter>
+                <v-text-field
+                    id="input-book-title"
+                    debounce="500"
+                    label="Title"
+                    placeholder="Aeropagitica"
+                    v-model="form.title" />
+                <v-text-field
+                    id="input-book-printer"
+                    debounce="500"
+                    label="Printer"
+                    placeholder="Evan Tyler"
+                    v-model="form.printer" />
+                
+                <!-- v-model:modelValue="date" -->
+                <DateSlider
+                    :minYear="1600"
+                    :maxYear="1800"
+                    @update:modelValue="changeDate" />
+            </template>
 
-        <template #results>
-            <v-list v-if="filtered_books.length > 0">
-                <v-list-item v-for="book in filtered_books" :key="book.id">
-                    <BookCard :book="book" />
-                </v-list-item>
-            </v-list>
-        </template>
-    </InterfaceList>
+            <template #results>
+                <v-list v-if="books || books.length > 0">
+                    <v-list-item v-for="book in books" :key="book.id">
+                        <BookCard v-if="book.coverPage.image.thumbnail" :book="book" />
+                    </v-list-item>
+                </v-list>
+            </template>
+
+            <template #footer></template>
+        </InterfaceList>
+    </div>
+
 </template>
 
-<script>
+<script setup>
 
-    useHead({ titleTemplate: "Book Search - %s" });
+import _ from "lodash";
+import { computed, reactive, ref, watch } from "vue";
 
-    defineProps({
+// Head
+useHead({ titleTemplate: "Book Search - %s" });
 
-        all_books: Array,
-        filtered_books: Array
-    });
+// Data
+var all_books = ref([]);
+var books = ref([]);
+var date = reactive([1600, 1800]);
+const form = reactive({
+    
+    // title: ".+",
+    // printer: ".+",
+    title: "",
+    printer: "",
+    year_min: 1600,
+    year_max: 1800  
+});
+var page = ref(1);
+var page_size = ref(5);
+const { $siteConfig } = useNuxtApp();
 
-</script>
+// Computed
+const books_count = computed(() => {
 
-<script>
-    // NOTE: 3/1/2024 - Provide earlier version of the JS section below to see if Matt's initial
-    // version can be tweaked with new Nuxt fetch commands
-    // Also - replace this.$fetch instances with...$fetch ? See documentation.
+    return all_books.value.length;
+});
+const query = computed(() => {
 
-    import _ from "lodash";
+    return [{
+        pqTitle: { $regex: new RegExp(( "" === form.title ) ? ".+" : form.title, "i") },
+        ppPublisher: { $regex: new RegExp(( "" === form.printer ) ? ".+" : form.printer, "i") },
+        pqYearEarly: { $gte: form.year_min },
+        pqYearLate: { $lte: form.year_max }
+    }];
+});
 
-    export default {
+// Async data
+var refreshFilteredBooks, refreshAllBooks;
+({ data: books, refresh: refreshFilteredBooks } = await useAsyncData("bookIndex_filteredbooks", () => queryContent("books")
+    .only([
+        "id",
+        "pqTitle",
+        "pqPublisher",
+        "pqYearEarly",
+        "pqYearLate",
+        "coverPage"
+    ])
+    .where({ 
+        $and: [{
+            pqTitle: { $regex: new RegExp(form.title, "i") },
+            ppPublisher: { $regex: new RegExp(form.printer, "i") },
+            pqYearEarly: { $gte: form.year_min },
+            pqYearLate: { $lte: form.year_max }
+        }]
+        // $and: query
+    })
+    .limit(page_size)
+    .skip((page - 1) * page_size)
+    .find()
+));
 
-        async setup() {
+({ data: all_books, refresh: refreshAllBooks } = await useAsyncData("bookIndex_allbooks", () => queryContent("books")
+    .only([])
+    //.where({ $and: query })
+    .where({ $and: [{
+            pqTitle: { $regex: new RegExp(form.title, "i") },
+            ppPublisher: { $regex: new RegExp(form.printer, "i") },
+            pqYearEarly: { $gte: form.year_min },
+            pqYearLate: { $lte: form.year_max }
+        }]
+    })
+    .find()
+));
 
-            useHead({ titleTemplate: "Book Search - %s" });
+// Methods
 
-            const page = ref(1);
-            const page_size = ref(5);
-            const year_min = ref(1600);
-            const year_max = r ef(1800);
+function changeDate(p_newDate) {
 
-            // This var gets debounced on its way to updating the dates in the form
-            const date = reactive([year_min, year_max]);
+    console.log(`changeDate with ${p_newDate}`);
 
-            const form = reactive({
-                
-                title: "",
-                printer: "",
-                year_min: year_min,
-                year_max: year_max,
-            });
+    date[0] = p_newDate[0];
+    date[1] = p_newDate[1];
+}
+function refreshData() {
 
-            const query = computed(() => [{
-                    pqTitle: {
-                        $regex: [form.title, "i"]
-                    }
-                },
-                {
-                    ppPublisher: {
-                        $regex: [form.printer, "i"]
-                    }
-                },
-                {
-                    pqYearEarly: {
-                        $gte: form.year_min
-                    }
-                },
-                {
-                    pqYearLate: {
-                        $lte: form.year_max
-                    }
-                },
-            ]);
+    refreshFilteredBooks();
+    refreshAllBooks();
+}
 
-            const books = reactive(
-                await useAsyncData("books", () =>
-                    queryContent("books")
-                    .only([
-                        "id",
-                        "pqTitle",
-                        "pqPublisher",
-                        "pqYearEarly",
-                        "pqYearLate",
-                        "coverPage",
-                    ])
-                    .where({
-                        $and: query
-                    })
-                    .limit(page_size)
-                    .skip((page - 1) * page_size)
-                )
-            );
+// Watchers
+watch(form, (p_newValue, p_oldValue) => {
 
-            const all_books = reactive(
-                await useAsyncData("books", () =>
-                    queryContent("books").only([]).where({
-                        $and: query
-                    })
-                )
-            );
+    page = 1;
+    refreshData();
+});
+watch(page, (p_newValue, p_oldValue) => {
 
-            return {
-                all_books,
-                books,
-                date,
-                form,
-                page,
-                page_size,
-                query,
-                year_max,
-                year_min,
-            };
-        },
+    refreshData();
+});
+watch(date, (p_newValue, p_oldValue) => {
 
-        watch: {
-            date: _.debounce(function () {
-                this.form.year_min = this.date[0];
-                this.form.year_max = this.date[1];
-            }, 750),
+    console.log(`Date changed p_newValue: ${p_newValue} p_oldValue: ${p_oldValue}`);
 
-            // "deep" watch the form object to catch changes to any of its parts
-            form: {
-                handler: function (oldVal, newVal) {
-                    this.page = 1;
+    // _.debounce(() => {
 
-                    // Opportunity for refresh call
-                    this.$fetch();
-                },
-                deep: true,
-            },
+    //     console.log("Debounce!");
 
-            page() {
-                // Opportunity for refresh call
-                this.$fetch();
-            },
-        },
-    };
+    //     form.year_min = date[0];
+    //     form.year_max = date[1];        
+    // }, 750);
+
+    setTimeout(() => {
+
+        console.log("setTimeOut done!");
+        
+        form.year_min = date[0];
+        form.year_max = date[1];
+    }, 750);    
+});
+
 </script>

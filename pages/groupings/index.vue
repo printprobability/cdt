@@ -13,7 +13,7 @@
                 label="Grouping title or notes"
                 debounce="500"
                 placeholder="Aeropagitica" />
-            <MenusCharacterSelect v-model="form.character_class" />
+            <!-- <MenusCharacterSelect v-model="form.character_class" /> -->
             <MenusBookSelect v-model="form.book" />
         </template>
 
@@ -28,187 +28,145 @@
     </InterfaceList>
 
 </template>
-  
-<script>
 
-import _ from "lodash";
+<script setup>
 
-export default {
+    import _ from "lodash";
+    import { reactive, ref, watch } from "vue";
+    import { computedAsync } from "@vueuse/core";
+;
+    // Head
+    useHead({ titleTemplate: "Grouping Search - %s" });
 
-    head: {
+    // Data
+    var filtered_groupings = ref([]);
+    const form = reactive({
 
-        titleTemplate: "Grouping Search - %s"
-    },
+        book: "any",
+        character_class: "any",
+        text: ""
+    });
+    var groupings = ref([]);
+    var page = ref(1);
+    var page_size = ref(5);
 
-    data() {
+    ({ data: grouping, refresh: refreshGroupings } = await useAsyncData("myGroupings", queryContent("groupings")
+        .where({ $and: await query })
+        .search(form.text)
+        .only(["id", "label", "notes", "characters"])
+        .limit(page_size)
+        .skip((page - 1) * page_size)
+        .find()
+    ));
 
-        return {
+    ({ data: filtered_groupings, refresh: refreshFilteredGroupings } = await useAsyncData("myFilteredGroupings", queryContent("groupings")
+        .where({ $and: await query })
+        .search(form.text)
+        .only([])
+        .find()  
+    ));
 
-            form: {
+    // Methods
 
-                book: "any",
-                character_class: "any",
-                text: ""
-            },
-            groupings: [],
-            groupings_count: 0,
-            page: 1,
-            page_size: 5
-        };
-    },
+    function refreshData() {
 
-    async fetch() {
+        refreshGroupings();
+        refreshFilteredGroupings();
+    }
 
-        // this.groupings = await this.$content("groupings")
-        //     .where({ $and: await this.query })
-        //     .search(this.form.text)
-        //     .only(["id", "label", "notes", "characters"])
-        //     .limit(this.page_size)
-        //     .skip((this.page - 1) * this.page_size)
-        //     .fetch();
+    // Computed
+    const groupings_count = computed(() => {
 
-        // const filtered_groupings = await this.$content("groupings")
-        //     .where({ $and: await this.query })
-        //     .search(this.form.text)
-        //     .only([])
-        //     .fetch();
+        return filtered_groupings.length;
+    });
 
-        const resolved_query = await this.query;
+    const result_count_str = computed(() => {
 
-        this.groupings = await useAsyncData("groupings", () => queryContent("groupings")
-            .where({ $and: resolved_query })
-            .search(this.form.text)
-            .only(["id", "label", "notes", "characters"])
-            .limit(this.page_size)
-            .skip((this.page - 1) * this.page_size)
-            .fetch());
+        if ( groupings_count > 1 ) {
 
-        const filtered_groupings = await useAsyncData("groupings", () => queryContent("groupings")
-            .where({ $and: resolved_query })
-            .search(this.form.text)
-            .only([])
-            .fetch());
-
-        this.groupings_count = filtered_groupings.length;
-    },
-
-    computed: {
-
-        async book_query() {
-
-            // NOTE: Maybe change this to !==
-            if ( this.form.book != "any" ) {
-
-                // const book_characters = await this.$content("characters")
-                //     .where({ book: { $eq: this.form.book } })
-                //     .only(["id"])
-                //     .fetch();
-
-                const book_characters = await useFetch(() => queryContent("characters")
-                    .where({ book: { $eq: this.form.book } })
-                    .only(["id"]));                
-
-                return {
-
-                    characters: {
-
-                        $containsAny: book_characters.map((x) => x.id),
-                    }
-                };
-            }
-
-            return null;
-        },
-
-        async character_class_query() {
-
-            // NOTE: Maybe change this to !==
-            if ( this.form.character_class != "any" ) {
-
-                // const class_characters = await this.$content("characters")
-                //     .where({ characterClass: { $eq: this.form.character_class } })
-                //     .only(["id"])
-                //     .fetch();
-
-                // const class_characters = await useAsyncData("characters", () => queryContent("characters")
-                //     .where({ characterClass: { $eq: this.form.character_class } })
-                //     .only(["id"])
-                //     .fetch());
-
-                const class_characters = await useFetch(() => queryContent("characters")
-                    .where({ characterClass: { $eq: this.form.character_class } })
-                    .only(["id"]));                 
-
-                return {
-
-                    characters: {
-
-                        $containsAny: class_characters.map((x) => x.id),
-                    }
-                };
-            }
-
-            return null;
-        },
-
-        async query() {
-
-            // If a book and a character class have been specified, compose the two queries
-            Promise.resolve(this.book_query);
-            Promise.resolve(this.character_class_query);
-            const book_q = await this.book_query;
-            const cc_q = await this.character_class_query;
-
-            if ( !!book_q && !!cc_q ) {
-
-                const intersection = book_q.characters.$containsAny.filter((value) =>
-                    cc_q.characters.$containsAny.includes(value)
-                );
-
-                return [{ characters: { $containsAny: intersection } }];
-            } else if ( !!cc_q ) {
-
-                return [cc_q];
-            } else if ( !!book_q ) {
-
-                return [book_q];
-            }
-
-            return [];
-        },
-
-        result_count_str() {
-
-            if ( this.groupings_count > 1 ) {
-
-                return `${this.groupings_count} results`;
-            } else if ( this.groupings_count == 1 ) {
-
-                return "1 result";
-            }
-            
+            return `${groupings_count} results`;
+        } else if ( 1 === groupings_count ) {
+        
+            return "1 result";
+        } else {
+        
             return "No results";
-        },
-    },
+        }
+    });    
 
-    watch: {
+    // Computed async
+    const book_query = computedAsync(async () => {
+
+        if ( "any" === form.book ) {
+
+            return null;
+        }
+
+        const book_characters = await queryContent("characters")
+            .where({ book: { $eq: form.book } })
+            .only(["id"])
+            .find();
+    
+        return { characters: { $containsAny: book_characters.map((x) => x.id) } };
+    }, null);
+
+    const character_class_query = computedAsync(async () => {
+
+        if ( "any" === form.character_class ) {
+
+            return null;
+        }
+
+        const class_characters = await queryContent("characters")
+            .where({ characterClass: { $eq: form.character_class } })
+            .only(["id"])
+            .find();
+
+        return { characters: { $containsAny: class_characters.map((x) => x.id) } };
+
+    }, null);
+    
+    const query = computedAsync(async () => {
+
+        // If a book and a character class have been specified, compose the two queries
+        Promise.resolve(book_query);
+        Promise.resolve(character_class_query);
+
+        const book_q = await book_query;
+        const cc_q = await character_class_query;
+
+        if ( !!book_q && !!cc_q ) {
+
+            const intersection = book_q.characters.$containsAny.filter((value) =>
+                cc_q.characters.$containsAny.includes(value)
+            );
+            
+            return [{ characters: { $containsAny: intersection } }];
+        } else if ( !!cc_q ) {
+        
+            return [cc_q];
+        } else if ( !!book_q ) {
+        
+            return [book_q];
+        } else {
+            
+            return [];
+        }        
+    });
+
+    // Watchers
+
+    watch(form, (p_newValue, p_oldValue) => {
 
         // "deep" watch the form object to catch changes to any of its parts
-        form: {
+        // NOTE: In Vue 3, watch on a 'reactive' object implicitly creates a deep watcher
+        page = 1;
+        refreshData();
+    });
 
-            handler: function (oldVal, newVal) {
+    watch(page, (p_newValue, p_oldValue) => {
 
-                this.page = 1;
-                this.$fetch();
-            },
-            deep: true,
-        },
-
-        page() {
-
-            this.$fetch();
-        }
-    }
-};
+        refreshData();
+    });
 
 </script>

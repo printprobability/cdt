@@ -62,44 +62,20 @@
     </v-container>
     
 </template>
-  
-<script>
 
-export default {
 
-    head() {
+<script setup>
 
-        return {
+    useHead({ titleTemplate: `Character: ${character.label} - %s`});
 
-            titleTemplate: `Character: ${this.character.label} - %s`,
-        };
-    },
+    const route = useRoute();
 
-    async asyncData({ $content, params }) {
+    const { data: character } = await useAsyncData("myCharacters", () => queryContent("characters", route.params.id).find());
 
-        // const character = await $content("characters", params.id).fetch();
-        // const book = await $content("books", character.book).fetch();
-        // const groupings = await $content("groupings")
-        //     .where({
-        //         characters: { $contains: params.id },
-        //     })
-        //     .fetch();
+    const { data: book } = await useAsyncData("myBooks", () => queryContent("books", character.book).find());
 
-        const character = await queryContent("characters", params.id).fetch();
-        const book = await queryContent("books", character.book).fetch();
-        const groupings = await queryContent("groupings")
-            .where({
-                characters: { $contains: params.id },
-            })
-            .fetch();        
-
-        return {
-            
-            character,
-            groupings,
-            book,
-        };
-    },
-};
+    const { data: groupings } = await useAsyncData("myGroupings", () => queryContent("groupings")
+        .where({ characters: { $contains: route.params.id } })
+        .find()
+    );
 </script>
-  
