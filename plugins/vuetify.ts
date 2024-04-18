@@ -1,7 +1,5 @@
 // Imports
 
-import Vue from "vue";
-
 import "@mdi/font/css/materialdesignicons.css";
 
 import "vuetify/styles";
