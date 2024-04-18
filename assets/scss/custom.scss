@@ -62,6 +62,11 @@ $primary: #b00;
     font-size: 1rem;
 }
 
+.navbar-brand {
+
+    font-weight: 400;
+}
+
 .v-toolbar-title.v-app-bar-title.dldt-navbar-title {
 
     font-family: $font-family-base;
@@ -74,7 +79,7 @@ $primary: #b00;
     color: rgba(0,0,0,.5);
     font-family: $font-family-base;
     font-size: 1rem;
-    font-weight: 400;
+    font-weight: 400 !important;
 }
 
 /* DLDT-specific */
@@ -133,6 +138,11 @@ img.thumbnail {
 
 /* Tags */
 
+a {
+
+    color: #b00;
+}
+
 body {
 
     font-family: $font-family-base;
@@ -153,5 +163,11 @@ h3,
 h4,
 h5 {
 
-    font-family: $font-family-base !important;
+    font-family: $headings-font-family !important;
+    margin-bottom: .5rem;
+    font-weight: 500;
+    line-height: 1.2;
+    color: #b00    
 }
+
+
