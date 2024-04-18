@@ -43,10 +43,15 @@ export default {
 
     async fetch() {
 
-        this.characters = await this.$content("characters")
+        // this.characters = await this.$content("characters")
+        //     .where({ book: { $eq: this.book.id } })
+        //     .only([])
+        //     .fetch();
+
+        this.characters = await useFetch(() => queryContent("characters")
             .where({ book: { $eq: this.book.id } })
             .only([])
-            .fetch();
+        );
     },
 
     computed: {

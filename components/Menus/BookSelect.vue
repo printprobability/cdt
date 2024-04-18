@@ -38,12 +38,13 @@ export default {
             all_books: []
         };
     },
+
     async fetch() {
 
-        const fetched_books = await this.$content("books")
+        const fetched_books = await useFetch(() => queryContent("books")
             .sortBy("pqTitle")
             .only(["id", "label"])
-            .fetch();
+        );            
 
         this.all_books = fetched_books.map((book) => {
 

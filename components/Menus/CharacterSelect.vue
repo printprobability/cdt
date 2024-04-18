@@ -48,6 +48,7 @@ export default {
     },
 
     async fetch() {
+    // async setup() {
 
         const GROUP_DICT = {
 
@@ -57,11 +58,11 @@ export default {
             pu: "Puncutation" // Currently unused            
         };
 
-        const fetched_character_classes = await this.$content("classes")
+        const fetched_character_classes = await useFetch(() => queryContent("classes")
             .only(["classname", "label", "group"])
             .where(this.where)
             .sortBy("label")
-            .fetch();
+        );
 
         // Group character classes by overarching groups
         this.all_character_classes = Object.entries(GROUP_DICT).map((group) => {

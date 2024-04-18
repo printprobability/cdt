@@ -19,11 +19,21 @@
 
             <v-col cols="9">
                 <h3>{{ result_count_string }}</h3>
-                <v-pagination :disabled="total_rows <= page_size" :value="value" :total-rows="total_rows"
-                    :per-page="page_size" align="center" @input="$emit('input', $event)"></v-pagination>
+                <v-pagination
+                    :disabled="total_rows <= page_size"
+                    :per-page="page_size"
+                    :total-rows="total_rows"
+                    :value="value"
+                    @input="$emit('input', $event)"
+                    align="center"></v-pagination>
                 <slot name="results"></slot>
-                <v-pagination :disabled="total_rows <= page_size" :value="value" :total-rows="total_rows"
-                    :per-page="page_size" align="center" @input="$emit('input', $event)"></v-pagination>
+                <!-- <v-pagination
+                    :disabled="total_rows <= page_size"
+                    :per-page="page_size"
+                    :total-rows="total_rows"
+                    :value="value"
+                    @input="$emit('input', $event)"
+                    align="center"></v-pagination> -->
             </v-col>
 
         </v-row>

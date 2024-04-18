@@ -42,12 +42,18 @@ export default {
 
     async fetch() {
 
-        this.characters = await this.$content("characters")
+        // this.characters = await this.$content("characters")
+        //     .where({ id: { $in: this.grouping.characters } })
+        //     .sortBy("characterClass")
+        //     .only(["id", "image", "label"])
+        //     // .limit(10)
+        //     .fetch();
+
+        this.characters = await useFetch(() => queryContent("characters")
             .where({ id: { $in: this.grouping.characters } })
             .sortBy("characterClass")
             .only(["id", "image", "label"])
-            // .limit(10)
-            .fetch();
+        );       
     },
 
     methods: {
