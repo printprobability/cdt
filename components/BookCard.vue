@@ -37,17 +37,11 @@
     import { reactive } from "vue";
 
     // Props
-    const props = defineProps({ book: Object });
-
-    // Data
-    var characters = reactive([]);
-
-    // Async data
-    ({ data: characters } = await useAsyncData("myCharacters", () => queryContent("characters")
-        .where({ book: props.book.id })
-        .only([])
-        .find()
-    ));
+    const props = defineProps({ 
+        
+        book: Object,
+        characters: Array
+    });
 
     // Computed
     const book_link = computed(() => {
@@ -70,7 +64,7 @@
     });
     const n_chars = computed(() => {
 
-        return ( characters.length > 1 ) ? `${characters.length} characters` : "1 character";
+        return ( props.characters.length > 1 ) ? `${props.characters.length} characters` : "1 character";
     });
 
 </script>

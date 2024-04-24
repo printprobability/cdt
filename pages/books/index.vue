@@ -29,11 +29,13 @@
             </template>
 
             <template #results>
+                <v-pagination :length="numPages" v-model="page"></v-pagination>
                 <v-list v-if="books || books.length > 0">
-                    <v-list-item v-for="book in books" :key="book.id">
-                        <BookCard v-if="book.coverPage.image.thumbnail" :book="book" />
+                    <v-list-item v-for="book in paginationBooks" :key="book.id">
+                        <BookCard v-if="book.coverPage.image.thumbnail" :book="book" :characters="getBookCharacters(book.id)" />
                     </v-list-item>
                 </v-list>
+                <v-pagination :length="numPages" v-model="page"></v-pagination>
             </template>
 
             <template #footer></template>
@@ -66,11 +68,30 @@ const form = reactive({
 var page = ref(1);
 var page_size = ref(5);
 const { $siteConfig } = useNuxtApp();
+var characters = reactive([]);
 
 // Computed
 const books_count = computed(() => {
 
     return all_books.value.length;
+});
+const numPages = computed(() => {
+
+    console.log(`all_books.value.length: ${all_books.value.length}`);
+    console.log(`page_size.value: ${page_size.value}`);
+
+    return ( 0 === all_books.value.length % page_size.value ) ? 
+        all_books.value.length / page_size.value : (all_books.value.length / page_size.value) + 1;
+});
+const paginationBooks = computed(() => {
+
+    const start = (page.value - 1) * page_size.value;
+    const end = start + page_size.value;
+    console.log(`start: ${start}`);
+    console.log(`end: ${end}`);
+    console.log(`books.value.slice(...): ${books.value.slice(start, end)}`);
+
+    return books.value.slice(start, end);
 });
 const query = computed(() => {
 
@@ -83,6 +104,12 @@ const query = computed(() => {
 });
 
 // Async data
+({ data: characters } = await useAsyncData("myCharacters", () => queryContent("characters")
+    // .where({ book: props.book.id })
+    .only([])
+    .find()
+));
+
 var refreshFilteredBooks, refreshAllBooks;
 ({ data: books, refresh: refreshFilteredBooks } = await useAsyncData("bookIndex_filteredbooks", () => queryContent("books")
     .only([
@@ -124,10 +151,12 @@ var refreshFilteredBooks, refreshAllBooks;
 
 function changeDate(p_newDate) {
 
-    console.log(`changeDate with ${p_newDate}`);
-
     date[0] = p_newDate[0];
     date[1] = p_newDate[1];
+}
+function getBookCharacters(p_bookID) {
+
+    return characters.value.filter(({ book }) => p_bookID === book);
 }
 function refreshData() {
 
@@ -147,8 +176,6 @@ watch(page, (p_newValue, p_oldValue) => {
 });
 watch(date, (p_newValue, p_oldValue) => {
 
-    console.log(`Date changed p_newValue: ${p_newValue} p_oldValue: ${p_oldValue}`);
-
     // _.debounce(() => {
 
     //     console.log("Debounce!");
@@ -158,8 +185,6 @@ watch(date, (p_newValue, p_oldValue) => {
     // }, 750);
 
     setTimeout(() => {
-
-        console.log("setTimeOut done!");
         
         form.year_min = date[0];
         form.year_max = date[1];
