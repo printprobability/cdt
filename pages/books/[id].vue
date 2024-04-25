@@ -2,7 +2,7 @@
 
     <v-container>
 
-        <h1>{{ book.pqTitle }}</h1>
+        <h1>{{ props.book.pqTitle }}</h1>
 
         <v-card flat>
 
@@ -11,26 +11,26 @@
                 <v-table>
                     <tbody>
                         <tr>
-                            <td v-if="book.estc">
-                                ESTC: {{ book.estc }}
+                            <td v-if="props.book.estc">
+                                ESTC: {{ props.book.estc }}
                             </td>
-                            <td v-if="book.vid">
-                                VID: {{ book.vid }}
+                            <td v-if="props.book.vid">
+                                VID: {{ props.book.vid }}
                             </td>
-                            <td v-if="book.eebo">
-                                EEBO: {{ book.eebo }}
+                            <td v-if="props.book.eebo">
+                                EEBO: {{ props.book.eebo }}
                             </td>
-                            <td v-if="book.tcp">
-                                TCP: {{ book.tcp }}
+                            <td v-if="props.book.tcp">
+                                TCP: {{ props.book.tcp }}
                             </td>
                         </tr>
                     </tbody>
                 </v-table>
             </p>
 
-            <p v-if="book.pqAuthor">Author: {{ book.pqAuthor }}</p>
-            <p v-if="book.colloqPrinter">Printer: {{ book.colloqPrinter }}</p>
-            <p v-if="book.ppNotes">Notes: {{ book.ppNotes }}</p>
+            <p v-if="props.book.pqAuthor">Author: {{ props.book.pqAuthor }}</p>
+            <p v-if="props.book.colloqPrinter">Printer: {{ props.book.colloqPrinter }}</p>
+            <p v-if="props.book.ppNotes">Notes: {{ props.book.ppNotes }}</p>
 
         </v-card>
 
@@ -42,31 +42,27 @@
 
                 <v-tab active>
                     Group by page
-                    <v-card-text>
+                    <v-card>
+                        <v-card-text>
 
-                        <!-- <v-pagination
-                            v-model="index"
-                            :disabled="pages_count <= 1"
-                            :limit="1"
-                            :per-page="1"
-                            :total-rows="pages_count"
-                            align="center"
-                            page-class="hide">
-                        </v-pagination> -->
+                            <v-pagination :length="pages_count" v-model="index"></v-pagination>
 
-                        <VMedia :title="`p. ${current_page.sequence}`">
-                            <template #image>
-                                <PageImage :page="current_page" />
-                            </template>
-                            <template #content>
-                                <div class="d-flex flex-wrap">
-                                    <CharacterImage v-for="character in page_characters(current_page.id)"
-                                        :key="character.id" :character="character" />
-                                </div>
-                            </template>
-                        </VMedia>
+                            <VMedia :title="`p. ${current_page.sequence}`">
+                                <template #image>
+                                    <PageImage :page="current_page" />
+                                </template>
+                                <template #content>
+                                    <div class="d-flex flex-wrap">
+                                        <CharacterImage v-for="character in pageCharacters(current_page.id)"
+                                            :key="character.id" :character="character" />
+                                    </div>
+                                </template>
+                            </VMedia>
 
-                    </v-card-text>
+                            <v-pagination :length="pages_count" v-model="index"></v-pagination>
+
+                        </v-card-text>
+                    </v-card>
                 </v-tab>
 
                 <v-tab>
@@ -82,7 +78,7 @@
 
                 <v-tab>
                     JSON
-                    <InterfaceJSONButton :href="`/books/${book.id}.json`" />
+                    <InterfaceJSONButton :href="`/books/${props.book.id}.json`" />
                 </v-tab>
             </v-tabs>
 
@@ -99,6 +95,11 @@
 
     const route = useRoute();
 
+    // Props
+    const props = defineProps({
+        book: Object
+    });
+
     // Data
     var book = reactive({});
     var characters = reactive([{ characterClass: ""}]);
@@ -108,7 +109,7 @@
     // Methods
     
     // Async loaded data
-    ({ data: book } = await useAsyncData("myBooks", () => queryContent("books", route.params.id).find()));
+    // ({ data: book } = await useAsyncData("myBooks", () => queryContent("books", route.params.id).find()));
     ({ data: characters } = await useAsyncData("myCharacters", () => queryContent("characters")
         .where({ book: route.params.id })
         .only(["id", "page", "label", "image", "characterClass"])
@@ -117,10 +118,10 @@
     ));      
 
     // Head
-    useHead({ titleTemplate: `Book: ${book.pqTitle} - %s` });
+    useHead({ titleTemplate: `Book: ${props.book.pqTitle} - %s` });
 
     // Methods
-    function page_characters(p_page_id) {
+    function pageCharacters(p_page_id) {
         
         return characters.filter((c) => c.page.id == p_page_id);
     }

@@ -12,10 +12,10 @@
 
             <v-col cols="7" style="padding-right: 1em;">
                 <p class="book-card-info">
-                    <!-- <NuxtLink :to="book_link">
+                    <NuxtLink :to="{ name=bookLink, params: { book: book }}">
                         <i>{{ props.book.pqTitle }}</i>
-                    </NuxtLink> -->
-                    <i>{{ props.book.pqTitle }}</i>
+                    </NuxtLink>
+                    <!-- <i>{{ props.book.pqTitle }}</i> -->
                 </p>
 
                 <p class="book-card-info">Published: {{ edtf }}</p>
@@ -23,8 +23,10 @@
                 <p class="book-card-info" v-if="props.book.ppPublisher">Printed by: {{ props.book.ppPublisher }}</p>
 
                 <p class="book-card-info">
-                    <!-- <NuxtLink :to="book_link">{{ n_chars }}</NuxtLink> -->
-                    <i>{{ n_chars }}</i>
+                    <NuxtLink :to="{ name=bookLink, params: { book: book }}">
+                        <i>{{ n_chars }}</i>
+                    </NuxtLink>
+                    <!-- <i>{{ n_chars }}</i> -->
                 </p>
             </v-col>
         </v-row>
@@ -44,7 +46,7 @@
     });
 
     // Computed
-    const book_link = computed(() => {
+    const bookLink = computed(() => {
 
         return {
 
