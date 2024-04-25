@@ -73,9 +73,6 @@ var characters = reactive([]);
 // Computed
 const booksCount = computed(() => {
 
-    console.log("In booksCount computed");
-    console.log(`Returning ${all_books.value.length}`);
-
     return all_books.value.length;
 });
 const numPages = computed(() => {
