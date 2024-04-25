@@ -1,11 +1,9 @@
 <template>
-    <v-button :href="href">
-        <v-icon icon="code-slash" aria-hidden="true" class="mr-2" />Download JSON
-    </v-button>
+    <v-btn :href="href">Download JSON</v-btn>
 </template>
 
 <script setup>
 
-defineProps({ href: String });
+    defineProps({ href: String });
 
 </script>
