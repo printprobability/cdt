@@ -1,7 +1,7 @@
 <template>
 
     <div>
-        <InterfaceList title="Search books" v-model="page" :total_rows="books_count" :page_size="page_size">
+        <InterfaceList title="Search books" v-model="page" :total_rows="booksCount" :page_size="page_size">
 
             <template #intro>
                 <p style="margin-top: 1em; margin-bottom: 1em;">{{ $siteConfig.browsecopy.books }}</p>
@@ -71,41 +71,27 @@ const { $siteConfig } = useNuxtApp();
 var characters = reactive([]);
 
 // Computed
-const books_count = computed(() => {
+const booksCount = computed(() => {
+
+    console.log("In booksCount computed");
+    console.log(`Returning ${all_books.value.length}`);
 
     return all_books.value.length;
 });
 const numPages = computed(() => {
 
-    console.log(`all_books.value.length: ${all_books.value.length}`);
-    console.log(`page_size.value: ${page_size.value}`);
-
-    return ( 0 === all_books.value.length % page_size.value ) ? 
-        all_books.value.length / page_size.value : (all_books.value.length / page_size.value) + 1;
+    return Math.ceil(all_books.value.length / page_size.value);
 });
 const paginationBooks = computed(() => {
 
     const start = (page.value - 1) * page_size.value;
     const end = start + page_size.value;
-    console.log(`start: ${start}`);
-    console.log(`end: ${end}`);
-    console.log(`books.value.slice(...): ${books.value.slice(start, end)}`);
 
-    return books.value.slice(start, end);
-});
-const query = computed(() => {
-
-    return [{
-        pqTitle: { $regex: new RegExp(( "" === form.title ) ? ".+" : form.title, "i") },
-        ppPublisher: { $regex: new RegExp(( "" === form.printer ) ? ".+" : form.printer, "i") },
-        pqYearEarly: { $gte: form.year_min },
-        pqYearLate: { $lte: form.year_max }
-    }];
+    return all_books.value.slice(start, end);
 });
 
 // Async data
 ({ data: characters } = await useAsyncData("myCharacters", () => queryContent("characters")
-    // .where({ book: props.book.id })
     .only([])
     .find()
 ));
@@ -127,7 +113,6 @@ var refreshFilteredBooks, refreshAllBooks;
             pqYearEarly: { $gte: form.year_min },
             pqYearLate: { $lte: form.year_max }
         }]
-        // $and: query
     })
     .limit(page_size)
     .skip((page - 1) * page_size)
@@ -136,7 +121,6 @@ var refreshFilteredBooks, refreshAllBooks;
 
 ({ data: all_books, refresh: refreshAllBooks } = await useAsyncData("bookIndex_allbooks", () => queryContent("books")
     .only([])
-    //.where({ $and: query })
     .where({ $and: [{
             pqTitle: { $regex: new RegExp(form.title, "i") },
             ppPublisher: { $regex: new RegExp(form.printer, "i") },
@@ -167,7 +151,7 @@ function refreshData() {
 // Watchers
 watch(form, (p_newValue, p_oldValue) => {
 
-    page = 1;
+    page.value = 1;
     refreshData();
 });
 watch(page, (p_newValue, p_oldValue) => {
@@ -175,6 +159,8 @@ watch(page, (p_newValue, p_oldValue) => {
     refreshData();
 });
 watch(date, (p_newValue, p_oldValue) => {
+
+    console.log("In date watch");
 
     // _.debounce(() => {
 
