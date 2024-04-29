@@ -1,5 +1,5 @@
 <template>
-    <v-btn :href="href">Download JSON</v-btn>
+    <v-btn color="#808080" :href="href">Download JSON</v-btn>
 </template>
 
 <script setup>
