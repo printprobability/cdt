@@ -12,7 +12,7 @@
 
             <v-col cols="7" style="padding-right: 1em;">
                 <p class="book-card-info">
-                    <NuxtLink :to="{ name=bookLink, params: { book: book }}">
+                    <NuxtLink :to="bookLink">
                         <i>{{ props.book.pqTitle }}</i>
                     </NuxtLink>
                     <!-- <i>{{ props.book.pqTitle }}</i> -->
@@ -23,7 +23,7 @@
                 <p class="book-card-info" v-if="props.book.ppPublisher">Printed by: {{ props.book.ppPublisher }}</p>
 
                 <p class="book-card-info">
-                    <NuxtLink :to="{ name=bookLink, params: { book: book }}">
+                    <NuxtLink :to="bookLink">
                         <i>{{ n_chars }}</i>
                     </NuxtLink>
                     <!-- <i>{{ n_chars }}</i> -->
