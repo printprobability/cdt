@@ -50,7 +50,7 @@ export default defineNuxtPlugin(() => {
                         image: "/img/i.jpg",
                         text: "Search thousands of characters by glyph and damage types",
                         title: "Browse by character",
-                        to: { name: "" }
+                        to: { name: "characters" }
                     },
 
                     /*{
