@@ -4,13 +4,13 @@
 
         <!-- Site title and subtitle -->
         <header class="text-center my-5">
-            <h1 class="text-h2">{{ $siteConfig.maintitle }}</h1>
-            <h1 class="text-h1">{{ $siteConfig.subtitle }}</h1>
+            <h1 class="dldt-text-h2">{{ $siteConfig.maintitle }}</h1>
+            <h1 class="dldt-text-h1">{{ $siteConfig.subtitle }}</h1>
             <v-img :src="$siteConfig.fleuron.image" class="my-3" height="70" :alt="$siteConfig.fleuron.alt"></v-img>
-            <p class="text-h3">{{ $siteConfig.abstract }}</p>
+            <p class="dldt-text-h3">{{ $siteConfig.abstract }}</p>
         </header>
 
-        <p class="text-h3 text-center">Get started:</p>
+        <p class="dldt-text-h3 text-center">Get started:</p>
 
         <!-- Ways of browsing the site's contents and About -->
         <v-row v-for="pair in paired_boxes.pairs" :key="pair.id" class="d-flex mb-2">
