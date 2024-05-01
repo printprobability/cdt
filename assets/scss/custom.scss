@@ -74,9 +74,25 @@ $primary: #b00;
 
 /* DLDT-specific */
 
-.text-h1,
-.text-h2
- {
+.dldt-text-h1 {
+
+    color: $headings-color;
+    font-family: $headings-font-family !important;
+    font-size: $display2-size;
+}
+
+[id^="hoverCard-"] {
+    
+    display: none;
+}
+
+[id^="hoverParent-"]:hover > [id^="hoverCard-"] {
+    margin-left: 10px;
+    display: block !important;
+  }
+
+.text-h2 {
+
     color: $headings-color;
     font-family: $headings-font-family !important;
 }
