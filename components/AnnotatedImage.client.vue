@@ -62,7 +62,7 @@
     onMounted(() => {
 
         if ( process.client ) {
-            OpenSeadragon(this.options);
+            OpenSeadragon(options);
         }
     });
 </script>
