@@ -66,10 +66,9 @@
 
 <script setup>
 
-    useHead({ titleTemplate: `Character: ${character.label} - %s`});
-
     const route = useRoute();
 
+    // Async data
     const { data: character } = await useAsyncData("myCharacters", () => queryContent("characters", route.params.id).find());
 
     const { data: book } = await useAsyncData("myBooks", () => queryContent("books", character.book).find());
@@ -78,4 +77,7 @@
         .where({ characters: { $contains: route.params.id } })
         .find()
     );
+
+    // Head
+    useHead({ titleTemplate: `Character: ${character.label} - %s`});
 </script>

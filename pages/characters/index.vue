@@ -1,18 +1,20 @@
 <template>
-    <InterfaceList v-model="page" :page_size="page_size" :total_rows="characters_count" title="Browse Characters">
+    <InterfaceList title="Browse Characters" v-model="page" :total_rows="charactersCount" :page_size="page_size">
 
         <template #intro>
             <p>{{ $siteConfig.browsecopy.characters }}</p>
         </template>
 
         <template #filter>
-            <!-- <MenusCharacterSelect v-model="form.selected_character_class" /> -->
-            <MenusBookSelect v-model="form.book" />
+            <MenusCharacterSelect @updateCharacterClass="setSelectedCharacterClass"/>
+            <MenusBookSelect @updateBookSelection="setBook" />
         </template>
 
         <template #results>
             <div class="d-flex flex-wrap">
-                <CharacterImage v-for="character in characters" :key="character.id" :character="character" />
+                <CharacterImage v-for="character in characters"
+                    :character="character"    
+                    :key="character.id"/>
             </div>
         </template>
 
@@ -30,45 +32,79 @@
 
     // Data
     var characters = ref([]);
-    var filtered_characters = ref([]);
-    const form = reactive({
+    var filteredCharacters = ref([]);
+    const form = ref({
 
-        selected_character_class: "any",
-        book: "any"
+        book: "any",
+        selectedCharacterClass: "any"
     });
     var page = ref(1);
     var page_size = ref(27);
 
-    const query_array = computed(() => {
+    const queryArray = computed(() => {
         
         // Build query conditionally
-        var query_array = [];
-        if ( "any" !== form.selected_character_class ) {
+        var queryArray = [];
+        if ( "any" !== form.selectedCharacterClass ) {
 
-            query_array.push({ characterClass: { $eq: form.selected_character_class } });
+            queryArray.push({ characterClass: form.selectedCharacterClass });
         }
         if ( "any" !== form.book ) {
             
-            query_array.push({ book: { $eq: form.book } });
+            queryArray.push({ book: form.book });
         }
 
-        return query_array;
+        return queryArray;
     });    
 
     var refreshCharacters, refreshFilteredCharacters;
     ({ data: characters, refresh: refreshCharacters } = await useAsyncData("myCharacters", () => queryContent("characters")
-        .where({ $and: query_array })
+        .where({ $and: () => {
+        
+            // Build query conditionally
+            var queryArray = [];
+            if ( "any" !== form.selectedCharacterClass ) {
+
+                queryArray.push({ characterClass: form.selectedCharacterClass });
+            }
+            if ( "any" !== form.book ) {
+                
+                queryArray.push({ book: form.book });
+            }
+
+            return queryArray;
+        }})
         .only(["id", "label", "image", "characterClass"])
-        .sortBy("characterClass")
+        .sort({ "characterClass": 1 })
         .limit(page_size)
         .skip((page - 1) * page_size)
         .find()
     ));
-    ({ data: filtered_characters, refresh: refreshFilteredCharacters } = await useAsyncData("filteredCharacters", () => queryContent("characters")
-        .where({ $and: query_array })
+    ({ data: filteredCharacters, refresh: refreshFilteredCharacters } = await useAsyncData("filteredCharacters", () => queryContent("characters")
+        .where({ $and: () => {
+        
+            // Build query conditionally
+            var queryArray = [];
+            if ( "any" !== form.selectedCharacterClass ) {
+
+                queryArray.push({ characterClass: form.selectedCharacterClass });
+            }
+            if ( "any" !== form.book ) {
+                
+                queryArray.push({ book: form.book });
+            }
+
+            return queryArray;
+        }})
         .only([])
         .find()
     ));
+    const filtered_characters = await this.$content("characters")
+      .where({ $and: this.query_array })
+      .only([])
+      .fetch();
+    this.characters_count = filtered_characters.length;
+
 
     // Methods
     function refreshData() {
@@ -76,11 +112,19 @@
         refreshCharacters();
         refreshFilteredCharacters();
     }
+    function setBook(p_newBook) {
+
+        form.value.book = p_newBook;
+    }
+    function setSelectedCharacterClass(p_newCharacterClassname) {
+
+        form.value.selectedCharacterClass = p_newCharacterClassname;
+    }
 
     // Computed
-    const characters_count = computed(() => {
+    const charactersCount = computed(() => {
 
-        return filtered_characters.length;
+        return filteredCharacters.length;
     });
 
     // Watchers
