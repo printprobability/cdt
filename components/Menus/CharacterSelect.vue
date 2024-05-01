@@ -1,87 +1,65 @@
 <template>
 
     <div>
-        <v-label
-            id="input-character-class-group"
-            text="Character class"></v-label>
+        {{ selectLabel }}
 
         <v-select
-            :items="all_character_classes"
-            debounce="500"
-            id="input-character-class"
-            label="Character class"
-            @input="$emit('input', $event)"></v-select>            
+            :items="allCharacterClasses"
+            v-model="selectedOption"
+            item-title="name"
+            item-value="id"
+            @update:modelValue="$emit('updateCharacterClass', selectedOption.name)"
+            return-object></v-select>
     </div>
     
 </template>
   
 <script setup>
 
-    import { reactive } from "vue";
+    import { defineEmits, reactive, ref } from "vue";
 
     // Data
-    const ANY_CHAR = reactive({
+    const ANY_CHAR = ref({
         
         text: "any",
         value: "any"
     });
-    const GROUP_DICT = reactive({
+    const selectLabel = ref("Character class");
+    const GROUP_DICT = {
 
         cl: "Lowercase",
         cu: "Uppercase",
         nu: "Number",
         pu: "Puncutation" // Currently unused    
-    });
+    };
+    var selectedOption = ref({ id: "a", name: "a_lc" });
 
     // Emits
-    const emit = defineEmits(["input"]);
+    const emit = defineEmits(["updateCharacterClass"]);
 
     // Props
     const props = defineProps({
 
         allow_any: { default: true, type: Boolean },
         value: { default: "any", type: String },
-        where: {}
+        where: { default: {}, type: Object }
     });
 
     // Async data
-    const { data: fetched_character_classes, refresh: refreshFetchedCharacterClasses } = await useAsyncData("fetched_character_classes", () => queryContent("classes")
+    const { data: fetchedCharacterClasses } = await useAsyncData("fetched_character_classes", () => queryContent("classes")
         .only(["classname", "label", "group"])
-        .where(where)
-        .sortBy("label")
+        .where(props.where)
+        .sort({ "label": 1 })
         .find()
     );
-
-    // Group character classes by overarching groups
-    const { data: all_character_classes, refresh: refreshAllCharacterClasses } = useAsyncData("allCharacterClasses", () => reactive(Object.entries(GROUP_DICT).map((group) => {
+    
+    const allCharacterClasses = fetchedCharacterClasses.value.map(c => {
 
         return {
 
-            label: group[1],
-            options: fetched_character_classes
-                .filter((c) => c.group == group[0])
-                .map((c) => {
-                    return {
-
-                        text: c.label,
-                        value: c.classname
-                    };
-                }),
-        };
-    })));
-
-    // Watchers
-    watch(all_character_classes, (p_newValue, p_oldValue) => {
-
-        // Only occurs one time, once 'all_character_classes' is fetched
-        if ( !!all_character_classes ) {
-        
-            // Add all characters option to the character selection list
-            if ( props.allow_any ) {
-
-                all_character_classes.unshift(ANY_CHAR);
-            }
+            id: c.label,
+            name: c.classname
         }
-    }, { once: true });
+    });
 
 </script>

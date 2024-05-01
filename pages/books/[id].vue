@@ -2,88 +2,106 @@
 
     <v-container>
 
-        <h1>{{ props.book.pqTitle }}</h1>
+        <h1 class="dldt-text-h1">{{ book[0].pqTitle }}</h1>
 
-        <v-card flat>
+        <v-card border="sm" flat>
+            <v-card-text>
+                <p>
+                    Identifiers:
+                    <v-table>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    ESTC:&nbsp; 
+                                    <span v-if="book[0].estc">{{ book[0].estc }}</span>
+                                    <span v-else>{{ notAvailableString }}</span>
+                                </td>
+                                <td>
+                                    VID:&nbsp; 
+                                    <span v-if="book[0].vid">{{ book[0].vid }}</span>
+                                    <span v-else>{{ notAvailableString }}</span>
+                                </td>
+                                <td>
+                                    EEBO:&nbsp; 
+                                    <span v-if="book[0].eebo">{{ book[0].eebo }}</span>
+                                    <span v-else>{{ notAvailableString }}</span>
+                                </td>
+                                <td>
+                                    TCP:&nbsp; 
+                                    <span v-if="book[0].tcp">{{ book[0].tcp }}</span>
+                                    <span v-else>{{ notAvailableString }}</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </v-table>
+                </p>
 
-            <p>
-                Identifiers:
-                <v-table>
-                    <tbody>
-                        <tr>
-                            <td v-if="props.book.estc">
-                                ESTC: {{ props.book.estc }}
-                            </td>
-                            <td v-if="props.book.vid">
-                                VID: {{ props.book.vid }}
-                            </td>
-                            <td v-if="props.book.eebo">
-                                EEBO: {{ props.book.eebo }}
-                            </td>
-                            <td v-if="props.book.tcp">
-                                TCP: {{ props.book.tcp }}
-                            </td>
-                        </tr>
-                    </tbody>
-                </v-table>
-            </p>
-
-            <p v-if="props.book.pqAuthor">Author: {{ props.book.pqAuthor }}</p>
-            <p v-if="props.book.colloqPrinter">Printer: {{ props.book.colloqPrinter }}</p>
-            <p v-if="props.book.ppNotes">Notes: {{ props.book.ppNotes }}</p>
-
+                <p >Author:&nbsp;
+                    <span v-if="book[0].pqAuthor">{{ book[0].pqAuthor }}</span>
+                    <span v-else>{{ notAvailableString }}</span>
+                </p>
+                <p >Printer:&nbsp;
+                    <span v-if="book[0].colloqPrinter">{{ book[0].colloqPrinter }}</span>
+                    <span v-else>{{ notAvailableString }}</span>
+                </p>
+                <p >Notes:&nbsp;
+                    <span v-if="book[0].ppNotes">{{ book[0].ppNotes }}</span>
+                    <span v-else>{{ notAvailableString }}</span>
+                </p>
+            </v-card-text>
         </v-card>
 
         <h2>Noteworthy characters</h2>
 
-        <v-card flat>
+        <v-card border="sm" flat>
 
-            <v-tabs>
-
-                <v-tab active>
-                    Group by page
-                    <v-card>
-                        <v-card-text>
-
-                            <v-pagination :length="pages_count" v-model="index"></v-pagination>
-
-                            <VMedia :title="`p. ${current_page.sequence}`">
-                                <template #image>
-                                    <PageImage :page="current_page" />
-                                </template>
-                                <template #content>
-                                    <div class="d-flex flex-wrap">
-                                        <CharacterImage v-for="character in pageCharacters(current_page.id)"
-                                            :key="character.id" :character="character" />
-                                    </div>
-                                </template>
-                            </VMedia>
-
-                            <v-pagination :length="pages_count" v-model="index"></v-pagination>
-
-                        </v-card-text>
-                    </v-card>
-                </v-tab>
-
-                <v-tab>
-                    Group by character class
-                    <v-card-text>
-                        <!-- <MenusCharacterSelect v-model="selected_character_class" :allow_any="false" :where="class_filter"  /> -->
-                        <!-- <div class="d-flex flex-wrap">
-                            <CharacterImage v-for="character in class_characters(selected_character_class)"
-                                :key="character.id" :character="character" />
-                        </div> -->
-                    </v-card-text>
-                </v-tab>
-
-                <v-tab>
-                    JSON
-                    <InterfaceJSONButton :href="`/books/${props.book.id}.json`" />
-                </v-tab>
+            <v-tabs v-model="tab">
+                <v-tab value="one">Group by page</v-tab>
+                <v-tab value="two">Group by character class</v-tab>
+                <v-tab value="three">JSON</v-tab>
             </v-tabs>
+                    
+            <v-card-text>
+                <v-window v-model="tab">
+                    <v-window-item class="noteworthy_tab" :transition="false" value="one">
 
+                        <v-pagination :length="pagesCount" v-model="index"></v-pagination>
+
+                        <VMedia :title="`p. ${currentPage.sequence}`">
+                            <template #image>
+                                <PageImage :page="currentPage" />
+                            </template>
+                            <template #content>
+                                <div class="d-flex flex-wrap">
+                                    <CharacterImage v-for="character in pageCharacters(currentPage.id)"
+                                        :key="character.id" :character="character" />
+                                </div>
+                            </template>
+                        </VMedia>
+
+                        <v-pagination :length="pagesCount" v-model="index"></v-pagination>
+
+                    </v-window-item>
+
+                    <v-window-item class="noteworthy_tab" :transition="false" value="two">
+
+                        <MenusCharacterSelect
+                            :allow_any="false"
+                            :where="classFilter"
+                            @updateCharacterClass="setSelectedCharacterClass"/>
+                        <div class="d-flex flex-wrap">
+                            <CharacterImage v-for="character in classCharacters"
+                                :key="character.id" :character="character"/>
+                        </div>
+                    </v-window-item>
+            
+                    <v-window-item class="noteworthy_tab" :transition="false" value="three">
+                        <!-- <InterfaceJSONButton :href="`/books/${book[0].id}.json`" /> -->
+                        <pre>{{ formattedBookJSON }}</pre>
+                    </v-window-item>
+                </v-window>
+            </v-card-text>
         </v-card>
-
     </v-container>
 
 </template>
@@ -95,58 +113,88 @@
 
     const route = useRoute();
 
-    // Props
-    const props = defineProps({
-        book: Object
-    });
-
     // Data
-    var book = reactive({});
-    var characters = reactive([{ characterClass: ""}]);
-    var index = ref(1);
-    var group_type = ref("page");
+    const index = ref(1);
+    const notAvailableString = ref("N/A");
+    const pages = reactive([]);
+    const selectedCharacterClass = ref("a_lc");
+    const tab = ref(null);
 
-    // Methods
-    
-    // Async loaded data
-    // ({ data: book } = await useAsyncData("myBooks", () => queryContent("books", route.params.id).find()));
-    ({ data: characters } = await useAsyncData("myCharacters", () => queryContent("characters")
+    // Async data
+    const { data: book } = await useAsyncData("myBooks", () => queryContent("books", route.params.id).find());
+    const { data: characters } = await useAsyncData("myCharacters", () => queryContent("characters")
         .where({ book: route.params.id })
         .only(["id", "page", "label", "image", "characterClass"])
-        .sortBy("page.sequence")
+        .sort({ "page.sequence": 1, $numeric: true })
         .find()
-    ));      
+    );
 
+    // Get list of uniquely ID'd page objects
+    const allPages = characters.value.map((c) => c.page);
+    pages.value = ( characters.value.length > 0 ) ? _.sortedUniqBy(allPages, (p) => p.id) : [];
+    
     // Head
-    useHead({ titleTemplate: `Book: ${props.book.pqTitle} - %s` });
+    useHead({ titleTemplate: `Book: ${book.value[0].pqTitle} - %s` });    
 
     // Methods
     function pageCharacters(p_page_id) {
+
+        console.log("In pageCharacters");
         
-        return characters.filter((c) => c.page.id == p_page_id);
+        return characters.value.filter((c) => c.page.id === p_page_id);
     }
-    function class_characters(p_class_id) {
-        
-        return characters.filter((c) => c.characterClass == p_class_id);
+    function setSelectedCharacterClass(p_newCharacterClassname) {
+
+        selectedCharacterClass.value = p_newCharacterClassname;
     }
 
     // Computed
-    const class_filter = computed(() => {
-            
-        return { classname: { $in: _.uniq(characters.map((c) => c.characterClass)) } };
+    const classCharacters = computed(() => {
+     
+        return characters.value.filter((c) => c.characterClass === selectedCharacterClass.value);
+    });
+    const classFilter = computed(() => {
+
+        return { classname: { $in: _.uniq(characters.value.map((c) => c.characterClass)) } };
     });    
-    const current_page = computed(() => pages[index - 1]);
-    const pages = computed(() => {
+    const currentPage = computed(() => {
 
-        const all_pages = characters.map((c) => c.page);
-
-        return ( characters.length > 0 ) ? _.sortedUniqBy(all_pages, (p) => p.id) : [];
+        return ( pages.value.length > 0 ) ? pages.value[index.value - 1] : {};
     });
-    const pages_count = computed(() => pages.length);
-    const selected_character_class = computed(() => {
+    const formattedBookJSON = computed(() => {
 
-        return characters.value[0].characterClass;
+        return JSON.stringify(book.value[0], customReplacer, 4);
     });
+    const pagesCount = computed(() => pages.value.length);
+
+    // Methods
+
+    function customReplacer(key, value) {
+
+        // List of keys to ignore (e.g., 'privateProperty1', 'privateProperty2')
+        const keysToIgnore = [
+            "_path",
+            "_dir",
+            "_draft",
+            "_partial",
+            "_locale",
+            "_id",
+            "_type",
+            "title",
+            "_source",
+            "_file",
+            "_extension"
+        ];
+
+        // Omit the key from the output
+        if ( keysToIgnore.includes(key) ) {
+
+            return undefined; 
+        }
+
+        // Include other keys
+        return value; 
+    }
 
 </script>
   
@@ -158,4 +206,15 @@
         /* Hide the numbered display buttons */
         display: none;
     }
+
+    .noteworthy_tab {
+
+        transition: none !important;
+        transform: none !important;
+    }
+
+    table, td {
+
+        border: 1px solid lightgray;
+    }    
 </style>

@@ -1,55 +1,50 @@
 <template>
 
     <div>
+        {{ selectLabel }}
+
         <v-select
-            :options="all_books"
-            :value="props.value"        
-            id="input-character-book"
-            debounce="500"
-            label="Book"
-            @input="$emit('input', $event)"/>
+            :items="allBooks"
+            v-model="selectedOption"
+            item-title="text"
+            item-value="value"
+            @update:modelValue="$emit('updateBookSelection', selectedOption.name)"
+            return-object></v-select>
     </div>
 
 </template>
   
 <script setup>
 
-    import { reactive } from "vue";
+    import { reactive, ref } from "vue";
 
-    // Props
-    const props = defineProps({
-
-        value: { default: "any", type: String }
-    });
+    // Emits
+    const emit = defineEmits(["updateBookSelection"]);    
 
     // Data
-    const all_books = reactive([]);
     const ANY_BOOK = reactive({
         
         text: "any",
         value: "any"
     });
-    const { data: fetched_books, refresh: refreshFetchedBooks } = await useAsyncData("fetchedBooks", () => queryContent("books")
-        .sortBy("pqTitle")
+    const selectLabel = ref("Book");
+    var selectedOption = ref({ text: "", value: "" });
+
+    // Async data
+    const { data: fetchedBooks } = await useAsyncData("fetchedBooks", () => queryContent("books")
+        .sort({ "pqTitle": 1 })
         .only(["id", "label"])
         .find()
     );
 
-    
-
-    // Methods
-    function refreshData() {
-
-        refreshFetchedBooks();
-        all_books = fetched_books.map((book) => {
-
-            return {
-                
-                text: book.label,
-                value: book.id
-            };
-        });
-        all_books.unshift(ANY_BOOK);
-    }
+    const allBooks = fetchedBooks.value.map(book => {
+        
+        return {
+        
+            text: book.label,
+            value: book.id
+        };
+    });
+    allBooks.unshift(ANY_BOOK);
 
 </script>
