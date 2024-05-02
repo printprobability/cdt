@@ -8,7 +8,7 @@
             v-model="selectedOption"
             item-title="text"
             item-value="value"
-            @update:modelValue="$emit('updateBookSelection', selectedOption.name)"
+            @update:modelValue="$emit('updateBookSelection', selectedOption.value)"
             return-object></v-select>
     </div>
 
@@ -28,7 +28,7 @@
         value: "any"
     });
     const selectLabel = ref("Book");
-    var selectedOption = ref({ text: "", value: "" });
+    
 
     // Async data
     const { data: fetchedBooks } = await useAsyncData("fetchedBooks", () => queryContent("books")
@@ -45,6 +45,13 @@
             value: book.id
         };
     });
-    allBooks.unshift(ANY_BOOK);
+    // allBooks.unshift(ANY_BOOK);
+
+    // Initial selected option is the first book
+    var selectedOption = reactive({
+
+        text: allBooks[0].text,
+        value: allBooks[0].value
+    });
 
 </script>
