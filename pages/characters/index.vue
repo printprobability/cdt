@@ -6,16 +6,26 @@
         </template>
 
         <template #filter>
-            <MenusCharacterSelect @updateCharacterClass="setSelectedCharacterClass"/>
+            <MenusCharacterSelect
+                :allow_any="true"
+                :where="classFilter"
+                @updateCharacterClass="setSelectedCharacterClass"/>
             <MenusBookSelect @updateBookSelection="setBook" />
         </template>
 
         <template #results>
-            <div class="d-flex flex-wrap">
-                <CharacterImage v-for="character in characters"
-                    :character="character"    
-                    :key="character.id"/>
-            </div>
+            
+            <v-pagination :length="numPages" v-model="page"></v-pagination>
+            
+            <v-list v-if="characters || characters.length > 0">
+                <div class="d-flex flex-wrap">
+                    <v-list-item v-for="character in paginationCharacters" :key="character.id">
+                        <CharacterImage :character="character" :key="character.id"/>
+                    </v-list-item>
+                </div>
+            </v-list>
+
+            <v-pagination :length="numPages" v-model="page"></v-pagination>
         </template>
 
     </InterfaceList>
@@ -27,35 +37,26 @@
     import { reactive, ref, watch } from "vue";
 
     // Head
-
     useHead({ titleTemplate: "Character Search - %s"}); 
 
     // Data
     var characters = ref([]);
-    var filteredCharacters = ref([]);
-    const form = ref({
+    const form = reactive({
 
-        book: "any",
+        book: {},
         selectedCharacterClass: "any"
     });
-    var page = ref(1);
-    var page_size = ref(27);
+    const page = ref(1);
+    const page_size = ref(27);   
 
-    const queryArray = computed(() => {
-        
-        // Build query conditionally
-        var queryArray = [];
-        if ( "any" !== form.selectedCharacterClass ) {
-
-            queryArray.push({ characterClass: form.selectedCharacterClass });
-        }
-        if ( "any" !== form.book ) {
-            
-            queryArray.push({ book: form.book });
-        }
-
-        return queryArray;
-    });    
+    // Start by looking at characters in the first book
+    const { data: fetchedBooks } = await useAsyncData("fetchedBooks", () => queryContent("books")
+        .sort({ "pqTitle": 1 })
+        .only(["id", "label"])
+        .find()
+    );
+    form.book = fetchedBooks.value[0];
+    // console.log(`form.book: ${JSON.stringify(form.book)}`);
 
     var refreshCharacters, refreshFilteredCharacters;
     ({ data: characters, refresh: refreshCharacters } = await useAsyncData("myCharacters", () => queryContent("characters")
@@ -67,75 +68,80 @@
 
                 queryArray.push({ characterClass: form.selectedCharacterClass });
             }
-            if ( "any" !== form.book ) {
+            // if ( "any" !== form.book ) {
                 
-                queryArray.push({ book: form.book });
-            }
+            //     queryArray.push({ book: form.book });
+            // }
+            queryArray.push({ book: form.book.id });
 
             return queryArray;
         }})
-        .only(["id", "label", "image", "characterClass"])
+        .only(["id", "label", "image", "characterClass", "book"])
+        // .skip((page.value - 1) * page_size.value)
+        // .limit(page_size.value)
         .sort({ "characterClass": 1 })
-        .limit(page_size)
-        .skip((page - 1) * page_size)
         .find()
     ));
-    ({ data: filteredCharacters, refresh: refreshFilteredCharacters } = await useAsyncData("filteredCharacters", () => queryContent("characters")
-        .where({ $and: () => {
-        
-            // Build query conditionally
-            var queryArray = [];
-            if ( "any" !== form.selectedCharacterClass ) {
+    if ( null == characters ) {
 
-                queryArray.push({ characterClass: form.selectedCharacterClass });
-            }
-            if ( "any" !== form.book ) {
-                
-                queryArray.push({ book: form.book });
-            }
+        characters.value = [];
+    } else {
 
-            return queryArray;
-        }})
-        .only([])
-        .find()
-    ));
-    const filtered_characters = await this.$content("characters")
-      .where({ $and: this.query_array })
-      .only([])
-      .fetch();
-    this.characters_count = filtered_characters.length;
+        form.selectedCharacterClass = characters.value[0].characterClass;
+    }
 
+    console.log(`Num characters: ${characters.value.length}`);
 
     // Methods
-    function refreshData() {
+    function setBook(p_newBookID) {
 
-        refreshCharacters();
-        refreshFilteredCharacters();
-    }
-    function setBook(p_newBook) {
+        console.log(`In setBook with ${p_newBookID}`);
 
-        form.value.book = p_newBook;
+        form.book = fetchedBooks.find(book => book.id === p_newBookID);
     }
     function setSelectedCharacterClass(p_newCharacterClassname) {
 
-        form.value.selectedCharacterClass = p_newCharacterClassname;
+        console.log(`In setSelectedCharacterClass with ${p_newCharacterClassname}`);
+
+        form.selectedCharacterClass = p_newCharacterClassname;
     }
 
     // Computed
     const charactersCount = computed(() => {
 
-        return filteredCharacters.length;
+        return characters.value.length;
+    });
+    const classFilter = computed(() => {
+
+        console.log(`In classFilter with characters: ${JSON.stringify(characters.value)}`);
+
+        return { classname: { $in: _.uniq(characters.value.map((c) => c.characterClass)) } };
+    });
+    const numPages = computed(() => {
+
+        return Math.ceil(characters.value.length / page_size.value);
+    });
+    const paginationCharacters = computed(() => {
+
+        const start = (page.value - 1) * page_size.value;
+        const end = start + page_size.value;
+
+        return characters.value.slice(start, end);
     });
 
     // Watchers
     watch(form, (p_newValue, p_oldValue) => {
 
-        page = 1;
-        refreshData();
+        console.log("form watch");
+
+        page.value = 1;
+        refreshCharacters();
     });
     watch(page, (p_newValue, p_oldValue) => {
 
-        refreshData();
+        console.log("page watch");
+
+        refreshCharacters();
     });
 
 </script>

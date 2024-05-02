@@ -45,14 +45,19 @@
         where: { default: {}, type: Object }
     });
 
+    console.log(`props.where: ${JSON.stringify(props.where)}`);
+
     // Async data
     const { data: fetchedCharacterClasses } = await useAsyncData("fetched_character_classes", () => queryContent("classes")
         .only(["classname", "label", "group"])
-        .where(props.where)
+        .where( ( props.allow_any ) ? {} : props.where)
         .sort({ "label": 1 })
         .find()
     );
-    
+    if ( allow_any ) {        
+        fetchedCharacterClasses.unshift({ classname: ANY_CHAR.value, label: ANY_CHAR.text });
+    }
+
     const allCharacterClasses = fetchedCharacterClasses.value.map(c => {
 
         return {
@@ -61,5 +66,7 @@
             name: c.classname
         }
     });
+    selectedOption.value.id = allCharacterClasses[0].id;
+    selectedOption.value.name = allCharacterClasses[0].name;
 
 </script>
