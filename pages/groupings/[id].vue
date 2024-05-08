@@ -82,7 +82,7 @@
 
     const characters = await useAsyncData("myCharacters", () => queryContent("characters")
         .where({ id: { $in: grouping.characters } })
-        .sortBy("book", "characterClass")
+        .sort({ book : 1, characterClass: 2 })
         .only(["id", "image", "label", "book", "characterClass"])
         .find()
     );
