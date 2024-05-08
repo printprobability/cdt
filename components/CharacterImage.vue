@@ -30,9 +30,9 @@
                             :id="props.character.id"
                             :alt="props.character.label"
                             :src="props.character.image.webUrl"
-                            height="90"
-                            @mouseover="hoverOver"
-                            @mouseleave="hover = false"></v-img>
+                            height="90"></v-img>
+                            <!-- @mouseover="hoverOver"
+                            @mouseleave="hover = false"></v-img> -->
                     </NuxtLink>                        
                     
                 </div>
@@ -44,8 +44,6 @@
 <script setup>
 
     import { reactive } from "vue";
-
-    console.log("CharacterImage setup");
 
     // Props
     const props = defineProps({
