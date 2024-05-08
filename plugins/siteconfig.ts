@@ -53,13 +53,6 @@ export default defineNuxtPlugin(() => {
                         to: { name: "characters" }
                     },
 
-                    /*{
-                        alt: "Ornate I character",
-                        image: "/img/i.jpg",
-                        text: "Search thousands of characters by glyph and damage types",
-                        title: "Browse by character",
-                        to: { name: "characters" }
-                    },
                     {
                         alt: "Ornate I character",
                         image: "/img/i.jpg",
@@ -67,7 +60,7 @@ export default defineNuxtPlugin(() => {
                         title: "Browse by curated groupings",
                         to: { name: "groupings" }
                     },
-                    {
+                    /*{
                         alt: "embellished capital S",
                         image: "/img/s.jpg",
                         text: "Learn about the motivation and methodology of the \"Dictionary\", meet the project team, and find associated publications and machine-readable data",
