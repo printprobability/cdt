@@ -87,6 +87,7 @@
 
                         <MenusCharacterSelect
                             :allow_any="false"
+                            :selectedCharacterFromParent="{ classname: selectedCharacterClass, label: selectedCharacterLabel }"
                             :where="classFilter"
                             @updateCharacterClass="setSelectedCharacterClass"/>
                         <div class="d-flex flex-wrap">
@@ -118,10 +119,12 @@
     const notAvailableString = ref("N/A");
     const pages = reactive([]);
     const selectedCharacterClass = ref("a_lc");
+    const selectedCharacterLabel = ref("a");
     const tab = ref(null);
 
     // Async data
     const { data: book } = await useAsyncData("myBooks", () => queryContent("books", route.params.id).find());
+    const { data: characterClasses } = await useAsyncData("myCharacterClasses", () => queryContent("classes").find());
     const { data: characters } = await useAsyncData("myCharacters", () => queryContent("characters")
         .where({ book: route.params.id })
         .only(["id", "page", "label", "image", "characterClass"])
@@ -138,14 +141,13 @@
 
     // Methods
     function pageCharacters(p_page_id) {
-
-        console.log("In pageCharacters");
         
         return characters.value.filter((c) => c.page.id === p_page_id);
     }
-    function setSelectedCharacterClass(p_newCharacterClassname) {
+    function setSelectedCharacterClass(p_newCharacterObject) {
 
-        selectedCharacterClass.value = p_newCharacterClassname;
+        selectedCharacterLabel.value = p_newCharacterObject.id;
+        selectedCharacterClass.value = p_newCharacterObject.name;
     }
 
     // Computed
