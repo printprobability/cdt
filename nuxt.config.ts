@@ -1,5 +1,5 @@
 // Imports
-import * as cdt_routes from "./assets/json/cdt_routes.json"
+// import * as cdt_routes from "./assets/json/cdt_routes.json"
 import { resolve } from "path";
 import vuetify, { transformAssetUrls } from "vite-plugin-vuetify";
 
@@ -27,6 +27,7 @@ export default defineNuxtConfig({
     
         // fullTextSearchFields: ["label", "notes"],
         // nestedProperties: ["page.sequence"]
+        nestedProperties: ["page.sequence", "image.buffer"],
         experimental: { search: true }
     },    
 
@@ -34,7 +35,7 @@ export default defineNuxtConfig({
 
     devtools: { enabled: true },
 
-    hooks: {
+    /* hooks: {
         
         async "nitro:config"(nitroConfig) {
 
@@ -54,7 +55,7 @@ export default defineNuxtConfig({
             // Add the characters, books, and groupings routes to the nitro config routes list
             nitroConfig.prerender.routes.push(...slugs);
         }
-    },    
+    },*/    
 
     // hooks: {
 
@@ -111,7 +112,7 @@ export default defineNuxtConfig({
 
     sourcemap: true,
 
-    ssr: true,
+    ssr: false,
 
     vite: {
 
