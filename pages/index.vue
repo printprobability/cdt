@@ -25,7 +25,7 @@
         </v-row>
 
         <!--  Data download -->
-        <!-- <v-row v-if="!!paired_boxes.final_row" class="d-flex align-self-center">
+        <v-row v-if="!!paired_boxes.final_row" class="d-flex align-self-center">
             <v-col cols="6">
                 <SplashBox
                     :alt="paired_boxes.final_row.alt"
@@ -34,7 +34,7 @@
                     :title="paired_boxes.final_row.title"
                     :to="paired_boxes.final_row.to"/>
             </v-col>
-        </v-row> -->
+        </v-row>
 
     </v-container>
     
