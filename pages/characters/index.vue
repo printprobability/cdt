@@ -1,4 +1,5 @@
 <template>
+
     <InterfaceList title="Browse Characters" v-model="page" :total_rows="charactersCount" :page_size="page_size">
 
         <template #intro>
@@ -10,6 +11,7 @@
                 :allow_any="true"
                 :where="classFilter"
                 @updateCharacterClass="setSelectedCharacterClass"/>
+                <!-- :selectedCharacterFromParent="{ classname: form.selectedCharacterClass, label: form.selectedCharacterLabel }" -->
             <MenusBookSelect @updateBookSelection="setBook" />
         </template>
 
@@ -37,17 +39,18 @@
     import { reactive, ref, watch } from "vue";
 
     // Head
-    useHead({ titleTemplate: "Character Search - %s"}); 
+    useHead({ titleTemplate: "Character Search - %s"});
 
     // Data
     var characters = ref([]);
     const form = reactive({
 
         book: {},
-        selectedCharacterClass: "any"
+        selectedCharacterClass: "any",
+        selectedCharacterLabel: "any"
     });
     const page = ref(1);
-    const page_size = ref(27);   
+    const page_size = ref(27);
 
     // Start by looking at characters in the first book
     const { data: fetchedBooks } = await useAsyncData("fetchedBooks", () => queryContent("books")
@@ -56,92 +59,107 @@
         .find()
     );
     form.book = fetchedBooks.value[0];
-    // console.log(`form.book: ${JSON.stringify(form.book)}`);
 
-    var refreshCharacters, refreshFilteredCharacters;
+    // const { data: characterClasses } = await useAsyncData("myCharacterClasses", () => queryContent("classes").find());
+
+    // const { data: allBookCharacters } = await useAsyncData("allBookCharacters", () => queryContent("characters")
+    //     .where({ book: form.book.id })
+    //     .only(["id", "label", "image", "characterClass", "book"])
+    //     .sort({ "characterClass": 1 })
+    //     .find());
+    // setSelectedCharacterClass({ id: form.selectedCharacterLabel, name: form.selectedCharacterClass });       
+
+    var refreshCharacters;
     ({ data: characters, refresh: refreshCharacters } = await useAsyncData("myCharacters", () => queryContent("characters")
-        .where({ $and: () => {
+        // .where(() => {
+
+        //     const query = { book: form.book.id };
+        //     if ( "any" !== form.selectedCharacterClass ) {
+
+        //         return { $and: [query, { characterClass: form.selectedCharacterClass }] };
+        //     }
+        //     return query;
+        // })            
+        // .where({ $match: () => {
         
-            // Build query conditionally
-            var queryArray = [];
-            if ( "any" !== form.selectedCharacterClass ) {
+        //     // Build query conditionally
+        //     const queryDict = { book: form.book.id };
+        //     if ( "any" !== form.selectedCharacterClass ) {
 
-                queryArray.push({ characterClass: form.selectedCharacterClass });
-            }
-            // if ( "any" !== form.book ) {
-                
-            //     queryArray.push({ book: form.book });
-            // }
-            queryArray.push({ book: form.book.id });
+        //         queryDict.characterClass = form.selectedCharacterClass;
+        //     }
 
-            return queryArray;
-        }})
+        //     console.log(`queryDict: ${JSON.stringify(queryDict)}`);
+
+        //     return queryDict;
+        // }})
+        // .where(( "any" === form.selectedCharacterClass ) ? 
+        //     { book: form.book.id } : { book: form.book.id, characterClass: form.selectedCharacterClass })
+        // .where({ book: form.book.id })
+        // .where(( "any" !== form.selectedCharacterClass ) ? { characterClass: form.selectedCharacterClass } : {})
         .only(["id", "label", "image", "characterClass", "book"])
         // .skip((page.value - 1) * page_size.value)
         // .limit(page_size.value)
         .sort({ "characterClass": 1 })
         .find()
     ));
+
     if ( null == characters ) {
 
         characters.value = [];
-    } else {
-
-        form.selectedCharacterClass = characters.value[0].characterClass;
     }
 
-    console.log(`Num characters: ${characters.value.length}`);
+    var filteredCharacters = ref(characters.value.filter(x => x.book === form.book.id));
 
     // Methods
     function setBook(p_newBookID) {
 
-        console.log(`In setBook with ${p_newBookID}`);
-
-        form.book = fetchedBooks.find(book => book.id === p_newBookID);
+        form.book = fetchedBooks.value.find(book => book.id === p_newBookID);
     }
-    function setSelectedCharacterClass(p_newCharacterClassname) {
+    function setSelectedCharacterClass(p_newCharacterObject) {
 
-        console.log(`In setSelectedCharacterClass with ${p_newCharacterClassname}`);
-
-        form.selectedCharacterClass = p_newCharacterClassname;
+        form.selectedCharacterClass = p_newCharacterObject.name;
+        form.selectedCharacterLabel = p_newCharacterObject.id;
     }
 
     // Computed
     const charactersCount = computed(() => {
 
-        return characters.value.length;
+        return filteredCharacters.value.length;
     });
     const classFilter = computed(() => {
-
-        console.log(`In classFilter with characters: ${JSON.stringify(characters.value)}`);
 
         return { classname: { $in: _.uniq(characters.value.map((c) => c.characterClass)) } };
     });
     const numPages = computed(() => {
 
-        return Math.ceil(characters.value.length / page_size.value);
+        return Math.ceil(filteredCharacters.value.length / page_size.value);
     });
     const paginationCharacters = computed(() => {
 
         const start = (page.value - 1) * page_size.value;
         const end = start + page_size.value;
 
-        return characters.value.slice(start, end);
+        return filteredCharacters.value.slice(start, end);
     });
 
     // Watchers
     watch(form, (p_newValue, p_oldValue) => {
 
-        console.log("form watch");
-
         page.value = 1;
-        refreshCharacters();
+
+        filteredCharacters.value = characters.value.filter(x => x.book === form.book.id);
+
+        if ( "any" !== form.selectedCharacterClass ) { 
+
+            filteredCharacters.value = filteredCharacters.value.filter(x => x.characterClass === form.selectedCharacterClass);
+        }
+
+        // characters.value = characters.value.filter(c => c.characterClass === form.selectedCharacterClass);
     });
     watch(page, (p_newValue, p_oldValue) => {
 
-        console.log("page watch");
-
-        refreshCharacters();
+        // characters.value = characters.value.filter(c => c.characterClass === form.selectedCharacterClass);
     });
 
 </script>
