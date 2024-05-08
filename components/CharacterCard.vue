@@ -1,24 +1,24 @@
 <template>
     <div>
         <p>
-            <NuxtLink :to="character_link">
+            <NuxtLink :to="characterLink">
                 <v-img :src="props.character.image.buffer"></v-img>
             </NuxtLink>
         </p>
-        <NuxtLink :to="character_link">See character in context</NuxtLink>
+        <NuxtLink :to="characterLink">See character in context</NuxtLink>
     </div>
 </template>
 
 <script setup>
 
     // Metadata
-    definePageMeta({ name: "CharacterCard" });
+    // definePageMeta({ name: "CharacterCard" });
 
     // Props
     const props = defineProps({ character: Object });
 
     // Computed
-    const character_link = computed(() => {
+    const characterLink = computed(() => {
 
         return {
                 

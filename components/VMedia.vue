@@ -22,11 +22,11 @@
 
 <script setup>
 
-const props = defineProps({
+    const props = defineProps({
 
-    imageAlt: String,
-    imageSrc: String,
-    title: String
-});
+        imageAlt: String,
+        imageSrc: String,
+        title: String
+    });
 
 </script>

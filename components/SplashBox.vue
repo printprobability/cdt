@@ -60,6 +60,4 @@
         to: Object
     });
 
-    console.log(`props.to: ${JSON.stringify(props.to)}`);
-
 </script>

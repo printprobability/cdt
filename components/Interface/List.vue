@@ -18,7 +18,7 @@
             </v-col>
             
             <v-col cols="9">
-                <p class="page-header">{{ result_count_string }}</p>
+                <p class="page-header">{{ resultCountString }}</p>
 
                 <!-- <v-pagination
                     :disabled="props.total_rows <= props.page_size"
@@ -55,18 +55,22 @@
         value: Number
     });
 
-    const result_count_string = computed(() => {
+    const resultCountString = computed(() => {
+
+        let resultStr;
 
         if ( props.total_rows > 1 ) {
 
-            return `${props.total_rows} results`;
+            resultStr = `${props.total_rows} results`;
         } else if ( props.total_rows == 1 ) {
 
-            return "1 result";
+            resultStr = "1 result";
         } else {
 
-            return "No results";
+            resultStr = "No results";
         }
+
+        return resultStr;
     });
 
 </script>

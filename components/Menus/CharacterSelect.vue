@@ -8,7 +8,7 @@
             v-model="selectedOption"
             item-title="name"
             item-value="id"
-            @update:modelValue="$emit('updateCharacterClass', selectedOption.name)"
+            @update:modelValue="$emit('updateCharacterClass', selectedOption)"
             return-object></v-select>
     </div>
     
@@ -16,7 +16,7 @@
   
 <script setup>
 
-    import { defineEmits, reactive, ref } from "vue";
+    import { defineEmits, ref } from "vue";
 
     // Data
     const ANY_CHAR = ref({
@@ -32,7 +32,6 @@
         nu: "Number",
         pu: "Puncutation" // Currently unused    
     };
-    var selectedOption = ref({ id: "a", name: "a_lc" });
 
     // Emits
     const emit = defineEmits(["updateCharacterClass"]);
@@ -41,11 +40,10 @@
     const props = defineProps({
 
         allow_any: { default: true, type: Boolean },
+        // selectedCharacterFromParent: { type: Object },
         value: { default: "any", type: String },
         where: { default: {}, type: Object }
     });
-
-    console.log(`props.where: ${JSON.stringify(props.where)}`);
 
     // Async data
     const { data: fetchedCharacterClasses } = await useAsyncData("fetched_character_classes", () => queryContent("classes")
@@ -54,8 +52,9 @@
         .sort({ "label": 1 })
         .find()
     );
-    if ( allow_any ) {        
-        fetchedCharacterClasses.unshift({ classname: ANY_CHAR.value, label: ANY_CHAR.text });
+    if ( props.allow_any ) {
+               
+        fetchedCharacterClasses.value.unshift({ classname: ANY_CHAR.value.value, label: ANY_CHAR.value.text });
     }
 
     const allCharacterClasses = fetchedCharacterClasses.value.map(c => {
@@ -66,7 +65,14 @@
             name: c.classname
         }
     });
-    selectedOption.value.id = allCharacterClasses[0].id;
-    selectedOption.value.name = allCharacterClasses[0].name;
+
+    // selectedOption.value.id = props.selectedCharacterFromParent.label;
+    // selectedOption.value.name = props.selectedCharacterFromParent.classname;
+
+    // Set to first character fetched or 'any'
+    const selectedOption = ref({
+        id: fetchedCharacterClasses.value[0].label,
+        name: fetchedCharacterClasses.value[0].classname
+    });
 
 </script>

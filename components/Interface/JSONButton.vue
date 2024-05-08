@@ -4,6 +4,7 @@
 
 <script setup>
 
+    // Props
     defineProps({ href: String });
 
 </script>

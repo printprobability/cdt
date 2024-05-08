@@ -49,8 +49,6 @@ const emit = defineEmits(["update:modelValue"])
 
 watch(myDateRange, async (p_newValue, p_oldValue) => {
 
-    console.log(`watch myDateRange with ${p_newValue} and ${p_oldValue}`);
-
     emit("update:modelValue", p_newValue);
 });
 
