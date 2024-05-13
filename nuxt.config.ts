@@ -27,7 +27,13 @@ export default defineNuxtConfig({
     
         // fullTextSearchFields: ["label", "notes"],
         // nestedProperties: ["page.sequence"]
-        nestedProperties: ["page.sequence", "image.buffer"],
+        nestedProperties: [
+            "image.buffer",
+            "image.thumbnail",
+            "image.webUrl",
+            "page.image.iiifBase",
+            "page.sequence"
+        ],
         experimental: { search: true }
     },    
 
