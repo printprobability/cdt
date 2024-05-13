@@ -23,7 +23,11 @@
             <v-list>
                 <v-pagination :length="numPages" v-model="page"></v-pagination>
                     <v-list-item v-for="grouping in paginationGroupings" :key="grouping.id">
-                        <GroupingCard :grouping="grouping" :characters="filteredCharacters" />
+                        <p>Grouping ID: {{ grouping.id }}</p>
+                        <div v-for="character in grouping.characters">
+                            <p>&nbsp;&nbsp;&nbsp;&nbsp;Char ID: {{ character }}</p>
+                        </div>
+                        <GroupingCard :grouping="grouping" />
                     </v-list-item>
                 <v-pagination :length="numPages" v-model="page"></v-pagination>
             </v-list>
@@ -35,8 +39,6 @@
 
 <script setup>
 
-    console.log("In groupings index setup");
-
     import _ from "lodash";
     import { reactive, ref, watch } from "vue";
     import { computedAsync } from "@vueuse/core";
@@ -45,8 +47,9 @@
     useHead({ titleTemplate: "Grouping Search - %s" });
 
     // Data
+    const bookIDChanged = ref(false);
+    const characterClassChanged = ref(false);
     var filteredGroupings = ref([]);
-    var filteredCharacters = ref([]);
     const form = reactive({
 
         book: "any",
@@ -54,9 +57,8 @@
         text: ""
     });
     var page = ref(1);
-    var pageSize = ref(5);
-
-    console.log("Past head and data");
+    var pageSize = ref(3);
+    const uniqueIDsArray = ref([]);
 
     // const { data: groupings, refresh: refreshGroupings } = 
     //     await useAsyncData("myGroupings", () => queryContent("groupings")
@@ -89,34 +91,47 @@
     //         .find()  
     // );
 
-    // console.log(`filteredGroupings: ${JSON.stringify(filteredGroupings.value)}`);
-
     // const { data: groupingCharacters } = await useAsyncData("myGroupingCharacters", () => queryContent("groupings")
 
-    const { data: charactersByBookID, refresh: refreshCharactersByBookID } = await useAsyncData("charactersByBookID", async () => {
-        
-        if ( "any" !== form.book ) {
+    const { data: fetchedBooks } = await useAsyncData("fetchedBooks", () => queryContent("books")
+        .sort({ "pqTitle": 1 })
+        .only(["id", "label"])
+        .find()
+    );
+    form.book = fetchedBooks.value[0].id;
+
+    const { data: characters } = await useAsyncData("characters", () => queryContent("characters")
+        .only(["id", "book", "characterClass"])
+        .find());
+
+    // const { data: charactersByBookID, refresh: refreshCharactersByBookID } = await useAsyncData("charactersByBookID", async () => {
+
+    //     if ( "any" !== form.book ) {    
             
-            return queryContent("groupings")
-                .where({ book: form.book })
-                .only(["id"])
-                .find();
-        }
+    //         return await queryContent("characters")
+    //             .where({ book: form.book })
+    //             .only(["id"])
+    //             .find();
+    //     }
 
-        return queryContent("groupings").only(["id"]).find();
-    });
-    const { data: charactersByCharacterClass, refresh: refreshCharactersByCharacterClass } = await useAsyncData("charactersByCharacterClass", async () => {
+    //     return await queryContent("characters").only(["id"]).find();
+    // });
+
+    const charactersByBookID = ref(characters.value.filter(c => c.book === form.book));
+
+    // const { data: charactersByCharacterClass, refresh: refreshCharactersByCharacterClass } = await useAsyncData("charactersByCharacterClass", async () => {
         
-        if ( "any" !== form.character_class ) {
+    //     if ( "any" !== form.character_class ) {
 
-            return queryContent("characters")
-                .where({ characterClass: form.character_class })
-                .only(["id"])
-                .find();
-        }
+    //         return await queryContent("characters")
+    //             .where({ characterClass: form.character_class })
+    //             .only(["id"])
+    //             .find();
+    //     }
     
-        return queryContent("characters").only(["id"]).find();
-    });
+    //     return await queryContent("characters").only(["id"]).find();
+    // });
+    const charactersByCharacterClass = ref(characters.value);
     const { data: groupingsByBookID, refresh: refreshGroupingsByBookID } = await useAsyncData("groupingsByBookID", () => queryContent("groupings")
         .where({ characters: { $containsAny: () => charactersByBookID.map((x) => x.id) } })
         .find());
@@ -124,8 +139,12 @@
         .where({ characters: { $containsAny: () => charactersByCharacterClass.map((x) => x.id) } })
         .find());
 
-    console.log("Past loads");
-    
+    // Retrieve character objects based on these IDs
+    const { data: filteredCharacters, refresh: refreshFilteredCharacters } = await useAsyncData("filteredCharacters", () => queryContent("characters")
+        .where({ id: { $in: () => uniqueIDsArray.value } })
+        .only(["id", "label", "image"])
+        .find());
+
     // Methods
     function getAllUniqueCharacterIDs() {
 
@@ -140,47 +159,70 @@
             characters.forEach(id => { uniqueIDsSet.add(id); });
         });
 
-        // Convert the set to an array
-        const uniqueIDsArray = Array.from(uniqueIDsSet);
+        // Convert the set to an array - filteredCharacters will get refreshed when this value changes
+        uniqueIDsArray.value = Array.from(uniqueIDsSet);
+
+        refreshFilteredCharacters();
+    }  
+    function refreshCharactersByBookID() {
         
-        return uniqueIDsArray;
-    }    
+        if ( "any" !== form.book ) {
+
+            charactersByBookID.value = characters.value.filter(c => c.book === form.book);
+        } else {
+
+            charactersByBookID.value = characters.value;
+        }
+    }
+    function refreshCharactersByCharacterClass() {
+        
+        if ( "any" !== form.book ) {
+
+            charactersByCharacterClass.value = characters.value.filter(c => c.characterClass === form.character_class);
+        } else {
+
+            charactersByCharacterClass.value = characters.value;
+        }        
+    }
     function refreshData() {
 
-        console.log("In refreshData");
+        if ( bookIDChanged.value ) {
 
-        // refreshGroupings();
-        // refreshFilteredGroupings();
+            refreshCharactersByBookID();
+            refreshGroupingsByBookID();
+        }
+        if ( characterClassChanged.value ) {
 
+            refreshCharactersByCharacterClass();
+            refreshGroupingsByCharacterClass();
+        }
+
+        // 1. Find the intersection of groupings that have been filtered by a selected book ID and selected character class
         filteredGroupings.value = groupingsByBookID.value.filter(obj1 => groupingsByCharacterClass.value.some(obj2 => obj2.id === obj1.id));
 
-        console.log(`filteredGroupings: ${filteredGroupings.value}`);
+        // 2. Filter groupings again by any text in form.text
+        filteredGroupings.value = filteredGroupings.value.filter(grouping => grouping.label.includes(form.text) || grouping.notes.includes(form.text));
 
-        filteredCharacters.value = getAllUniqueCharacterIDs();
-
-        console.log(`filteredCharacters: ${filteredCharacters.value}`);
-
-        console.log("Past filteredGroupings intersection");
+        bookIDChanged.value = false;
+        characterClassChanged.value = false;
     }
     function setBook(p_newBookID) {
 
-        console.log(`Groupings index setBook with old book ID: ${form.book.id} and new book ID: ${p_newBookID}`);
-
         form.book = p_newBookID;
-    }
 
+        bookIDChanged.value = true;
+    }
     function setSelectedCharacterClass(p_newCharacterObject) {
 
         form.character_class = p_newCharacterObject.name;
-        // form.selectedCharacterLabel = p_newCharacterObject.id;
-    }
 
-    console.log("Past methods definitions");
+        characterClassChanged.value = true;
+    }
 
     // Computed
     const groupingsCount = computed(() => {
 
-        return filteredGroupings.length;
+        return filteredGroupings.value.length;
     });
     const numPages = computed(() => {
 
@@ -192,8 +234,6 @@
 
         const start = (page.value - 1) * pageSize.value;
         const end = start + pageSize.value;
-
-        console.log(`Groupings index paginationGroupings: ${filteredGroupings.value.slice(start, end).length}`);
 
         return filteredGroupings.value.slice(start, end);
     });
@@ -230,39 +270,37 @@
 
     // }, null);
     
-    const query = computedAsync(async () => {
+    // const query = computedAsync(async () => {
 
-        // If a book and a character class have been specified, compose the two queries
-        // Promise.resolve(bookQuery);
-        // Promise.resolve(characterClassQuery);
+    //     // If a book and a character class have been specified, compose the two queries
+    //     // Promise.resolve(bookQuery);
+    //     // Promise.resolve(characterClassQuery);
 
-        // const book_q = await useFetch("bookQuery", () => queryContent("groupings")
-        //     .where(bookQuery)
-        //     .find());
-        // const cc_q = await useFetch("characterClassQuery", () => queryContent("groupings")
-        //     .where(characterClassQuery)
-        //     .find());
+    //     // const book_q = await useFetch("bookQuery", () => queryContent("groupings")
+    //     //     .where(bookQuery)
+    //     //     .find());
+    //     // const cc_q = await useFetch("characterClassQuery", () => queryContent("groupings")
+    //     //     .where(characterClassQuery)
+    //     //     .find());
 
-        if ( !!groupingsByBookID.value && !!groupingsByCharacterClass.value ) {
+    //     if ( !!groupingsByBookID.value && !!groupingsByCharacterClass.value ) {
 
-            const intersection = groupingsByBookID.value.characters.$containsAny.filter((value) =>
-                groupingsByCharacterClass.value.characters.$containsAny.includes(value)
-            );
+    //         const intersection = groupingsByBookID.value.characters.$containsAny.filter((value) =>
+    //             groupingsByCharacterClass.value.characters.$containsAny.includes(value)
+    //         );
             
-            return [{ characters: { $containsAny: intersection } }];
-        } else if ( !!groupingsByCharacterClass.value ) {
+    //         return [{ characters: { $containsAny: intersection } }];
+    //     } else if ( !!groupingsByCharacterClass.value ) {
         
-            return [groupingsByCharacterClass.value];
-        } else if ( !!groupingsByBookID.value ) {
+    //         return [groupingsByCharacterClass.value];
+    //     } else if ( !!groupingsByBookID.value ) {
         
-            return [groupingsByBookID.value];
-        } else {
+    //         return [groupingsByBookID.value];
+    //     } else {
             
-            return [];
-        }        
-    });
-
-    console.log("Past computed definitions");
+    //         return [];
+    //     }        
+    // });
 
     // Watchers
 
@@ -271,19 +309,14 @@
         // "deep" watch the form object to catch changes to any of its parts
         // NOTE: In Vue 3, watch on a 'reactive' object implicitly creates a deep watcher
         page.value = 1;
+
+        console.log(`p_oldValue: ${JSON.stringify(p_oldValue)}`);
+        console.log(`p_newValue: ${JSON.stringify(p_newValue)}`);
+
         refreshData();
     });
 
-    watch(page, (p_newValue, p_oldValue) => {
-
-        // refreshData();
-    });
-
-    console.log("Past watchers");
-
     // Update filteredGroupings
     refreshData();
-
-    console.log("Past refresh data");
 
 </script>
