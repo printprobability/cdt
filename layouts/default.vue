@@ -17,8 +17,8 @@
             <v-list-item class="dldt-navbar-link px-2" :to="{ name: 'books' }">Books</v-list-item>
             <v-list-item class="dldt-navbar-link px-2" :to="{ name: 'characters' }">Characters</v-list-item>
             <v-list-item class="dldt-navbar-link px-2" :to="{ name: 'groupings' }">Groupings</v-list-item>
-            <v-list-item class="dldt-navbar-link px-2">Data</v-list-item>
-            <v-list-item class="dldt-navbar-link pl-2 pr-3">About</v-list-item>
+            <!-- <v-list-item class="dldt-navbar-link px-2">Data</v-list-item>
+            <v-list-item class="dldt-navbar-link pl-2 pr-3">About</v-list-item> -->
 
             <!-- <div class="d-flex ml-auto">
                 <v-list-item>Books</v-list-item>
