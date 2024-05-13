@@ -23,10 +23,6 @@
             <v-list>
                 <v-pagination :length="numPages" v-model="page"></v-pagination>
                     <v-list-item v-for="grouping in paginationGroupings" :key="grouping.id">
-                        <p>Grouping ID: {{ grouping.id }}</p>
-                        <div v-for="character in grouping.characters">
-                            <p>&nbsp;&nbsp;&nbsp;&nbsp;Char ID: {{ character }}</p>
-                        </div>
                         <GroupingCard :grouping="grouping" />
                     </v-list-item>
                 <v-pagination :length="numPages" v-model="page"></v-pagination>
