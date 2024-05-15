@@ -7,6 +7,7 @@
 # Imports
 
 # Built-ins
+import json
 import os
 import requests
 import sys
@@ -33,23 +34,30 @@ class API_Object:
     def __init__(self, p_grouping_id, p_api_url, p_object_txt_name):
 
         self.m_id = p_grouping_id
+        self.m_object_txt_name = p_object_txt_name
         self.m_api_object = API_Object.get_api_object(p_api_url, p_grouping_id, p_object_txt_name)
-
-    @property
-    def id(self):
-        return self.m_id
 
     @property
     def api_object(self):
         return self.m_api_object
+    @property
+    def id(self):
+        return self.m_id
+    @property
+    def object_name(self):
+        return self.m_object_txt_name
+
+    def output_to_file(self, p_output_directory):
+        with open(f"{p_output_directory}{self.m_object_txt_name}_{self.m_id}.json", "w") as output_file:
+            json.dump(self.m_api_object, output_file)
 
     def to_json(self):
-        return None        
+        return None       
 
     @staticmethod
     def get_api_object(p_api_url, p_uuid, p_object_name):
 
-        print(f"get_api_object({p_api_url}, {p_uuid}, {p_object_name}")
+        print(f"Retrieving data for {p_object_name}: {p_uuid}...")
 
         try:
             r = requests.get(
@@ -106,6 +114,41 @@ class Book(API_Object):
 
         return {
 
+            "id": self.m_api_object["id"],
+            "eebo": self.m_api_object["eebo"],
+            "vid": self.m_api_object["vid"],
+            "tcp": self.m_api_object["tcp"],
+            "estc": self.m_api_object["estc"],
+            "label": self.m_api_object["label"],
+            "ppPublisher": self.m_api_object["pp_publisher"],
+            "ppAuthor": self.m_api_object["pp_author"],
+            "pqPublisher": self.m_api_object["pq_publisher"],
+            "pqTitle": self.m_api_object["pq_title"],
+            "pqUrl": self.m_api_object["pq_url"],
+            "pqAuthor": self.m_api_object["pq_author"],
+            "pqYearVerbatim": self.m_api_object["pq_year_verbatim"],
+            "pqYearEarly": self.m_api_object["pq_year_early"],
+            "pqYearLate": self.m_api_object["pq_year_late"],
+            "nSpreads": len(self.m_api_object["spreads"]),
+            "coverPage": {
+                "id": self.m_api_object["cover_page"]["id"],
+                "label": self.m_api_object["cover_page"]["label"],
+                "sequence": self.m_api_object["cover_page"]["sequence"],
+                "side": self.m_api_object["cover_page"]["side"],
+                "image": {
+                    
+                    "tif": self.m_api_object["cover_page"]["image"]["tif"],
+                    "iiifBase": self.m_api_object["cover_page"]["image"]["iiif_base"],
+                    "webUrl": self.m_api_object["cover_page"]["image"]["web_url"],
+                    "thumbnail": self.m_api_object["cover_page"]["image"]["thumbnail"],
+                    "fullTif": self.m_api_object["cover_page"]["image"]["full_tif"]
+                }
+            },
+            "isEeboBook": self.m_api_object["is_eebo_book"],
+            "repository": self.m_api_object["repository"],
+            "ppPrinter": self.m_api_object["pp_printer"],
+            "colloqPrinter": self.m_api_object["colloq_printer"],
+            "ppNotes": self.m_api_object["pp_notes"]
         }
 
 class Character(API_Object):
@@ -120,12 +163,46 @@ class Character(API_Object):
 
     @property
     def book(self):
-        return self.m_api_object["book"]
+        return self.m_api_object["book"]["id"]
         
     def to_json(self):
 
         return {
 
+            "id": self.m_api_object["id"],
+            "label": self.m_api_object["label"],
+            "sequence": self.m_api_object["sequence"],
+            "characterClass": self.m_api_object["character_class"],
+            "classProbability": self.m_api_object["class_probability"],
+            "book": self.m_api_object["book"]["id"],
+            "page": {
+
+                "id": self.m_api_object["page"]["id"],
+                "label": self.m_api_object["page"]["label"],
+                "sequence": self.m_api_object["page"]["sequence"],
+                "side": self.m_api_object["page"]["side"],
+                "image": {
+
+                    "tif": self.m_api_object["page"]["image"]["tif"],
+                    "iiifBase": self.m_api_object["page"]["image"]["iiif_base"],
+                    "webUrl": self.m_api_object["page"]["image"]["web_url"],
+                    "thumbnail": self.m_api_object["page"]["image"]["thumbnail"],
+                    "fullTif": self.m_api_object["page"]["image"]["full_tif"]
+                }
+            },
+            "image": {
+
+                "webUrl": self.m_api_object["image"]["web_url"],
+                "thumbnail": self.m_api_object["image"]["thumbnail"],
+                "buffer": self.m_api_object["image"]["buffer"]
+            },
+            "absoluteCoords": {
+
+                "x": self.m_api_object["absolute_coords"]["x"],
+                "y": self.m_api_object["absolute_coords"]["y"],
+                "w": self.m_api_object["absolute_coords"]["w"],
+                "h": self.m_api_object["absolute_coords"]["h"]
+            }
         }
 
 class Grouping(API_Object):
@@ -140,14 +217,17 @@ class Grouping(API_Object):
 
     @property
     def characters(self):
-        return self.m_api_object["characters"]
+        return [entry["id"] for entry in self.m_api_object["characters"]]
         
     def to_json(self):
 
         return {
 
+            "id": self.m_api_object["id"],
+            "label": self.m_api_object["label"],
+            "notes": self.m_api_object["notes"],
+            "characters": [character["id"] for character in self.m_api_object["characters"]]
         }
-
 
 # Utility functions
 def format_path(original_path):
@@ -160,19 +240,20 @@ def format_path(original_path):
 
 def main(p_grouping_ids, p_output_directory):
 
+    print("Retrieving data from API...")
+
     # 1. Create a list of character grouping objects from the database
     character_ids = []
     character_objects = []
     grouping_objects = []
     for grouping_id in p_grouping_ids:
 
-        grouping_obj = Grouping(grouping_id)
-
         # A. Get the grouping object from the database
+        grouping_obj = Grouping(grouping_id)
         grouping_objects.append(grouping_obj)
 
         # B.Accrue a list of characters
-        character_ids.extend(grouping_obj.api_object.characters)
+        character_ids.extend(grouping_obj.characters)
 
     # 2. Create a list of character objects from the database
     character_ids = list(set(character_ids))
@@ -182,39 +263,51 @@ def main(p_grouping_ids, p_output_directory):
     book_ids = list(set([character.book for character in character_objects]))
     book_objects = [Book(book_id) for book_id in book_ids]
 
+    print(f"Writing json data for catalogue to subdirectories in {p_output_directory}...")
+
     # 4. Write all objects to the appropriate subdirectories in the output directory
 
     object_info = {
+
         "books": book_objects,
         "characters": character_objects,
-        "groupings": group_objects
+        "groupings": grouping_objects
     }
     for subdir in object_info:
 
         # A. Make sure all subdirectories exist
         if not os.path.exists(p_output_directory + subdir):
-            os.makedir(p_output_directory + subdir)
+            os.makedirs(p_output_directory + subdir)
 
         # B. Write out all json objects to file in this subdirectory
         for obj in object_info[subdir]:
-            json_data = obj.to_json()
-            with open(f"{p_output_directory}{subdir}{os.sep}{obj.id}.json", "w") as output_file:
-                json.dump(json_data, output_file) 
+            json_data_str = json.dumps(obj.to_json(), indent=4)
+
+            output_filename = f"{p_output_directory}{subdir}{os.sep}{obj.id}.json"
+            print(f"Writing {output_filename}...")
+            with open(output_filename, "w") as output_file:
+                output_file.write(json_data_str)
 
 if "__main__" == __name__:
+
+    print("Catalogue of Distinctive Type Ingestion Script")
+
+    # 0. Check command line argument validity
 
     # Must have an ID/ID file filepath or ID/ID file filepath + output directory
     if len(sys.argv) != 2 and len(sys.argv) != 3:
         print("Usage: python ingest_groupings.py <grouping ID|text file filepath>")
 
+    # 1. Prepare arguments for the script
+
     grouping_ids = []
     output_directory = DEFAULT_OUTPUT_DIRECTORY
     
-    # Single grouping ID is input
+    # A. Single grouping ID is input
     if API_Object.is_valid_uuid(sys.argv[1]):
         grouping_ids.append(sys.argv[1])
 
-    # Path to text file containing mulitple grouping IDs is input
+    # B. Path to text file containing mulitple grouping IDs is input
     if os.path.exists(sys.argv[1]):
         with open(sys.argv[1], "r") as input_file:
             input_lines = input_file.readlines()
@@ -225,8 +318,11 @@ if "__main__" == __name__:
                 else:
                     grouping_ids.append(possible_id)
 
-    # Output directory, if given
+    # C. Output directory, if given
     if len(sys.argv) == 3:
         output_directory = format_path(sys.argv[2])
 
+    print(f"Arguments:\n\tgrouping_ids: {grouping_ids}\n\toutput_directory: {output_directory}")
+
+    # 2. Main script
     main(grouping_ids, output_directory)
