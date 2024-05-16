@@ -7,6 +7,7 @@
 # Imports
 
 # Built-ins
+import argparse
 import json
 import os
 import requests
@@ -24,7 +25,8 @@ API_URLS = {
     "GROUPINGS": "https://printprobdb.psc.edu/api/character_groupings/"
 }
 CERTIFICATE_FILE_PATH = "{0}{1}ingest{1}bridges_files{1}server.crt".format(os.getcwd(), os.sep)
-DEFAULT_OUTPUT_DIRECTORY = "{0}{1}content{1}".format(os.getcwd(), os.sep)
+DEFAULT_JSON_OUTPUT_DIRECTORY = "{0}{1}content{1}".format(os.getcwd(), os.sep)
+DEFAULT_IMAGE_OUTPUT_DIRECTORY = "{0}{1}public{1}".format(os.getcwd(), os.sep)
 
 
 # Classes
@@ -238,7 +240,7 @@ def format_path(original_path):
 
 # Main script
 
-def main(p_grouping_ids, p_output_directory):
+def build_site_json_files(p_grouping_ids, p_output_directory):
 
     print("Retrieving data from API...")
 
@@ -288,41 +290,97 @@ def main(p_grouping_ids, p_output_directory):
             with open(output_filename, "w") as output_file:
                 output_file.write(json_data_str)
 
+    return book_objects, character_objects, grouping_objects
+
+def create_site_images(p_book_objects, p_character_objects, p_grouping_objects, p_image_output_directory):
+
+    # 1. Create paths in the image output directory
+    
+    # A. Book object paths
+
+    for book_object in p_book_objects:
+        
+        # I. 'IIIF base' path
+        # (ex. /img/iiif/books/british_library/asowle_xxxxx_yyyyy_00height_heathen/lines_color/asowle_xxxxx_yyyyy_00height_heathen-0001_page1r.tif)
+        # NOTE: This will also create the parent path /img/iiif/books/ if it does not yet exist in the output directory
+        os.makedirs(p_image_output_directory + book_object["iiifBase"])
+
+        # II. 'Web URL' path
+        os.makedirs(os.path.basename(p_image_output_directory + book_object["webUrl"]))
+
+        # III. 'Thumbnail' path
+        os.makedirs(os.path.basename(p_image_output_directory + book_object["thumbnail"]))
+
+
+    # 2. Download full page images to the appropriate subdirectories
+
+    # 3. Extract the needed sub-images and scaled images from the full images
+    #    and put them in the appropriate subdirectories
+
+def main(p_grouping_ids, p_json_output_directory, p_image_output_directory):
+
+    # 1. Build and write json objects to given output directory
+    book_objects, character_objects, grouping_objects = build_site_json_files(p_grouping_ids, p_json_output_directory)
+
+    # 2. Download base images from the Print & Probability workbench and extract segments for the site images
+    create_site_images(book_objects, character_objects, grouping_objects, p_image_output_directory)
+
 if "__main__" == __name__:
 
     print("Catalogue of Distinctive Type Ingestion Script")
 
+    # 0. Argument setup
+
+    parser = argparse.ArgumentParser(description="Catalogue of Distinctive Type Ingestion Script")
+
+    # Required argument: ID number or path to a text file listing ID numbers
+    parser.add_argument("input", help="ID number or path to a text file listing ID numbers")
+
+    # Optional arguments: JSON output directory and image output directory
+    parser.add_argument("--json-output", help="Path to the JSON output directory")
+    parser.add_argument("--image-output", help="Path to the image output directory")
+
+    args = parser.parse_args()
+
     # 0. Check command line argument validity
 
     # Must have an ID/ID file filepath or ID/ID file filepath + output directory
-    if len(sys.argv) != 2 and len(sys.argv) != 3:
-        print("Usage: python ingest_groupings.py <grouping ID|text file filepath>")
+    # if len(sys.argv) != 2 and len(sys.argv) != 3:
+    #     print("Usage: python ingest_groupings.py <grouping ID|text file filepath>")
 
     # 1. Prepare arguments for the script
 
+    # A. Grouping IDs
     grouping_ids = []
-    output_directory = DEFAULT_OUTPUT_DIRECTORY
     
-    # A. Single grouping ID is input
-    if API_Object.is_valid_uuid(sys.argv[1]):
-        grouping_ids.append(sys.argv[1])
-
-    # B. Path to text file containing mulitple grouping IDs is input
-    if os.path.exists(sys.argv[1]):
-        with open(sys.argv[1], "r") as input_file:
+    # I. Single grouping ID is input
+    if API_Object.is_valid_uuid(args.input):
+        grouping_ids.append(args.input)
+    # II. Path to text file containing mulitple grouping IDs is input
+    elif os.path.exists(args.input):
+        with open(args.input, "r") as input_file:
             input_lines = input_file.readlines()
             for line in lines:
                 possible_id = line.strip()
                 if not API_Object.is_valid_uuid(line.strip()):
                     print(f"{possible_id} is not a valid UUID")
                 else:
-                    grouping_ids.append(possible_id)
+                    grouping_ids.append(possible_id)    
 
-    # C. Output directory, if given
-    if len(sys.argv) == 3:
-        output_directory = format_path(sys.argv[2])
+    # C. JSON output directory
+    json_output_directory = DEFAULT_JSON_OUTPUT_DIRECTORY
+    if args.json_output:
+        json_output_directory = format_path(args.json_output)
 
-    print(f"Arguments:\n\tgrouping_ids: {grouping_ids}\n\toutput_directory: {output_directory}")
+    # D. Image output directory
+    image_output_directory = DEFAULT_IMAGE_OUTPUT_DIRECTORY
+    if args.image_output:
+        image_output_directory = format_path(args.image_output)
+
+    print("Arguments:")
+    print(f"\tgrouping_ids: {grouping_ids}")
+    print(f"\tjson_output_directory: {json_output_directory}")
+    print(f"\timage_output_directory: {image_output_directory}")
 
     # 2. Main script
-    main(grouping_ids, output_directory)
+    main(grouping_ids, json_output_directory, image_output_directory)
