@@ -118,7 +118,7 @@ export default defineNuxtConfig({
 
     sourcemap: true,
 
-    ssr: false,
+    ssr: true,
 
     vite: {
 
