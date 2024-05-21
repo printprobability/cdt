@@ -91,7 +91,7 @@ class API_Object:
     @staticmethod
     def get_workbench_image(p_url, p_prefix_to_replace, p_output_path, p_use_url_path=True):
 
-        # ex. https://printprobdb.psc.edu/iiif/books/british_library/asowle_xxxxx_yyyyy_00height_heathen/lines_color/asowle_xxxxx_yyyyy_00height_heathen-0001_page1r.tif/full/full/0/default.jpg
+        # ex url: https://printprobdb.psc.edu/iiif/books/british_library/asowle_xxxxx_yyyyy_00height_heathen/lines_color/asowle_xxxxx_yyyyy_00height_heathen-0001_page1r.tif/full/full/0/default.jpg
 
         formatted_url = p_url.replace(p_prefix_to_replace, WORKBENCH_URL)
         if p_use_url_path:
@@ -106,8 +106,6 @@ class API_Object:
         except requests.exceptions.HTTPError as err:
             print(f"Error fetching image {formatted_url}: {err}")
             return
-
-        # print(f"Writing file to: {disk_output_path}")
 
         # 2. Write the response to a file in the appropriate location
         with open(disk_output_path, "wb") as output_file:
@@ -207,13 +205,6 @@ class Book(API_Object):
     def make_image_paths(self, p_image_output_directory):
 
         image_paths = {
-
-            # 'IIIF base' path
-            # (ex. /img/iiif/books/british_library/asowle_xxxxx_yyyyy_00height_heathen/lines_color/asowle_xxxxx_yyyyy_00height_heathen-0001_page1r.tif)
-            # "iiifBase": self.m_json_object["coverPage"]["image"]["iiifBase"],
-
-            # 'Web URL' path
-            # "webUrl": self.m_json_object["coverPage"]["image"]["webUrl"],
 
             # 'Thumbnail' path
             "coverPage.image.thumbnail": self.m_json_object["coverPage"]["image"]["thumbnail"]
@@ -351,9 +342,6 @@ class Character(API_Object):
 
             # 'IIIF base' path
             "page.image.iiifBase": self.m_json_object["page"]["image"]["iiifBase"],
-
-            # 'Page image webUrl' path
-            # "page.image.webUrl": self.m_json_object["page"]["image"]["webUrl"]            
         }
 
         for path_key in image_paths:
@@ -488,7 +476,7 @@ def cdt_json_exists(p_json_output_directory):
 
 def format_path(original_path):
 
-    '''Make sure given path ends with system folder separator'''
+    # Make sure given path ends with system folder separator
     return original_path if original_path.endswith(os.sep) else original_path + os.sep
 
 
@@ -599,30 +587,6 @@ def create_site_images(p_book_objects, p_character_objects, p_grouping_objects, 
     for image_path in tqdm(base_images_to_download, desc="Page thumbnails"):
         API_Object.get_workbench_image(image_path, "/img/", p_image_output_directory)
 
-    # B. Remove workbench url prefix from paths
-
-    # Book
-    # ["coverPage"]["image"]["iiifBase"]: "/img/iiif/books/british_library/asowle_xxxxx_yyyyy_00height_heathen/lines_color/asowle_xxxxx_yyyyy_00height_heathen-0001_page1r.tif"
-    # ["coverPage"]["image"]["webUrl"]: "/img/iiif/books/british_library/asowle_xxxxx_yyyyy_00height_heathen/lines_color/asowle_xxxxx_yyyyy_00height_heathen-0001_page1r.tif/full/full/0/default.jpg"
-    # ["coverPage"]["image"]["thumbnail"]: "/img/iiif/books/british_library/asowle_xxxxx_yyyyy_00height_heathen/lines_color/asowle_xxxxx_yyyyy_00height_heathen-0001_page1r.tif/full/200,/0/default.jpg"
-
-    # Character
-    # ["image"]["buffer"]: "/img/iiif/books/restoration/anon_R5466_usnnnc_menetekel1663/lines_color/anon_R5466_usnnnc_menetekel1663-0005_page1r.tif/1477,1055,179,169/150,/0/default.jpg"
-    # ["image"]["webUrl"]: "/img/iiif/books/restoration/anon_R5466_usnnnc_menetekel1663/lines_color/anon_R5466_usnnnc_menetekel1663-0005_page1r.tif/1527,1105,79,69/full/0/default.jpg"
-    # ["page"]["image"]["iiifBase"]: "/img/iiif/books/restoration/anon_R5466_usnnnc_menetekel1663/lines_color/anon_R5466_usnnnc_menetekel1663-0005_page1r.tif"
-
-    # 3. Extract the needed sub-images and scaled images from the full images
-    #    and put them in the appropriate subdirectories
-
-    # Character fields
-    # # 'Buffer' path
-    # # (ex. /img/iiif/books/restoration/anon_R5466_usnnnc_menetekel1663/lines_color/anon_R5466_usnnnc_menetekel1663-0005_page1r.tif/1477,1055,179,169/150,/0/default.jpg)
-    # "image.buffer": self.m_json_object["image"]["buffer"],
-
-    # # 'Web URL' path
-    # # (ex. /img/iiif/books/restoration/anon_R5466_usnnnc_menetekel1663/lines_color/anon_R5466_usnnnc_menetekel1663-0005_page1r.tif/1527,1105,79,69/full/0/default.jpg)
-    # "image.webUrl": self.m_json_object["image"]["webUrl"],
-
     print("Extracting characters from full page image...")
 
     for character_object in tqdm(p_character_objects, desc="Characters"):
@@ -633,11 +597,19 @@ def create_site_images(p_book_objects, p_character_objects, p_grouping_objects, 
         full_image_path = API_Object.get_workbench_image(json_object["page"]["image"]["fullTif"], "/img/", p_image_output_directory, False)
         
         # B. Extract regions of interest from full image and place it in the appropriate directory
+
+        # 'Buffer' path
+        # (ex. /img/iiif/books/restoration/anon_R5466_usnnnc_menetekel1663/lines_color/anon_R5466_usnnnc_menetekel1663-0005_page1r.tif/1477,1055,179,169/150,/0/default.jpg)
+        # "image.buffer": self.m_json_object["image"]["buffer"]
         Character.extract_roi_from_image(
             full_image_path,
             p_image_output_directory + json_object["image"]["buffer"],
             Character.get_coords_from_url(json_object["image"]["buffer"])
         )
+
+        # 'Web URL' path
+        # (ex. /img/iiif/books/restoration/anon_R5466_usnnnc_menetekel1663/lines_color/anon_R5466_usnnnc_menetekel1663-0005_page1r.tif/1527,1105,79,69/full/0/default.jpg)
+        # "image.webUrl": self.m_json_object["image"]["webUrl"]
         Character.extract_roi_from_image(
             full_image_path,
             p_image_output_directory + json_object["image"]["webUrl"],
@@ -671,12 +643,6 @@ if "__main__" == __name__:
     parser.add_argument("--image-output", help="Path to the image output directory")
 
     args = parser.parse_args()
-
-    # 0. Check command line argument validity
-
-    # Must have an ID/ID file filepath or ID/ID file filepath + output directory
-    # if len(sys.argv) != 2 and len(sys.argv) != 3:
-    #     print("Usage: python ingest_groupings.py <grouping ID|text file filepath>")
 
     # 1. Prepare arguments for the script
 
