@@ -2,7 +2,8 @@
 # Created: May 14, 2024
 # Purpose: Takes in a list of one more Print & Probability character grouping
 #          IDs and creates json content files (e.g. books, characters, and
-#          groupings) for the Catalogue of Distinctive Type website
+#          groupings) and downloads/extracts images for the Catalogue of
+#          Distinctive Type website
 
 # Imports
 
@@ -19,6 +20,7 @@ from uuid import UUID
 # Third party
 import cv2
 from tqdm import tqdm
+
 
 # Globals
 
@@ -64,6 +66,8 @@ class API_Object:
     def object_name(self):
         return self.m_object_txt_name        
 
+    def get_images(self, p_image_output_directory):
+        pass
     def make_image_paths(self):
         pass
     def output_to_file(self, p_output_directory):
@@ -99,17 +103,20 @@ class API_Object:
         else:
             disk_output_path = p_output_path + p_url[p_url.rfind("/") + 1:]
 
-        # 1. Download the image
-        try:
-            # print(f"Downloading {formatted_url} ...")
-            r = requests.get(formatted_url, timeout=None)
-        except requests.exceptions.HTTPError as err:
-            print(f"Error fetching image {formatted_url}: {err}")
-            return
+        # Only download the file if it does not already exist at the output location on disk
+        if not os.path.exists(disk_output_path):
 
-        # 2. Write the response to a file in the appropriate location
-        with open(disk_output_path, "wb") as output_file:
-            output_file.write(r.content)
+            # 1. Download the image
+            try:
+                # print(f"Downloading {formatted_url} ...")
+                r = requests.get(formatted_url, timeout=None)
+            except requests.exceptions.HTTPError as err:
+                print(f"Error fetching image {formatted_url}: {err}")
+                return
+
+            # 2. Write the response to a file in the appropriate location
+            with open(disk_output_path, "wb") as output_file:
+                output_file.write(r.content)
 
         # 3. Return the path to the image file on disk
         return disk_output_path
@@ -202,6 +209,14 @@ class Book(API_Object):
             "pp_notes": json_data["ppNotes"]
         }        
     
+    def get_images(self, p_image_output_directory):
+        
+        # 1. Make the directories for the images of this object (if they do not already exist)
+        self.make_image_paths(p_image_output_directory)
+
+        # 2. Download the image for this book (if it does not already exist)
+        API_Object.get_workbench_image(self.m_json_object["coverPage"]["image"]["thumbnail"], "/img/", p_image_output_directory)
+
     def make_image_paths(self, p_image_output_directory):
 
         image_paths = {
@@ -325,6 +340,35 @@ class Character(API_Object):
     @property
     def book(self):
         return self.m_api_object["book"]["id"]
+
+    def get_images(self, p_image_output_directory):
+
+        # 1. Make the directories for the images of this object (if they do not already exist)
+        self.make_image_paths(p_image_output_directory)
+
+        # 2. Download full image
+        full_image_path = API_Object.get_workbench_image(self.m_json_object["page"]["image"]["fullTif"], "/img/", p_image_output_directory, False)
+        
+        # 3. Extract regions of interest from full image and place it in the appropriate directory
+
+        # 'Buffer' path
+        # (ex. /img/iiif/books/restoration/anon_R5466_usnnnc_menetekel1663/lines_color/anon_R5466_usnnnc_menetekel1663-0005_page1r.tif/1477,1055,179,169/150,/0/default.jpg)
+        Character.extract_roi_from_image(
+            full_image_path,
+            p_image_output_directory + self.m_json_object["image"]["buffer"],
+            Character.get_coords_from_url(self.m_json_object["image"]["buffer"])
+        )
+
+        # 'Web URL' path
+        # (ex. /img/iiif/books/restoration/anon_R5466_usnnnc_menetekel1663/lines_color/anon_R5466_usnnnc_menetekel1663-0005_page1r.tif/1527,1105,79,69/full/0/default.jpg)
+        Character.extract_roi_from_image(
+            full_image_path,
+            p_image_output_directory + self.m_json_object["image"]["webUrl"],
+            Character.get_coords_from_url(self.m_json_object["image"]["webUrl"])
+        )
+
+        # 4. Delete the full image now that extraction is complete
+        os.unlink(full_image_path)
 
     def make_image_paths(self, p_image_output_directory):
 
@@ -466,6 +510,7 @@ class Grouping(API_Object):
             "characters": [character["id"] for character in self.m_api_object["characters"]]
         }
 
+
 # Utility functions
 
 def cdt_json_exists(p_json_output_directory):
@@ -561,63 +606,84 @@ def build_site_json_files(p_grouping_ids, p_output_directory, p_retrieve_from_di
 
 def create_site_images(p_book_objects, p_character_objects, p_grouping_objects, p_image_output_directory):
 
-    # 1. Create all image paths (for images currently used by the site) in the image output directory
+    # Alternate downloading scheme ...
 
-    print("Creating image directories...")
+    # Download and extract all images necessary per group
+    book_dict = { book_object.id: book_object for book_object in p_book_objects }
+    character_dict = { character_object.id: character_object for character_object in p_character_objects }
+
+    for grouping_object in p_grouping_objects:
+
+        # A. Find grouping's character and book objects
+        grouping_character_objects = [character_dict[id] for char_id in grouping_object.characters]
+        grouping_book_objects = [book_dict[char_obj.book] for char_obj in grouping_character_objects]
+
+        # B. Download book images (if not already downloaded)
+        for book_object in grouping_book_objects:
+            book_object.get_images(p_image_output_directory)
+
+        # C. Download and extract character images (if not already downloaded/extracted)
+        for character_object in grouping_character_objects:
+            character_object.get_images(p_image_output_directory)
+
+    # =============================
+
+    # # 1. Create all image paths (for images currently used by the site) in the image output directory
+
+    # print("Creating image directories...")
     
-    # A. Book object paths
-    for book_object in tqdm(p_book_objects, desc="Directories for book images"):
-        book_object.make_image_paths(p_image_output_directory)
+    # # A. Book object paths
+    # for book_object in tqdm(p_book_objects, desc="Directories for book images"):
+    #     book_object.make_image_paths(p_image_output_directory)
 
-    # B. Character object paths
-    for character_object in tqdm(p_character_objects, desc="Directories for character images"):
-        character_object.make_image_paths(p_image_output_directory)
+    # # B. Character object paths
+    # for character_object in tqdm(p_character_objects, desc="Directories for character images"):
+    #     character_object.make_image_paths(p_image_output_directory)
+    # # 2. Download full page images to the appropriate subdirectories
 
-    # 2. Download full page images to the appropriate subdirectories
+    # print(f"Downloading page thumbnails images...")
 
-    print(f"Downloading page thumbnails images...")
+    # # A. Get list of all image files to download
+    # base_images_to_download = []
+    # base_images_to_download = [book_object.json_object["coverPage"]["image"]["thumbnail"] for book_object in p_book_objects]
+    # base_images_to_download.extend([character_object.json_object["page"]["image"]["thumbnail"] for character_object in p_character_objects])
+    # base_images_to_download = list(set(base_images_to_download))
 
-    # A. Get list of all image files to download
-    base_images_to_download = []
-    base_images_to_download = [book_object.json_object["coverPage"]["image"]["thumbnail"] for book_object in p_book_objects]
-    base_images_to_download.extend([character_object.json_object["page"]["image"]["thumbnail"] for character_object in p_character_objects])
-    base_images_to_download = list(set(base_images_to_download))
+    # # B. Download images
+    # for image_path in tqdm(base_images_to_download, desc="Page thumbnails"):
+    #     API_Object.get_workbench_image(image_path, "/img/", p_image_output_directory)
 
-    # B. Download images
-    for image_path in tqdm(base_images_to_download, desc="Page thumbnails"):
-        API_Object.get_workbench_image(image_path, "/img/", p_image_output_directory)
+    # # 3. Extract character and buffered character images from the full TIF image
 
-    print("Extracting characters from full page image...")
+    # print("Extracting characters from full page image...")
 
-    for character_object in tqdm(p_character_objects, desc="Characters"):
+    # for character_object in tqdm(p_character_objects, desc="Characters"):
 
-        json_object = character_object.json_object
+    #     json_object = character_object.json_object
         
-        # A. Download full image
-        full_image_path = API_Object.get_workbench_image(json_object["page"]["image"]["fullTif"], "/img/", p_image_output_directory, False)
+    #     # A. Download full image
+    #     full_image_path = API_Object.get_workbench_image(json_object["page"]["image"]["fullTif"], "/img/", p_image_output_directory, False)
         
-        # B. Extract regions of interest from full image and place it in the appropriate directory
+    #     # B. Extract regions of interest from full image and place it in the appropriate directory
 
-        # 'Buffer' path
-        # (ex. /img/iiif/books/restoration/anon_R5466_usnnnc_menetekel1663/lines_color/anon_R5466_usnnnc_menetekel1663-0005_page1r.tif/1477,1055,179,169/150,/0/default.jpg)
-        # "image.buffer": self.m_json_object["image"]["buffer"]
-        Character.extract_roi_from_image(
-            full_image_path,
-            p_image_output_directory + json_object["image"]["buffer"],
-            Character.get_coords_from_url(json_object["image"]["buffer"])
-        )
+    #     # 'Buffer' path
+    #     # (ex. /img/iiif/books/restoration/anon_R5466_usnnnc_menetekel1663/lines_color/anon_R5466_usnnnc_menetekel1663-0005_page1r.tif/1477,1055,179,169/150,/0/default.jpg)
+    #     Character.extract_roi_from_image(
+    #         full_image_path,
+    #         p_image_output_directory + json_object["image"]["buffer"],
+    #         Character.get_coords_from_url(json_object["image"]["buffer"])
+    #     )
 
-        # 'Web URL' path
-        # (ex. /img/iiif/books/restoration/anon_R5466_usnnnc_menetekel1663/lines_color/anon_R5466_usnnnc_menetekel1663-0005_page1r.tif/1527,1105,79,69/full/0/default.jpg)
-        # "image.webUrl": self.m_json_object["image"]["webUrl"]
-        Character.extract_roi_from_image(
-            full_image_path,
-            p_image_output_directory + json_object["image"]["webUrl"],
-            Character.get_coords_from_url(json_object["image"]["webUrl"])
-        )
+    #     # 'Web URL' path
+    #     # (ex. /img/iiif/books/restoration/anon_R5466_usnnnc_menetekel1663/lines_color/anon_R5466_usnnnc_menetekel1663-0005_page1r.tif/1527,1105,79,69/full/0/default.jpg)
+    #     Character.extract_roi_from_image(
+    #         full_image_path,
+    #         p_image_output_directory + json_object["image"]["webUrl"],
+    #         Character.get_coords_from_url(json_object["image"]["webUrl"])
+    #     )
 
-        # C. Delete the full image now that extraction is complete
-        os.unlink(full_image_path)
+    #     # C. Delete the full image now that extraction is complete
+    #     os.unlink(full_image_path)
 
 def main(p_grouping_ids, p_json_output_directory, p_image_output_directory):
 
