@@ -8,6 +8,7 @@
 
 # Built-ins
 import argparse
+import glob
 import json
 import os
 import requests
@@ -16,6 +17,7 @@ import sys
 from uuid import UUID
 
 # Third party
+import cv2
 from tqdm import tqdm
 
 # Globals
@@ -37,12 +39,17 @@ WORKBENCH_URL = "https://printprobdb.psc.edu/"
 
 class API_Object:
 
-    def __init__(self, p_id, p_api_url, p_object_txt_name):
+    def __init__(self, p_id, p_api_url, p_object_txt_name, p_retrieve_api_object=True):
 
         self.m_id = p_id
         self.m_object_txt_name = p_object_txt_name
-        self.m_api_object = API_Object.get_api_object(p_api_url, p_id, p_object_txt_name)
+        self.m_api_object = None
+        if p_retrieve_api_object:
+            self.m_api_object = API_Object.get_api_object(p_api_url, p_id, p_object_txt_name)
         self.m_json_object = None
+
+    def __mimic_api_object(self, p_json_filepath):
+        pass        
 
     @property
     def api_object(self):
@@ -55,22 +62,18 @@ class API_Object:
         return self.m_json_object
     @property
     def object_name(self):
-        return self.m_object_txt_name
+        return self.m_object_txt_name        
 
     def make_image_paths(self):
         pass
-
     def output_to_file(self, p_output_directory):
         with open(f"{p_output_directory}{self.m_object_txt_name}_{self.m_id}.json", "w") as output_file:
             json.dump(self.m_api_object, output_file)
-
     def save_as_json(self):
         pass      
 
     @staticmethod
     def get_api_object(p_api_url, p_uuid, p_object_name):
-
-        # print(f"Retrieving data for {p_object_name}: {p_uuid}...")
 
         try:
             r = requests.get(
@@ -86,26 +89,32 @@ class API_Object:
             exit(0)
 
     @staticmethod
-    def get_workbench_image(p_url, p_prefix_to_replace, p_output_path):
+    def get_workbench_image(p_url, p_prefix_to_replace, p_output_path, p_use_url_path=True):
 
         # ex. https://printprobdb.psc.edu/iiif/books/british_library/asowle_xxxxx_yyyyy_00height_heathen/lines_color/asowle_xxxxx_yyyyy_00height_heathen-0001_page1r.tif/full/full/0/default.jpg
 
         formatted_url = p_url.replace(p_prefix_to_replace, WORKBENCH_URL)
-        disk_output_path = p_output_path + p_url.strip(os.sep)
+        if p_use_url_path:
+            disk_output_path = p_output_path + p_url.strip(os.sep)
+        else:
+            disk_output_path = p_output_path + p_url[p_url.rfind("/") + 1:]
 
         # 1. Download the image
         try:
-            print(f"Downloading {formatted_url} ...")
-            r = requests.get(formatted_url)
+            # print(f"Downloading {formatted_url} ...")
+            r = requests.get(formatted_url, timeout=None)
         except requests.exceptions.HTTPError as err:
             print(f"Error fetching image {formatted_url}: {err}")
             return
 
-        print(f"Writing file to: {disk_output_path}")
+        # print(f"Writing file to: {disk_output_path}")
 
         # 2. Write the response to a file in the appropriate location
         with open(disk_output_path, "wb") as output_file:
             output_file.write(r.content)
+
+        # 3. Return the path to the image file on disk
+        return disk_output_path
 
     @staticmethod
     def localize_url(p_url):
@@ -145,10 +154,55 @@ class Book(API_Object):
     s_api_url = API_URLS["BOOKS"]
     s_object_txt_name = "book"
     
-    def __init__(self, p_book_id):
+    def __init__(self, p_book_id, p_json_filepath=None):
 
-        super().__init__(p_book_id, Book.s_api_url, Book.s_object_txt_name)
+        super().__init__(p_book_id, Book.s_api_url, Book.s_object_txt_name, None == p_json_filepath)
+        if p_json_filepath:
+            self.__mimic_api_object(p_json_filepath)
         self.save_as_json()
+
+    def __mimic_api_object(self, p_json_filepath):
+
+        with open(p_json_filepath, "r") as json_file:
+            json_data = json.load(json_file)
+
+        self.m_api_object = {
+
+            "id": json_data["id"],
+            "eebo": json_data["eebo"],
+            "vid": json_data["vid"],
+            "tcp": json_data["tcp"],
+            "estc": json_data["estc"],
+            "label": json_data["label"],
+            "pp_publisher": json_data["ppPublisher"],
+            "pp_author": json_data["ppAuthor"],
+            "pq_publisher": json_data["pqPublisher"],
+            "pq_title": json_data["pqTitle"],
+            "pq_url": json_data["pqUrl"],
+            "pq_author": json_data["pqAuthor"],
+            "pq_year_verbatim": json_data["pqYearVerbatim"],
+            "pq_year_early": json_data["pqYearEarly"],
+            "pq_year_late": json_data["pqYearLate"],
+            "spreads": [dict() for _ in range(int(json_data["nSpreads"]))],
+            "cover_page": {
+                "id": json_data["coverPage"]["id"],
+                "label": json_data["coverPage"]["id"],
+                "sequence": json_data["coverPage"]["sequence"],
+                "side": json_data["coverPage"]["side"],
+                "image": {
+                    "tif": json_data["coverPage"]["image"]["tif"],
+                    "iiif_base": json_data["coverPage"]["image"]["iiifBase"],
+                    "web_url": json_data["coverPage"]["image"]["webUrl"],
+                    "thumbnail": json_data["coverPage"]["image"]["thumbnail"],
+                    "full_tif": json_data["coverPage"]["image"]["fullTif"]
+                }
+            },
+            "is_eebo_book": json_data["isEeboBook"],
+            "repository": json_data["repository"],
+            "pp_printer": json_data["ppPrinter"],
+            "colloq_printer": json_data["colloqPrinter"],
+            "pp_notes": json_data["ppNotes"]
+        }        
     
     def make_image_paths(self, p_image_output_directory):
 
@@ -224,10 +278,58 @@ class Character(API_Object):
     s_api_url = API_URLS["CHARACTERS"]
     s_object_txt_name = "character"
     
-    def __init__(self, p_character_id):
+    def __init__(self, p_character_id, p_json_filepath=None):
 
-        super().__init__(p_character_id, Character.s_api_url, Character.s_object_txt_name)
+        super().__init__(p_character_id, Character.s_api_url, Character.s_object_txt_name, None == p_json_filepath)
+        if p_json_filepath:
+            self.__mimic_api_object(p_json_filepath)
         self.save_as_json()
+
+    def __mimic_api_object(self, p_json_filepath):
+
+        with open(p_json_filepath, "r") as json_file:
+            json_data = json.load(json_file)
+
+        self.m_api_object = {
+
+            "id": json_data["id"],
+            "label": json_data["label"],
+            "sequence": json_data["sequence"],
+            "character_class": json_data["characterClass"],
+            "class_probability": json_data["classProbability"],
+            "book": {
+                "id": json_data["book"]   
+            },
+            "page": {
+
+                "id": json_data["page"]["id"],
+                "label": json_data["page"]["label"],
+                "sequence": json_data["page"]["sequence"],
+                "side": json_data["page"]["side"],
+
+                "image": {
+
+                    "tif": json_data["page"]["image"]["tif"],
+                    "iiif_base": json_data["page"]["image"]["iiifBase"].replace("/img/", WORKBENCH_URL),
+                    "web_url": json_data["page"]["image"]["webUrl"].replace("/img/", WORKBENCH_URL),
+                    "thumbnail": json_data["page"]["image"]["thumbnail"].replace("/img/", WORKBENCH_URL),
+                    "full_tif": json_data["page"]["image"]["fullTif"].replace("/img/", WORKBENCH_URL)
+                }
+            },
+            "image": {
+
+                "web_url": json_data["image"]["webUrl"].replace("/img/", WORKBENCH_URL),
+                "thumbnail": json_data["image"]["thumbnail"].replace("/img/", WORKBENCH_URL),
+                "buffer": json_data["image"]["buffer"].replace("/img/", WORKBENCH_URL)
+            },
+            "absolute_coords": {
+
+                "x": json_data["absoluteCoords"]["x"],
+                "y": json_data["absoluteCoords"]["y"],
+                "w": json_data["absoluteCoords"]["w"],
+                "h": json_data["absoluteCoords"]["h"]
+            }
+        }
 
     @property
     def book(self):
@@ -306,16 +408,61 @@ class Character(API_Object):
             }
         }
 
+    @staticmethod
+    def extract_roi_from_image(p_original_image_path, p_new_image_path, p_coordinates):
+        
+        # 1. Read the original TIF image
+        img = cv2.imread(p_original_image_path, cv2.IMREAD_COLOR)
+
+        # 2. Crop the image
+        roi = img[
+            int(p_coordinates["y1"]):int(p_coordinates["y2"]),
+            int(p_coordinates["x1"]):int(p_coordinates["x2"])
+        ]
+
+        # 3. Save the ROI to a new TIF file
+        cv2.imwrite(p_new_image_path, roi)        
+
+    @staticmethod
+    def get_coords_from_url(p_url):
+        
+        # ex. url: /img/iiif/books/restoration/anon_R5466_usnnnc_menetekel1663/lines_color/anon_R5466_usnnnc_menetekel1663-0005_page1r.tif/1527,1105,79,69/full/0/default.jpg
+        coords_parts = p_url[p_url.find(".tif") + 5:]
+        coords_parts = coords_parts[0:coords_parts.find("/")].split(",")
+
+        return {
+
+            "x1": coords_parts[0],
+            "x2": str(int(coords_parts[0]) + int(coords_parts[2])),
+            "y1": coords_parts[1],
+            "y2": str(int(coords_parts[1]) + int(coords_parts[3]))
+        }
+
 class Grouping(API_Object):
 
     # Static fields
     s_api_url = API_URLS["GROUPINGS"]
     s_object_txt_name = "character grouping"
     
-    def __init__(self, p_grouping_id):
+    def __init__(self, p_grouping_id, p_json_filepath=None):
 
-        super().__init__(p_grouping_id, Grouping.s_api_url, Grouping.s_object_txt_name)
+        super().__init__(p_grouping_id, Grouping.s_api_url, Grouping.s_object_txt_name, None == p_json_filepath)
+        if p_json_filepath:
+            self.__mimic_api_object(p_json_filepath)
         self.save_as_json()
+
+    def __mimic_api_object(self, p_json_filepath):
+
+        with open(p_json_filepath, "r") as json_file:
+            json_data = json.load(json_file)
+
+        self.m_api_object = {
+
+            "id": json_data["id"],
+            "label": json_data["label"],
+            "notes": json_data["notes"],
+            "characters": [{ "id": character } for character in json_data["characters"]]
+        }            
 
     @property
     def characters(self):
@@ -332,6 +479,13 @@ class Grouping(API_Object):
         }
 
 # Utility functions
+
+def cdt_json_exists(p_json_output_directory):
+
+    subdirs = [os.path.basename(item_filepath) for item_filepath in glob.glob(p_json_output_directory + "*")]
+
+    return "books" in subdirs and "characters" in subdirs and "groupings" in subdirs
+
 def format_path(original_path):
 
     '''Make sure given path ends with system folder separator'''
@@ -340,65 +494,80 @@ def format_path(original_path):
 
 # Main script
 
-def build_site_json_files(p_grouping_ids, p_output_directory):
+def build_site_json_files(p_grouping_ids, p_output_directory, p_retrieve_from_disk=False):
 
-    print("Retrieving data from API...")
+    # 0. Read from already-outputted json if requested (mimics reading API object)
+    if p_retrieve_from_disk:
 
-    # 1. Create a list of character grouping objects from the database
-    character_ids = []
-    character_objects = []
-    grouping_objects = []
-    for grouping_id in tqdm(p_grouping_ids, desc="Groupings"):
+        print("Rehydrating API json from already-created CDT json...")
 
-        # A. Get the grouping object from the database
-        grouping_obj = Grouping(grouping_id)
-        grouping_objects.append(grouping_obj)
+        # A. Rehydrate books from json
+        book_objects = []
+        for json_filepath in tqdm(glob.glob(f"{p_output_directory}books{os.sep}*.json"), desc="Books"):
+            id = os.path.splitext(os.path.basename(json_filepath))[0]
+            book_objects.append(Book(id, json_filepath))
 
-        # B.Accrue a list of characters
-        character_ids.extend(grouping_obj.characters)
+        # B. Rehydrate characters from json
+        character_objects = []
+        for json_filepath in tqdm(glob.glob(f"{p_output_directory}characters{os.sep}*.json"), desc="Characters"):
+            id = os.path.splitext(os.path.basename(json_filepath))[0]
+            character_objects.append(Character(id, json_filepath))
 
-        # break
+        # C. Rehydrate groupings from json
+        grouping_objects = []
+        for json_filepath in tqdm(glob.glob(f"{p_output_directory}groupings{os.sep}*.json"), desc="Groupings"):
+            id = os.path.splitext(os.path.basename(json_filepath))[0]
+            grouping_objects.append(Grouping(id, json_filepath))
 
-    # 2. Create a list of character objects from the database
-    character_ids = list(set(character_ids))
-    character_objects = [Character(character_id) for character_id in tqdm(character_ids, desc="Characters")]
-    # character_objects = []
-    # for id in character_ids:
-    #     character_objects.append(Character(id))
-    #     break
+    else:
 
-    # 3. Create a list of book objects where the characters are featured
-    book_ids = list(set([character.book for character in character_objects]))
-    book_objects = [Book(book_id) for book_id in tqdm(book_ids, desc="Books")]
-    # book_objects = []
-    # for id in book_ids:
-    #     book_objects.append(Book(id))
-    #     break
+        print("Retrieving data from API...")
 
-    print(f"Writing json data for catalogue to subdirectories in {p_output_directory}...")
+        # 1. Create a list of character grouping objects from the database
+        character_ids = []
+        character_objects = []
+        grouping_objects = []
+        for grouping_id in tqdm(p_grouping_ids, desc="Groupings"):
 
-    # 4. Write all objects to the appropriate subdirectories in the output directory
+            # A. Get the grouping object from the database
+            grouping_obj = Grouping(grouping_id)
+            grouping_objects.append(grouping_obj)
 
-    object_info = {
+            # B.Accrue a list of characters
+            character_ids.extend(grouping_obj.characters)
 
-        "books": book_objects,
-        "characters": character_objects,
-        "groupings": grouping_objects
-    }
-    for subdir in object_info:
+        # 2. Create a list of character objects from the database
+        character_ids = list(set(character_ids))
+        character_objects = [Character(character_id) for character_id in tqdm(character_ids, desc="Characters")]
 
-        # A. Make sure all subdirectories exist
-        if not os.path.exists(p_output_directory + subdir):
-            os.makedirs(p_output_directory + subdir)
+        # 3. Create a list of book objects where the characters are featured
+        book_ids = list(set([character.book for character in character_objects]))
+        book_objects = [Book(book_id) for book_id in tqdm(book_ids, desc="Books")]
 
-        # B. Write out all json objects to file in this subdirectory
-        for obj in object_info[subdir]:
-            json_data_str = json.dumps(obj.json_object, indent=4)
+        print(f"Writing json data for catalogue to subdirectories in {p_output_directory}...")
 
-            output_filename = f"{p_output_directory}{subdir}{os.sep}{obj.id}.json"
-            print(f"Writing {output_filename}...")
-            with open(output_filename, "w") as output_file:
-                output_file.write(json_data_str)
+        # 4. Write all objects to the appropriate subdirectories in the output directory
+
+        object_info = {
+
+            "books": book_objects,
+            "characters": character_objects,
+            "groupings": grouping_objects
+        }
+        for subdir in object_info:
+
+            # A. Make sure all subdirectories exist
+            if not os.path.exists(p_output_directory + subdir):
+                os.makedirs(p_output_directory + subdir)
+
+            # B. Write out all json objects to file in this subdirectory
+            for obj in object_info[subdir]:
+                json_data_str = json.dumps(obj.json_object, indent=4)
+
+                output_filename = f"{p_output_directory}{subdir}{os.sep}{obj.id}.json"
+                print(f"Writing {output_filename}...")
+                with open(output_filename, "w") as output_file:
+                    output_file.write(json_data_str)
 
     return book_objects, character_objects, grouping_objects
 
@@ -418,7 +587,7 @@ def create_site_images(p_book_objects, p_character_objects, p_grouping_objects, 
 
     # 2. Download full page images to the appropriate subdirectories
 
-    print(f"Downloading images...")
+    print(f"Downloading page thumbnails images...")
 
     # A. Get list of all image files to download
     base_images_to_download = []
@@ -427,8 +596,8 @@ def create_site_images(p_book_objects, p_character_objects, p_grouping_objects, 
     base_images_to_download = list(set(base_images_to_download))
 
     # B. Download images
-    for image_path in tqdm(base_images_to_download, desc="Images"):
-        API_Object.get_workbench_image(image_path, "/img/", p_image_output_directory)        
+    for image_path in tqdm(base_images_to_download, desc="Page thumbnails"):
+        API_Object.get_workbench_image(image_path, "/img/", p_image_output_directory)
 
     # B. Remove workbench url prefix from paths
 
@@ -445,10 +614,43 @@ def create_site_images(p_book_objects, p_character_objects, p_grouping_objects, 
     # 3. Extract the needed sub-images and scaled images from the full images
     #    and put them in the appropriate subdirectories
 
+    # Character fields
+    # # 'Buffer' path
+    # # (ex. /img/iiif/books/restoration/anon_R5466_usnnnc_menetekel1663/lines_color/anon_R5466_usnnnc_menetekel1663-0005_page1r.tif/1477,1055,179,169/150,/0/default.jpg)
+    # "image.buffer": self.m_json_object["image"]["buffer"],
+
+    # # 'Web URL' path
+    # # (ex. /img/iiif/books/restoration/anon_R5466_usnnnc_menetekel1663/lines_color/anon_R5466_usnnnc_menetekel1663-0005_page1r.tif/1527,1105,79,69/full/0/default.jpg)
+    # "image.webUrl": self.m_json_object["image"]["webUrl"],
+
+    print("Extracting characters from full page image...")
+
+    for character_object in tqdm(p_character_objects, desc="Characters"):
+
+        json_object = character_object.json_object
+        
+        # A. Download full image
+        full_image_path = API_Object.get_workbench_image(json_object["page"]["image"]["fullTif"], "/img/", p_image_output_directory, False)
+        
+        # B. Extract regions of interest from full image and place it in the appropriate directory
+        Character.extract_roi_from_image(
+            full_image_path,
+            p_image_output_directory + json_object["image"]["buffer"],
+            Character.get_coords_from_url(json_object["image"]["buffer"])
+        )
+        Character.extract_roi_from_image(
+            full_image_path,
+            p_image_output_directory + json_object["image"]["webUrl"],
+            Character.get_coords_from_url(json_object["image"]["webUrl"])
+        )
+
+        # C. Delete the full image now that extraction is complete
+        os.unlink(full_image_path)
+
 def main(p_grouping_ids, p_json_output_directory, p_image_output_directory):
 
     # 1. Build and write json objects to given output directory
-    book_objects, character_objects, grouping_objects = build_site_json_files(p_grouping_ids, p_json_output_directory)
+    book_objects, character_objects, grouping_objects = build_site_json_files(p_grouping_ids, p_json_output_directory, cdt_json_exists(p_json_output_directory))
 
     # 2. Download base images from the Print & Probability workbench and extract segments for the site images
     create_site_images(book_objects, character_objects, grouping_objects, p_image_output_directory)
@@ -488,7 +690,7 @@ if "__main__" == __name__:
     elif os.path.exists(args.input):
         with open(args.input, "r") as input_file:
             input_lines = input_file.readlines()
-            for line in lines:
+            for line in input_lines:
                 possible_id = line.strip()
                 if not API_Object.is_valid_uuid(line.strip()):
                     print(f"{possible_id} is not a valid UUID")
