@@ -30,6 +30,12 @@ export default defineNuxtPlugin(() => {
                     image: "/img/fleuron.svg"
                 },
 
+                pnpLogo: {
+                    
+                    alt: "Print & Probability",
+                    image: "/img/pnp_logo.png"
+                },
+
                 github: "https://github.com/printprobability/cdt",
 
                 maintitle: "Catalog of Distinctive Type",

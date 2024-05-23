@@ -6,7 +6,7 @@
         <header class="text-center my-5">
             <h1 class="dldt-text-h2">{{ $siteConfig.maintitle }}</h1>
             <h1 class="dldt-text-h1">{{ $siteConfig.subtitle }}</h1>
-            <v-img :src="$siteConfig.fleuron.image" class="my-3" height="70" :alt="$siteConfig.fleuron.alt"></v-img>
+            <v-img :src="$siteConfig.pnpLogo.image" class="my-3" height="70" :alt="$siteConfig.pnpLogo.alt"></v-img>
             <p class="dldt-text-h3">{{ $siteConfig.abstract }}</p>
         </header>
 
