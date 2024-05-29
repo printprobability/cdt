@@ -36,6 +36,12 @@ DEFAULT_JSON_OUTPUT_DIRECTORY = "{0}{1}content{1}".format(os.getcwd(), os.sep)
 DEFAULT_IMAGE_OUTPUT_DIRECTORY = "{0}{1}public{1}".format(os.getcwd(), os.sep)
 WORKBENCH_URL = "https://printprobdb.psc.edu/"
 
+# NOTE: This amount is set to limit the size of the dataset
+# 200 characters is a limit specified by C. Warren (05/29/2024), but this
+# amount should be either adjusted or its use eliminated upon completion of the
+# Project 241 character grouping dataset
+CHARACTER_GROUPING_SIZE_LIMIT = 200
+
 
 # Classes
 
@@ -498,7 +504,11 @@ class Grouping(API_Object):
 
     @property
     def characters(self):
-        return [entry["id"] for entry in self.m_api_object["characters"]]
+
+        if len(self.m_api_object["characters"]) > CHARACTER_GROUPING_SIZE_LIMIT:
+            return [entry["id"] for entry in self.m_api_object["characters"][0:CHARACTER_GROUPING_SIZE_LIMIT]]
+        else:
+            return [entry["id"] for entry in self.m_api_object["characters"]]
         
     def save_as_json(self):
 
@@ -560,6 +570,7 @@ def build_site_json_files(p_grouping_ids, p_output_directory, p_retrieve_from_di
         character_ids = []
         character_objects = []
         grouping_objects = []
+
         for grouping_id in tqdm(p_grouping_ids, desc="Groupings"):
 
             # A. Get the grouping object from the database
@@ -606,24 +617,24 @@ def build_site_json_files(p_grouping_ids, p_output_directory, p_retrieve_from_di
 
 def create_site_images(p_book_objects, p_character_objects, p_grouping_objects, p_image_output_directory):
 
-    # Alternate downloading scheme ...
+    # Alternate downloading scheme to keep group downloads together ...
 
-    # Download and extract all images necessary per group
+    # 1. Download and extract all images necessary per group
     book_dict = { book_object.id: book_object for book_object in p_book_objects }
     character_dict = { character_object.id: character_object for character_object in p_character_objects }
 
     for grouping_object in p_grouping_objects:
 
         # A. Find grouping's character and book objects
-        grouping_character_objects = [character_dict[id] for char_id in grouping_object.characters]
+        grouping_character_objects = [character_dict[char_id] for char_id in grouping_object.characters]
         grouping_book_objects = [book_dict[char_obj.book] for char_obj in grouping_character_objects]
 
         # B. Download book images (if not already downloaded)
-        for book_object in grouping_book_objects:
+        for book_object in tqdm(grouping_book_objects, desc="Book page images"):
             book_object.get_images(p_image_output_directory)
 
         # C. Download and extract character images (if not already downloaded/extracted)
-        for character_object in grouping_character_objects:
+        for character_object in tqdm(grouping_character_objects, desc="Character images"):
             character_object.get_images(p_image_output_directory)
 
     # =============================
