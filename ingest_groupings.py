@@ -288,6 +288,7 @@ class Character(API_Object):
 
     # Static fields
     s_api_url = API_URLS["CHARACTERS"]
+    s_images_to_unlink = []
     s_object_txt_name = "character"
     
     def __init__(self, p_character_id, p_json_filepath=None):
@@ -347,7 +348,7 @@ class Character(API_Object):
     def book(self):
         return self.m_api_object["book"]["id"]
 
-    def get_images(self, p_image_output_directory):
+    def get_images(self, p_image_output_directory, p_unlink_images=True):
 
         # 1. Make the directories for the images of this object (if they do not already exist)
         self.make_image_paths(p_image_output_directory)
@@ -359,22 +360,31 @@ class Character(API_Object):
 
         # 'Buffer' path
         # (ex. /img/iiif/books/restoration/anon_R5466_usnnnc_menetekel1663/lines_color/anon_R5466_usnnnc_menetekel1663-0005_page1r.tif/1477,1055,179,169/150,/0/default.jpg)
-        Character.extract_roi_from_image(
-            full_image_path,
-            p_image_output_directory + self.m_json_object["image"]["buffer"],
-            Character.get_coords_from_url(self.m_json_object["image"]["buffer"])
-        )
+        if not os.path.exists(p_image_output_directory + self.m_json_object["image"]["buffer"]):
+            print(f"Extracting {p_image_output_directory + self.m_json_object['image']['buffer']}")
+            Character.extract_roi_from_image(
+                full_image_path,
+                p_image_output_directory + self.m_json_object["image"]["buffer"],
+                Character.get_coords_from_url(self.m_json_object["image"]["buffer"])
+            )
 
         # 'Web URL' path
         # (ex. /img/iiif/books/restoration/anon_R5466_usnnnc_menetekel1663/lines_color/anon_R5466_usnnnc_menetekel1663-0005_page1r.tif/1527,1105,79,69/full/0/default.jpg)
-        Character.extract_roi_from_image(
-            full_image_path,
-            p_image_output_directory + self.m_json_object["image"]["webUrl"],
-            Character.get_coords_from_url(self.m_json_object["image"]["webUrl"])
-        )
+
+        if not os.path.exists(p_image_output_directory + self.m_json_object["image"]["webUrl"]):
+            print(f"Extracting {p_image_output_directory + self.m_json_object['image']['webUrl']}")
+            Character.extract_roi_from_image(
+                full_image_path,
+                p_image_output_directory + self.m_json_object["image"]["webUrl"],
+                Character.get_coords_from_url(self.m_json_object["image"]["webUrl"])
+            )
 
         # 4. Delete the full image now that extraction is complete
-        os.unlink(full_image_path)
+        if p_unlink_images:
+            if os.path.exists(full_image_path):
+                os.unlink(full_image_path)
+        else:
+            Character.s_images_to_unlink.append(full_image_path)
 
     def make_image_paths(self, p_image_output_directory):
 
@@ -447,19 +457,29 @@ class Character(API_Object):
         }
 
     @staticmethod
+    def clear_images():
+
+        for image_path in Character.s_images_to_unlink:
+            if os.path.exists(image_path):
+                os.unlink(image_path)
+
+    @staticmethod
     def extract_roi_from_image(p_original_image_path, p_new_image_path, p_coordinates):
         
-        # 1. Read the original TIF image
-        img = cv2.imread(p_original_image_path, cv2.IMREAD_COLOR)
+        try:
+            # 1. Read the original TIF image
+            img = cv2.imread(p_original_image_path, cv2.IMREAD_COLOR)
 
-        # 2. Crop the image
-        roi = img[
-            int(p_coordinates["y1"]):int(p_coordinates["y2"]),
-            int(p_coordinates["x1"]):int(p_coordinates["x2"])
-        ]
+            # 2. Crop the image
+            roi = img[
+                int(p_coordinates["y1"]):int(p_coordinates["y2"]),
+                int(p_coordinates["x1"]):int(p_coordinates["x2"])
+            ]
 
-        # 3. Save the ROI to a new TIF file
-        cv2.imwrite(p_new_image_path, roi)        
+            # 3. Save the ROI to a new TIF file
+            cv2.imwrite(p_new_image_path, roi)
+        except:
+            print(f"Trouble extracting {p_new_image_path}")
 
     @staticmethod
     def get_coords_from_url(p_url):
@@ -502,6 +522,7 @@ class Grouping(API_Object):
             "characters": [{ "id": character } for character in json_data["characters"]]
         }            
 
+    # NOTE: The 'characters' property only returns the first CHARACTER_GROUPING_SIZE_LIMIT characters
     @property
     def characters(self):
 
@@ -509,6 +530,9 @@ class Grouping(API_Object):
             return [entry["id"] for entry in self.m_api_object["characters"][0:CHARACTER_GROUPING_SIZE_LIMIT]]
         else:
             return [entry["id"] for entry in self.m_api_object["characters"]]
+    @property
+    def full_characters(self):
+        return [entry["id"] for entry in self.m_api_object["characters"]]
         
     def save_as_json(self):
 
@@ -575,7 +599,12 @@ def build_site_json_files(p_grouping_ids, p_output_directory, p_retrieve_from_di
 
             # A. Get the grouping object from the database
             grouping_obj = Grouping(grouping_id)
-            grouping_objects.append(grouping_obj)
+
+            # Only consider groups within the character limit
+            if len(grouping_obj.full_characters) <= CHARACTER_GROUPING_SIZE_LIMIT:
+                grouping_objects.append(grouping_obj)
+            else:
+                continue
 
             # B.Accrue a list of characters
             character_ids.extend(grouping_obj.characters)
@@ -623,7 +652,7 @@ def create_site_images(p_book_objects, p_character_objects, p_grouping_objects, 
     book_dict = { book_object.id: book_object for book_object in p_book_objects }
     character_dict = { character_object.id: character_object for character_object in p_character_objects }
 
-    for grouping_object in p_grouping_objects:
+    for grouping_object in tqdm(p_grouping_objects, desc="Grouping images"):
 
         # A. Find grouping's character and book objects
         grouping_character_objects = [character_dict[char_id] for char_id in grouping_object.characters]
@@ -635,7 +664,9 @@ def create_site_images(p_book_objects, p_character_objects, p_grouping_objects, 
 
         # C. Download and extract character images (if not already downloaded/extracted)
         for character_object in tqdm(grouping_character_objects, desc="Character images"):
-            character_object.get_images(p_image_output_directory)
+            character_object.get_images(p_image_output_directory, False)
+
+    Character.clear_images()
 
     # =============================
 
@@ -696,10 +727,13 @@ def create_site_images(p_book_objects, p_character_objects, p_grouping_objects, 
     #     # C. Delete the full image now that extraction is complete
     #     os.unlink(full_image_path)
 
-def main(p_grouping_ids, p_json_output_directory, p_image_output_directory):
-
+def main(p_grouping_ids, p_json_output_directory, p_image_output_directory, p_json_only):
+    
     # 1. Build and write json objects to given output directory
     book_objects, character_objects, grouping_objects = build_site_json_files(p_grouping_ids, p_json_output_directory, cdt_json_exists(p_json_output_directory))
+
+    if p_json_only:
+        return
 
     # 2. Download base images from the Print & Probability workbench and extract segments for the site images
     create_site_images(book_objects, character_objects, grouping_objects, p_image_output_directory)
@@ -718,6 +752,9 @@ if "__main__" == __name__:
     # Optional arguments: JSON output directory and image output directory
     parser.add_argument("--json-output", help="Path to the JSON output directory")
     parser.add_argument("--image-output", help="Path to the image output directory")
+
+    # Only json portion of script will be run
+    parser.add_argument("--json-only", action="store_true", help="Output JSON data only (optional)")
 
     args = parser.parse_args()
 
@@ -754,6 +791,7 @@ if "__main__" == __name__:
     print(f"\tgrouping_ids: {grouping_ids}")
     print(f"\tjson_output_directory: {json_output_directory}")
     print(f"\timage_output_directory: {image_output_directory}")
+    print(f"\tjson_only: {args.json_only}")
 
     # 2. Main script
-    main(grouping_ids, json_output_directory, image_output_directory)
+    main(grouping_ids, json_output_directory, image_output_directory, args.json_only)
