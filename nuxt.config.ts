@@ -13,7 +13,7 @@ import vuetify, { transformAssetUrls } from "vite-plugin-vuetify";
 //     const book_routes = books.map(x => "/books/" + x.id);
 //     const grouping_routes = groupings.map(x => "/groupings/" + x.id);
 
-//     return character_routes.concat(book_routes, grouping_routes);    
+//     return character_routes.concat(book_routes, grouping_routes);
 // };
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
@@ -23,24 +23,24 @@ export default defineNuxtConfig({
   build: { transpile: ["vuetify"] },
 
   content: {
-  
-      // fullTextSearchFields: ["label", "notes"],
-      // nestedProperties: ["page.sequence"]
-      nestedProperties: [
-          "image.buffer",
-          "image.thumbnail",
-          "image.webUrl",
-          "page.image.iiifBase",
-          "page.sequence"
-      ],
-      experimental: { search: true }
+
+    // fullTextSearchFields: ["label", "notes"],
+    // nestedProperties: ["page.sequence"]
+    nestedProperties: [
+      "image.buffer",
+      "image.thumbnail",
+      "image.webUrl",
+      "page.image.iiifBase",
+      "page.sequence"
+    ],
+    experimental: { search: true }
   },
 
-  css: [ "~/assets/scss/custom.scss" ],
+  css: ["~/assets/scss/custom.scss"],
   devtools: { enabled: true },
 
   /* hooks: {
-      
+
       async "nitro:config"(nitroConfig) {
 
           // Fetch the routes from our function above
@@ -49,7 +49,7 @@ export default defineNuxtConfig({
           const character_ids = cdt_routes.characters;
           const book_ids = cdt_routes.books;
           const grouping_ids = cdt_routes.groupings;
-          
+
           const character_routes = character_ids.map(x => "/characters/" + x.id);
           const book_routes = book_ids.map(x => "/books/" + x.id);
           const grouping_routes = grouping_ids.map(x => "/groupings/" + x.id);
@@ -86,22 +86,22 @@ export default defineNuxtConfig({
 
   //         nitroConfig.prerender.routes.push(character_routes.concat(book_routes, grouping_routes));
   //     }
-  // },    
+  // },
 
   modules: [
 
-      "@nuxt/content",
-      
-      "@vueuse/nuxt",
+    "@nuxt/content",
 
-      (_options, nuxt) => {
+    "@vueuse/nuxt",
 
-          nuxt.hooks.hook("vite:extendConfig", (config) => {
+    (_options, nuxt) => {
 
-              // @ts-expect-error
-              config.plugins.push(vuetify({ autoImport: true }));
-          });
-      }        
+      nuxt.hooks.hook("vite:extendConfig", (config) => {
+
+        // @ts-expect-error
+        config.plugins.push(vuetify({ autoImport: true }));
+      });
+    },
   ],
 
   // optimizeDeps: {
@@ -120,13 +120,34 @@ export default defineNuxtConfig({
 
   vite: {
 
-      vue: {
+    vue: {
 
-          template: {
+      template: {
 
-              transformAssetUrls
-          },
+        transformAssetUrls
       },
+    },
+  },
+
+  runtimeConfig: {
+    public: {
+      API_BASE_URL: process.env.API_BASE_URL,
+
+      // https://axios-http.com/docs/req_config
+      axios: {
+        headers: {
+          'Accept': 'application/json, text/plain, */*',
+          'Authorization': process.env.API_TOKEN,
+        },
+        baseURL: process.env.API_BASE_URL + "/api"
+      },
+    },
+  },
+
+  nitro: {
+    routeRules: {
+      '/api/**': { proxy: process.env.PROXY_API_BASE_URL + '/api/**' },
+    }
   },
 
   compatibilityDate: "2024-08-20"

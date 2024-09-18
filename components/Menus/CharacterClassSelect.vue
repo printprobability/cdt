@@ -1,0 +1,89 @@
+<template>
+  <div class="d-flex align-center ga-2">
+    <span>Character/Letterform</span>
+    <v-select
+      :items="characterClasses"
+      :model-value="props.modelValue"
+      hide-details
+      item-title="classname"
+      item-value="classname"
+      @update:modelValue="$emit('update:modelValue', $event)"
+    >
+      <template #append-item>
+        <v-list-item v-if="hasNextPage" class="text-center">
+          <v-progress-circular
+            v-intersect="fetchNextPage"
+            color="primary"
+            class="justify-center"
+            indeterminate
+          ></v-progress-circular>
+        </v-list-item>
+      </template>
+    </v-select>
+  </div>
+</template>
+
+<script setup>
+import _ from "lodash";
+import { defineProps, defineEmits, ref, computed, nextTick } from "vue";
+
+// Props
+const props = defineProps({
+  modelValue: { type: String },
+});
+
+// Emits
+const emit = defineEmits(["update:modelValue"]);
+
+// Get resources
+const { $axios } = useNuxtApp();
+
+// ********************************
+// Menu status
+// ********************************
+// Does data has next page
+const hasNextPage = computed(
+  () => !!(fetchedData.value && fetchedData.value.next)
+);
+
+// ********************************
+// Data fetch from API
+// ********************************
+// Fetch data
+const { data: fetchedData } = await useAsyncData(
+  "fetchCharacterClasses",
+  async () => (await $axios.get("/character_classes")).data
+);
+// Get character classes object
+const characterClasses = computed(() => fetchedData.value?.results ?? []);
+
+// ********************************
+// Fetching next page
+// ********************************
+// Check if fetching
+const isFetching = ref(false);
+// Fetch next page when scrolling to the end
+const fetchNextPage = (isIntersecting, entries, observer) => {
+  // Only fetch when not fetching and loading indicator is intersected
+  if (!isFetching.value && isIntersecting) {
+    // Check if having next page
+    if (fetchedData.value.next) {
+      // Mark as fetching
+      isFetching.value = true;
+      // Call API
+      $axios.request({ url: fetchedData.value.next }).then((res) => {
+        // Merge new data into current data
+        mergeData(res.data);
+        // Mark as not fetching
+        nextTick(() => (isFetching.value = false));
+      });
+    }
+  }
+};
+// Merge data
+const mergeData = (data) =>
+  (fetchedData.value = {
+    ...data,
+    results: _.concat(fetchedData.value.results, data.results),
+  });
+</script>
