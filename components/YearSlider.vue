@@ -1,18 +1,17 @@
 <template>
   <div class="d-flex align-center ga-2">
-    <span>Year</span>
     <v-range-slider
     :model-value="yearRange"
     :min="props.minYear"
     :max="props.maxYear"
+    label="Year"
     strict
     thumb-label
     hide-details
     persistent-hint
-    @update:model-value="
-      emit('update:modelValue', { yearEarly: $event[0], yearLate: $event[1] })
-    "
-  />
+    @update:model-value="emit('update:modelValue', { yearEarly: $event[0], yearLate: $event[1] })"
+    @update:focused="$event || $emit('blur')"
+    />
   </div>
 </template>
 
@@ -25,7 +24,7 @@ const props = defineProps({
   minYear: { type: Number, default: 1600 },
 });
 
-const emit = defineEmits(["update:modelValue"]);
+const emit = defineEmits(["update:modelValue", "blur"]);
 
 // Model value
 // const modelValue = toRef(props, 'modelValue')
