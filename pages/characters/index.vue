@@ -44,7 +44,7 @@
 
       <div v-if="pageNums > 0" class="d-flex justify-center align-center">
         <span class="d-flex">
-          {{ (page - 1) * 10 + 1 }}-{{ (page - 1) * 10 + 10 }} of {{ count }}
+          {{ pageOffset + 1 }}-{{ pageOffset + itemsPerPage }} of {{ count }}
         </span>
         <v-pagination :length="pageNums" v-model="page" class="ml-2" />
       </div>
@@ -95,6 +95,8 @@ watch(mode, (value) => {
 const page = ref(1);
 // Number of pages
 const pageNums = computed(() => Math.ceil(count.value / itemsPerPage.value));
+// Page offset
+const pageOffset = computed(() => (page.value - 1) * 10)
 
 // Items per page
 const itemsPerPage = ref(50);

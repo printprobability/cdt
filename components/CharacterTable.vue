@@ -30,7 +30,7 @@
               <v-tooltip location="bottom">
                 <template v-slot:activator="{ props }">
                   <div v-bind="props">
-                    {{ character.book.estc || "ESTC Placeholder" }}
+                    {{ character.book.estc }}
                   </div>
                 </template>
 
