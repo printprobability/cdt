@@ -1,127 +1,82 @@
 <template>
+  <v-container>
+    <v-main class="d-flex flex-column align-center justify-center">
+      <h1>E (Uppercase)</h1>
 
-    <v-container>
-
-        <div class="mb-3">
-
-            <VMedia imageAlt="" :imageSrc="character[0].image.buffer">
-                <template #content>
-                    <h1>{{ character[0].label }}</h1>
-                </template>
-            </VMedia>
-
+      <div class="d-flex">
+        <div>
+          <v-img
+            :id="character.id"
+            :alt="character.label"
+            width="90px"
+            height="110px"
+            max-width="90px"
+            max-height="110px"
+            class="border border-sm border-opacity-100 border-black"
+            lazy-src="/img/image.jpg"
+            src="https://printprobdb.psc.edu/iiif//books/redo/twarreniii_R38820_uk_8_acollectionofpoemsbyseveralREDO1693/pages_color/twarreniii_R38820_uk_8_acollectionofpoemsbyseveralREDO1693-0034.tif/35,1735,40,53/full/0/default.jpg"
+          />
+          <!-- :src="props.character.image.webUrl" -->
         </div>
+        <div class="pl-2">
+          <div style="width: 30vw">
+            <strong>Date:</strong> {{ character.book.pq_year_early }}
+          </div>
 
-        <v-card border="sm" flat>
+          <div style="width: 30vw" class="mt-2">
+            <strong>Printer:</strong> {{ character.book.pp_printer }}
+          </div>
 
-            <v-tabs v-model="tab">
-                <v-tab value="one">View on Page</v-tab>
-                <v-tab value="two">Groupings</v-tab>
-                <v-tab value="three">JSON</v-tab>
-            </v-tabs>
-        
-            <v-card-text>
-                <v-window v-model="tab">
-                    <v-window-item class="noteworthy_tab" :transition="false" value="one">
-                        <v-row>
-                            <v-col cols="3">
-                                <p>
-                                    From
-                                    <NuxtLink :to="{ name: 'books-id', params: { id: book.id } }">
-                                        <i>{{ book.pqTitle }}</i> </NuxtLink>, page {{ character[0].page.sequence }}, line XXX,
-                                    position
-                                    {{ character[0].sequence }}
-                                </p>
-                                <p>Printer: {{ book.ppPublisher }}</p>
-                                <p>
-                                    Classified as {{ character[0].characterClass }} with a log
-                                    probability of
-                                    {{ character[0].classProbability }}
-                                </p>
-                            </v-col>
+          <div style="width: 30vw" class="mt-2">
+            <strong>Source Book:</strong> {{ character.book.estc }}
+          </div>
 
-                            <v-col cols="9">
-                                <!-- <AnnotatedImage
-                                    :id="character.id"
-                                    :image_info_url="`${character.page.image.iiifBase}/info.json`"
-                                    :overlay="character.absoluteCoords" /> -->
-                            </v-col>
-                        </v-row>
-                    </v-window-item>
-                    <v-window-item class="noteworthy_tab" :transition="false" value="two">
-                        <v-list>
-                            <v-list-item v-for="grouping in groupings" :key="grouping.id">
-                                <GroupingCard :grouping="grouping" :selected_character_id="character[0].id" />
-                            </v-list-item>
-                        </v-list>
-                    </v-window-item>
-                    <v-window-item class="noteworthy_tab" :transition="false" value="three">
-                        <!-- <InterfaceJSONButton :href="`/characters/${character[0].id}.json`"></InterfaceJSONButton> -->
-                        <pre>{{ formattedCharacterJSON }}</pre>
-                    </v-window-item>
-                </v-window>
-            </v-card-text>
-        </v-card>
-    </v-container>
-    
+          <div style="width: 30vw" class="mt-2">
+            <strong>Character Coordinate:</strong>
+            <div class="pl-5">
+              x: {{ character.absolute_coords.x }}<br />
+              y: {{ character.absolute_coords.y }}<br />
+              w: {{ character.absolute_coords.w }}<br />
+              h: {{ character.absolute_coords.h }}<br />
+            </div>
+          </div>
+
+          <div style="width: 30vw" class="mt-2">
+            <strong>Cite As</strong>: {{ character.line.label }}
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-10" style="width: 80vw">
+        <h2 class="text-center">
+          Other examples of character class (A, B, C, etx) for printer in CDT
+        </h2>
+
+        <CharacterGrid v-if="otherCharacters" :characters="otherCharacters" />
+      </div>
+    </v-main>
+  </v-container>
 </template>
 
-
 <script setup>
+// Resoures
+const { $axios } = useNuxtApp();
 
-    const route = useRoute();
+// Route
+const route = useRoute();
 
-    // Data
-    const tab = ref(null);
+// Fetch detail
+const { data: character } = await useAsyncData(
+  "fetchCharacterDetail",
+  async () => (await $axios.get(`/characters/${route.params.id}`)).data
+);
 
-    // Async data
-    const { data: character } = await useAsyncData("myCharacters", () => queryContent("characters", route.params.id).find());
+// Fetch other characters
+const { data: otherCharacters } = await useAsyncData(
+  "fetchOtherCharacters",
+  async () => (await $axios.get("/characters/?limit=20")).data.results
+);
 
-    const { data: book } = await useAsyncData("myBooks", () => queryContent("books", character.value.book).find());
-
-    const { data: groupings } = await useAsyncData("myGroupings", () => queryContent("groupings")
-        .where({ characters: { $contains: route.params.id } })
-        .find()
-    );
-
-    // Computed
-
-    const formattedCharacterJSON = computed(() => {
-
-        return JSON.stringify(character.value[0], customReplacer, 4);
-    });
-
-    // Methods
-
-    function customReplacer(key, value) {
-
-        // List of keys to ignore (e.g., 'privateProperty1', 'privateProperty2')
-        const keysToIgnore = [
-
-            "_path",
-            "_dir",
-            "_draft",
-            "_partial",
-            "_locale",
-            "_id",
-            "_type",
-            "title",
-            "_source",
-            "_file",
-            "_extension"
-        ];
-
-        // Omit the key from the output
-        if ( keysToIgnore.includes(key) ) {
-
-            return undefined; 
-        }
-
-        // Include other keys
-        return value; 
-    }
-
-    // Head
-    useHead({ titleTemplate: `Character: ${character.value[0].label} - %s`});
-
+// Head
+useHead({ titleTemplate: `Character: ${character.value.label} - %s` });
 </script>

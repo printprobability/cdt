@@ -2,7 +2,11 @@
 
   <v-container>
 
-    <p class="page-title">{{ props.title }}</p>
+    <div class="d-flex">
+      <p class="page-title">{{ props.title }}</p>
+      <v-spacer/>
+      <slot name="left"></slot>
+    </div>
 
     <slot name="intro"></slot>
 

@@ -8,36 +8,50 @@
       <p>{{ $siteConfig.browsecopy.characters }}</p>
     </template>
 
+    <template #left>
+      <v-btn-toggle v-model="mode" color="red-darken-3" mandatory variant="outlined">
+        <v-btn icon="mdi-view-grid" value="grid" />
+        <v-btn icon="mdi-table" value="table" />
+      </v-btn-toggle>
+    </template>
+
     <template #filter>
-      <client-only>
-        <TextField label="Printer (Last name)" @blur="filter"/>
-        <YearSlider
-          v-model="yearRange"
-          :min="MIN_YEAR"
-          :max="MAX_YEAR"
-          class="mt-3"
-          @blur="filter"
-        />
-        <MenusCharacterClassSelect v-model="characterClass" class="mt-3" @blur="filter"/>
-      </client-only>
-      <v-divider/>
+      <TextField label="Printer (Last name)" @blur="filter" />
+      <YearSlider
+        v-model="yearRange"
+        :min="MIN_YEAR"
+        :max="MAX_YEAR"
+        class="mt-3"
+        @blur="filter"
+      />
+      <MenusCharacterClassSelect
+        v-model="characterClass"
+        class="mt-3"
+        @blur="filter"
+      />
+      <v-divider class="mt-4" />
     </template>
 
     <template #results>
-      <CharacterGrid :characters/>
+      <CharacterGrid v-if="mode === 'grid'" :characters />
+      <CharacterTable v-else-if="mode === 'table'" :characters />
 
-      <v-pagination v-if="pageNums > 0" :length="pageNums" v-model="page"></v-pagination>
+      <v-pagination
+        v-if="pageNums > 0"
+        :length="pageNums"
+        v-model="page"
+      ></v-pagination>
     </template>
   </InterfaceList>
 </template>
 
 <script setup>
-import {reactive, ref, watch} from "vue";
+import { reactive, ref, watch, computed, nextTick } from "vue";
 
 // Head
-useHead({titleTemplate: "Character Search - %s"});
+useHead({ titleTemplate: "Character Search - %s" });
 // Resources
-const {$axios} = useNuxtApp();
+const { $axios } = useNuxtApp();
 
 // ********************************
 // Config
@@ -49,12 +63,21 @@ const MAX_YEAR = 1800;
 // View mode
 // ********************************
 // Mode
-const mode = ref('grid');
+const mode = ref("grid");
+// Change itemsPerPage when changing mode
+watch(mode, (value) => {
+  // Update items
+  itemsPerPage.value = value === "grid" ? 50 : 10
+  // Clear data
+  characters.value = []
+  // Fetch at nextTick
+  nextTick(filter)
+});
 
 // Page
 const page = ref(1);
 // Number of pages
-const pageNums = ref(0);
+const pageNums = computed(() => Math.ceil(count.value / itemsPerPage.value));
 
 // Items per page
 const itemsPerPage = ref(50);
@@ -63,11 +86,11 @@ const itemsPerPage = ref(50);
 // Filter
 // ********************************
 // Printer
-const printer = ref('');
+const printer = ref("");
 // Year range
-const yearRange = ref({yearEarly: MIN_YEAR, yearLate: MAX_YEAR});
+const yearRange = ref({ yearEarly: MIN_YEAR, yearLate: MAX_YEAR });
 // Character class
-const characterClass = ref('');
+const characterClass = ref("");
 
 // Filter query
 const filterQuery = computed(() => {
@@ -77,26 +100,29 @@ const filterQuery = computed(() => {
     offset: itemsPerPage.value * (page.value - 1),
     pq_year_early: yearRange.value.yearEarly,
     pq_year_late: yearRange.value.yearLate,
-  }
+  };
 
-  if (printer.value) query['printer_like'] = printer.value;
-  if (characterClass.value) query['character_class'] = characterClass.value;
+  if (printer.value) query["printer_like"] = printer.value;
+  if (characterClass.value) query["character_class"] = characterClass.value;
 
-  return query
-})
+  return query;
+});
 // Filter
-const filter = () => $axios.get('/characters/', {params: filterQuery.value}).then(res => {
-  // Get fetched data
-  characters.value = res.data.results
-  // Calculate number of pages
-  pageNums.value = Math.ceil(res.data.count / itemsPerPage.value)
-})
+const filter = () =>
+  $axios.get("/characters/", { params: filterQuery.value }).then((res) => {
+    // Get fetched data
+    characters.value = res.data.results;
+    // Save count
+    count.value = res.data.count;
+  });
 // Fetch data on page changes
-watch(page, filter)
+watch(page, filter);
 
 // ********************************
 // Characters
 // ********************************
 // Characters
-const characters = ref([])
+const characters = ref([]);
+// Total count
+const count = ref(0);
 </script>

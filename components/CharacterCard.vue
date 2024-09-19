@@ -48,34 +48,6 @@
         Source Book: {{ props.character.book.estc }}
       </v-card-text>
     </v-skeleton-loader>
-
-    <template v-if="!props.short">
-      <v-skeleton-loader
-        :loading="props.loading"
-        class="flex-grow-1"
-        type="text"
-        style="margin: 0 !important;"
-      >
-        <v-card-text class="d-flex pt-0">
-          Character Coordinate:
-          x: {{ props.character.absolute_coords.x }};
-          y: {{ props.character.absolute_coords.y }};
-          w: {{ props.character.absolute_coords.w }};
-          h: {{ props.character.absolute_coords.h }};
-        </v-card-text>
-      </v-skeleton-loader>
-
-      <v-skeleton-loader
-        :loading="props.loading"
-        class="flex-grow-1"
-        type="text"
-        style="margin: 0 !important;"
-      >
-        <v-card-text class="d-flex pt-0">
-          Cite As: {{ props.character.line.label }}
-        </v-card-text>
-      </v-skeleton-loader>
-    </template>
   </v-card>
 </template>
 
@@ -86,6 +58,5 @@ const props = defineProps({
   character: {type: Object},
   loading: {type: Boolean},
   width: {type: String},
-  short: {type: Boolean}
 });
 </script>
