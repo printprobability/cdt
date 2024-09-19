@@ -5,11 +5,17 @@
     :empty="characters.length === 0"
   >
     <template #intro>
-      <p>{{ $siteConfig.browsecopy.characters }}</p>
+      <!-- <p>{{ $siteConfig.browsecopy.characters }}</p> -->
+      <p>{{ intro }}</p>
     </template>
 
     <template #left>
-      <v-btn-toggle v-model="mode" color="red-darken-3" mandatory variant="outlined">
+      <v-btn-toggle
+        v-model="mode"
+        color="red-darken-3"
+        mandatory
+        variant="outlined"
+      >
         <v-btn icon="mdi-view-grid" value="grid" />
         <v-btn icon="mdi-table" value="table" />
       </v-btn-toggle>
@@ -29,7 +35,6 @@
         class="mt-3"
         @end="filter"
       />
-      <v-divider class="mt-4" />
     </template>
 
     <template #results>
@@ -58,6 +63,10 @@ const { $axios, $loader } = useNuxtApp();
 // ********************************
 const MIN_YEAR = 1600;
 const MAX_YEAR = 1800;
+// Intro
+const intro = ref(
+  "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+);
 
 // ********************************
 // View mode
@@ -67,11 +76,11 @@ const mode = ref("grid");
 // Change itemsPerPage when changing mode
 watch(mode, (value) => {
   // Update items
-  itemsPerPage.value = value === "grid" ? 50 : 10
+  itemsPerPage.value = value === "grid" ? 50 : 10;
   // Clear data
-  characters.value = []
+  characters.value = [];
   // Fetch at nextTick
-  nextTick(filter)
+  nextTick(filter);
 });
 
 // Page
@@ -108,9 +117,9 @@ const filterQuery = computed(() => {
   return query;
 });
 // Filter
-const filter = () =>{
+const filter = () => {
   // Open loading overlay
-  $loader.load()
+  $loader.load();
   // Call API
   $axios.get("/characters/", { params: filterQuery.value }).then((res) => {
     // Get fetched data
@@ -118,9 +127,9 @@ const filter = () =>{
     // Save count
     count.value = res.data.count;
     // Close
-    $loader.finish()
+    $loader.finish();
   });
-}
+};
 
 // Fetch data on page changes
 watch(page, filter);

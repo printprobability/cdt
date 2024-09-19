@@ -8,7 +8,7 @@
       item-title="classname"
       item-value="classname"
       :items="characterClasses"
-      >
+    >
       <template #append-item>
         <v-list-item v-if="hasNextPage" class="text-center">
           <v-progress-circular
@@ -42,7 +42,7 @@ const { $axios } = useNuxtApp();
 // Model
 const model = useVModel(props, "modelValue", emit);
 // Emit end event
-watch(model, () => emit('end'));
+watch(model, () => emit("end"));
 
 // ********************************
 // Menu status
