@@ -6,7 +6,8 @@
   >
     <template #intro>
       <!-- <p>{{ $siteConfig.browsecopy.characters }}</p> -->
-      <p>{{ intro }}</p>
+      <div style="font-size: 18px; font-weight: bold">{{ title }}</div>
+      <p class="mt-2">{{ intro }}</p>
     </template>
 
     <template #left>
@@ -41,11 +42,12 @@
       <CharacterGrid v-if="mode === 'grid'" :characters />
       <CharacterTable v-else-if="mode === 'table'" :characters />
 
-      <v-pagination
-        v-if="pageNums > 0"
-        :length="pageNums"
-        v-model="page"
-      ></v-pagination>
+      <div v-if="pageNums > 0" class="d-flex justify-center align-center">
+        <span class="d-flex">
+          {{ (page - 1) * 10 + 1 }}-{{ (page - 1) * 10 + 10 }} of {{ count }}
+        </span>
+        <v-pagination :length="pageNums" v-model="page" class="ml-2" />
+      </div>
     </template>
   </InterfaceList>
 </template>
@@ -57,12 +59,18 @@ import { reactive, ref, watch, computed, nextTick } from "vue";
 useHead({ titleTemplate: "Character Search - %s" });
 // Resources
 const { $axios, $loader } = useNuxtApp();
+// Get route
+const route = useRoute();
 
 // ********************************
 // Config
 // ********************************
 const MIN_YEAR = 1600;
 const MAX_YEAR = 1800;
+// Title
+const title = ref(
+  "Catalog & Distinctive Types, Restoration England (1640-1700)"
+);
 // Intro
 const intro = ref(
   "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
@@ -113,6 +121,7 @@ const filterQuery = computed(() => {
 
   if (printer.value) query["printer_like"] = printer.value;
   if (characterClass.value) query["character_class"] = characterClass.value;
+  if (route.query.book) query["book"] = route.query.book;
 
   return query;
 });
@@ -121,14 +130,14 @@ const filter = () => {
   // Open loading overlay
   $loader.load();
   // Call API
-  $axios.get("/characters/", { params: filterQuery.value }).then((res) => {
+  $axios.get("/characters/", { params: filterQuery.value })
+  .then((res) => {
     // Get fetched data
     characters.value = res.data.results;
     // Save count
     count.value = res.data.count;
-    // Close
-    $loader.finish();
-  });
+  })
+  .finally($loader.finish);
 };
 
 // Fetch data on page changes
@@ -140,5 +149,7 @@ watch(page, filter);
 // Characters
 const characters = ref([]);
 // Total count
-const count = ref(0);
+const count = ref([]);
+// Fetch on mounted
+onMounted(filter);
 </script>

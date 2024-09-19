@@ -8,9 +8,7 @@
 
     <slot name="intro"></slot>
 
-    <hr />
-
-    <v-row>
+    <v-row class="mt-5">
       <v-col cols="3">
         <p class="page-header">Search the Catalog</p>
         <v-form>

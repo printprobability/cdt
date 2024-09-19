@@ -4,9 +4,10 @@
       :model-value="yearRange"
       :min="props.minYear"
       :max="props.maxYear"
-      label="Year"
       strict
+      step="1"
       thumb-label
+      label="Year"
       hide-details
       persistent-hint
       @mouseup="emit('end')"

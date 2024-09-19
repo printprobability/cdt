@@ -77,6 +77,14 @@ const { data: otherCharacters } = await useAsyncData(
   async () => (await $axios.get("/characters/?limit=20")).data.results
 );
 
+if (!character.value) {
+  throw createError({
+    statusCode: 404,
+    statusMessage: 'Page Not Found',
+    fatal: true,
+  })
+}
+
 // Head
 useHead({ titleTemplate: `Character: ${character.value.label} - %s` });
 </script>
