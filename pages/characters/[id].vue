@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-main class="d-flex flex-column align-center justify-center">
-      <h1>E (Uppercase)</h1>
+      <h1>{{ character.character_class }}</h1>
 
       <div class="d-flex">
         <div>
