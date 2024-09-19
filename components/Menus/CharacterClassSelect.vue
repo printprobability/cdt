@@ -5,6 +5,7 @@
       label="Character/Letterform"
       variant="outlined"
       hide-details
+      clearable
       item-title="classname"
       item-value="classname"
       :items="characterClasses"

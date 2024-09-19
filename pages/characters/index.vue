@@ -42,12 +42,13 @@
       <CharacterGrid v-if="mode === 'grid'" :characters />
       <CharacterTable v-else-if="mode === 'table'" :characters />
 
-      <div v-if="pageNums > 0" class="d-flex justify-center align-center">
-        <span class="d-flex">
-          {{ pageOffset + 1 }}-{{ pageOffset + itemsPerPage }} of {{ count }}
-        </span>
-        <v-pagination :length="pageNums" v-model="page" class="ml-2" />
+      <div v-if="pageNums > 0">
+        <v-pagination :length="pageNums" v-model="page"/>
+        <div class="text-center">
+          {{ pageOffset + 1 }}-{{ Math.min(pageOffset + itemsPerPage, count) }} of {{ count }}
+        </div>
       </div>
+
     </template>
   </InterfaceList>
 </template>
@@ -96,7 +97,7 @@ const page = ref(1);
 // Number of pages
 const pageNums = computed(() => Math.ceil(count.value / itemsPerPage.value));
 // Page offset
-const pageOffset = computed(() => (page.value - 1) * 10)
+const pageOffset = computed(() => (page.value - 1) * itemsPerPage.value)
 
 // Items per page
 const itemsPerPage = ref(50);
@@ -109,7 +110,7 @@ const printer = ref("");
 // Year range
 const yearRange = ref({ yearEarly: MIN_YEAR, yearLate: MAX_YEAR });
 // Character class
-const characterClass = ref("");
+const characterClass = ref(null);
 
 // Filter query
 const filterQuery = computed(() => {

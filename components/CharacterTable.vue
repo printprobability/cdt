@@ -1,6 +1,6 @@
 <template>
   <div v-if="props.characters.length > 0">
-    <v-table>
+    <v-table class="character-table">
       <thead>
         <tr>
           <th class="text-center">Type Sort</th>
@@ -101,3 +101,15 @@ watch(() => props.characters, fetchDetails);
 // Fetch details on mounted
 onMounted(() => fetchDetails(props.characters));
 </script>
+<style scoped lang="scss">
+.character-table {
+  & td {
+    text-align: center;
+
+    & a {
+      display: flex;
+      justify-content: center;
+    }
+  }
+}
+</style>
