@@ -90,7 +90,7 @@ export default defineNuxtConfig({
 
   modules: [
 
-    "@nuxt/content",
+    // "@nuxt/content",
 
     "@vueuse/nuxt",
 
