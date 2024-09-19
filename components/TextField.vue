@@ -1,16 +1,15 @@
 <template>
   <div class="d-flex align-center ga-2">
     <v-text-field
-      :model-value="props.modelValue"
+      v-model="model"
       :label="props.label"
       hide-details
       variant="outlined"
-      @update:modelValue="$emit('update:modelValue', $event)"
-      @update:focused="$event || $emit('blur')"
     />
   </div>
 </template>
 <script setup>
+import { useVModel } from "@vueuse/core";
 import { defineProps, defineEmits } from "vue";
 
 const props = defineProps({
@@ -19,4 +18,14 @@ const props = defineProps({
 });
 
 const emit = defineEmits(["update:modelValue", "blur"]);
+
+// Model
+const model = useVModel(props, "modelValue", emit);
+// Emit end event
+watchDebounced(
+  model,
+  // If new and old value is the same, it means that user didn't edit anything
+  (value, oldValue) => value === oldValue || emit("end"),
+  { debounce: 1000, maxWait: 2000 }
+);
 </script>

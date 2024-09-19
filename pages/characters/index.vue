@@ -16,18 +16,18 @@
     </template>
 
     <template #filter>
-      <TextField label="Printer (Last name)" @blur="filter" />
+      <TextField v-model="printer" label="Printer (Last name)" @end="filter" />
       <YearSlider
         v-model="yearRange"
         :min="MIN_YEAR"
         :max="MAX_YEAR"
         class="mt-3"
-        @blur="filter"
+        @end="filter"
       />
       <MenusCharacterClassSelect
         v-model="characterClass"
         class="mt-3"
-        @blur="filter"
+        @end="filter"
       />
       <v-divider class="mt-4" />
     </template>
@@ -51,7 +51,7 @@ import { reactive, ref, watch, computed, nextTick } from "vue";
 // Head
 useHead({ titleTemplate: "Character Search - %s" });
 // Resources
-const { $axios } = useNuxtApp();
+const { $axios, $loader } = useNuxtApp();
 
 // ********************************
 // Config
@@ -108,13 +108,20 @@ const filterQuery = computed(() => {
   return query;
 });
 // Filter
-const filter = () =>
+const filter = () =>{
+  // Open loading overlay
+  $loader.load()
+  // Call API
   $axios.get("/characters/", { params: filterQuery.value }).then((res) => {
     // Get fetched data
     characters.value = res.data.results;
     // Save count
     count.value = res.data.count;
+    // Close
+    $loader.finish()
   });
+}
+
 // Fetch data on page changes
 watch(page, filter);
 

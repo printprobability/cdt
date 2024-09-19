@@ -1,24 +1,22 @@
 <template>
   <div class="d-flex align-center ga-2">
     <v-select
-      :items="characterClasses"
-      :model-value="props.modelValue"
+      v-model="model"
       label="Character/Letterform"
       variant="outlined"
       hide-details
       item-title="classname"
       item-value="classname"
-      @update:modelValue="$emit('update:modelValue', $event)"
-      @update:focused="$event || $emit('blur')"
-    >
+      :items="characterClasses"
+      >
       <template #append-item>
         <v-list-item v-if="hasNextPage" class="text-center">
           <v-progress-circular
             v-intersect="fetchNextPage"
-            color="primary"
-            class="justify-center"
             indeterminate
-          ></v-progress-circular>
+            color="red-darken-3"
+            class="justify-center"
+          />
         </v-list-item>
       </template>
     </v-select>
@@ -26,19 +24,25 @@
 </template>
 
 <script setup>
+import { useVModel } from "@vueuse/core";
 import _ from "lodash";
-import {defineProps, defineEmits, ref, computed, nextTick} from "vue";
+import { defineProps, defineEmits, ref, computed, nextTick, watch } from "vue";
 
 // Props
 const props = defineProps({
-  modelValue: {type: String},
+  modelValue: { type: String },
 });
 
 // Emits
-const emit = defineEmits(["update:modelValue", "blur"]);
+const emit = defineEmits(["update:modelValue", "end"]);
 
 // Get resources
-const {$axios} = useNuxtApp();
+const { $axios } = useNuxtApp();
+
+// Model
+const model = useVModel(props, "modelValue", emit);
+// Emit end event
+watch(model, () => emit('end'));
 
 // ********************************
 // Menu status
@@ -52,7 +56,7 @@ const hasNextPage = computed(
 // Data fetch from API
 // ********************************
 // Fetch data
-const {data: fetchedData} = await useAsyncData(
+const { data: fetchedData } = await useAsyncData(
   "fetchCharacterClasses",
   async () => (await $axios.get("/character_classes")).data
 );
@@ -73,7 +77,7 @@ const fetchNextPage = (isIntersecting, entries, observer) => {
       // Mark as fetching
       isFetching.value = true;
       // Call API
-      $axios.request({url: fetchedData.value.next}).then((res) => {
+      $axios.request({ url: fetchedData.value.next }).then((res) => {
         // Merge new data into current data
         mergeData(res.data);
         // Mark as not fetching

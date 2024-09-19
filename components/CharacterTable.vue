@@ -43,6 +43,15 @@
               </NuxtLink>
             </td>
           </template>
+          <template v-else>
+            <td colspan="6" class="text-center">
+              <v-progress-circular
+                indeterminate
+                color="red-darken-3"
+                class="justify-center"
+              />
+            </td>
+          </template>
         </tr>
       </tbody>
     </v-table>
@@ -66,21 +75,25 @@ const characterDetails = ref(new Array(props.characters.length));
 // Logic for fetching detail of characters
 const fetchDetails = (characters) => {
   // Clear data
-  characterDetails.value = []
+  characterDetails.value = new Array(props.characters.length);
   // Fetch details
-  characters.forEach(fetchDetail)
+  characters.forEach(fetchDetail);
 };
 // Logic for fetching single detail
-const fetchDetail = (character, index, retry = true) =>
-  $axios
-    .get(`/characters/${character.id}`)
-    .then((res) => (characterDetails.value[index] = res.data))
-    .catch((err) => {
-      // Maybe server is overloaded ?
-      if (retry && err.response.status === 503) {
-        setTimeout(() => fetchDetail(character, index, false), 500);
-      }
-    });
+const fetchDetail = (character, index, retry = true, delay = 0) =>
+  setTimeout(
+    () =>
+      $axios
+        .get(`/characters/${character.id}`)
+        .then((res) => (characterDetails.value[index] = res.data))
+        .catch((err) => {
+          // Maybe server is overloaded ?
+          if (retry && err.response.status === 503) {
+            fetchDetail(character, index, false, 500);
+          }
+        }),
+    delay
+  );
 
 // Watch for characters changes
 watch(() => props.characters, fetchDetails);
