@@ -43,9 +43,9 @@
       <CharacterTable v-else-if="mode === 'table'" :characters />
 
       <div v-if="pageNums > 0">
-        <v-pagination :length="pageNums" v-model="page"/>
+        <v-pagination :length="pageNums" v-model="page" @update:model-value="onChangePage"/>
         <div class="text-center">
-          {{ pageOffset + 1 }}-{{ Math.min(pageOffset + itemsPerPage, count) }} of {{ count }}
+          {{ minItemText }}-{{ maxItemText }} of {{ count }}
         </div>
       </div>
 
@@ -54,7 +54,7 @@
 </template>
 
 <script setup>
-import { reactive, ref, watch, computed, nextTick } from "vue";
+import { ref, watch, computed, nextTick } from "vue";
 
 // Head
 useHead({ titleTemplate: "Character Search - %s" });
@@ -92,6 +92,9 @@ watch(mode, (value) => {
   nextTick(filter);
 });
 
+// ********************************
+// Pagination
+// ********************************
 // Page
 const page = ref(1);
 // Number of pages
@@ -101,6 +104,25 @@ const pageOffset = computed(() => (page.value - 1) * itemsPerPage.value)
 
 // Items per page
 const itemsPerPage = ref(50);
+// Min item text
+const minItemText = computed(() => pageOffset.value + 1)
+// Max item text
+const maxItemText = computed(() => Math.min(pageOffset.value + itemsPerPage.value, count.value))
+
+// Mark that user change page
+const isPageChanged = ref(false)
+// On change page handler
+const onChangePage = () => {
+  // Change flag
+  isPageChanged.value = true
+}
+// Reset page
+const resetPage = () => {
+  // If this fetching process is not caused by changing page, reset page to 1
+  if (!isPageChanged.value) page.value = 1;
+  // Reset flag
+  isPageChanged.value = false
+}
 
 // ********************************
 // Filter
@@ -139,6 +161,8 @@ const filter = () => {
     characters.value = res.data.results;
     // Save count
     count.value = res.data.count;
+    // Reset page
+    resetPage();
   })
   .finally($loader.finish);
 };
