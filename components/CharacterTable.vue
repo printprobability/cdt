@@ -82,16 +82,18 @@ const fetchDetails = (characters) => {
 // Logic for fetching single detail
 const fetchDetail = (character, index, retry = true, delay = 0) =>
   setTimeout(
-    () =>
-      $axios
-        .get(`/characters/${character.id}`)
-        .then((res) => (characterDetails.value[index] = res.data))
-        .catch((err) => {
-          // Maybe server is overloaded ?
-          if (retry && err.response.status === 503) {
-            fetchDetail(character, index, false, 500);
-          }
-        }),
+    () => {
+      //$axios
+      //  .get(`/characters/${character.id}`)
+      //  .then((res) => (characterDetails.value[index] = res.data))
+      //  .catch((err) => {
+      //    // Maybe server is overloaded ?
+      //    if (retry && err.response.status === 503) {
+      //      fetchDetail(character, index, false, 500);
+      //    }
+      //  }),
+      characterDetails.value[index] = character
+    },
     delay
   );
 
