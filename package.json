@@ -11,18 +11,18 @@
     },
     "dependencies": {
         "@mdi/font": "^7.4.47",
-        "@nuxt/content": "^2.12.1",
+        "@nuxt/content": "^2.13.2",
         "axios": "^1.7.7",
         "lodash": "^4.17.21",
-        "openseadragon": "^3.0.0",
-        "sass": "^1.72.0"
+        "openseadragon": "^5.0.0",
+        "sass": "^1.79.4"
     },
     "devDependencies": {
-        "@types/lodash": "^4.17.7",
+        "@types/lodash": "^4.17.9",
         "@vueuse/core": "^11.1.0",
-        "@vueuse/nuxt": "^10.9.0",
-        "nuxt": "^3.11.1",
-        "vite-plugin-vuetify": "^2.0.3",
-        "vuetify": "^3.5.3"
+        "@vueuse/nuxt": "^11.1.0",
+        "nuxt": "^3.13.2",
+        "vite-plugin-vuetify": "^2.0.4",
+        "vuetify": "^3.7.2"
     }
 }

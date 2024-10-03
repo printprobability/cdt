@@ -6,25 +6,32 @@
       :max="props.maxYear"
       strict
       step="1"
-      thumb-label
       label="Year"
-      hide-details
-      persistent-hint
-      @mouseup="emit('end')"
+      messages="a"
+      @end="emit('end')"
       @update:model-value="
         emit('update:modelValue', { yearEarly: $event[0], yearLate: $event[1] })
       "
-    />
+    >
+      <template #message>
+        <div class="d-flex" style="width: 100%">
+          <div>{{ yearRange[0] }}</div>
+          <v-spacer />
+          <div>{{ yearRange[1] }}</div>
+        </div>
+      </template>
+      <template #details> </template>
+    </v-range-slider>
   </div>
 </template>
 
 <script setup>
-import { defineProps, defineEmits, reactive, watch } from "vue";
+import { defineProps, defineEmits } from "vue";
 
 const props = defineProps({
   modelValue: { type: Object },
-  maxYear: { type: Number, default: 1800 },
-  minYear: { type: Number, default: 1600 },
+  maxYear: { type: Number, default: 1700 },
+  minYear: { type: Number, default: 1660 },
 });
 
 const emit = defineEmits(["update:modelValue", "end"]);

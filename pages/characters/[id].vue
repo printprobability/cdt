@@ -42,7 +42,7 @@
           </div>
 
           <div style="width: 30vw" class="mt-2">
-            <strong>Cite As</strong>: {{ character.line.label }}
+            <strong>Cite As</strong>: {{ `${character.character_class}${character.book.pp_printer}${(Math.random() + 1).toString(36).substring(8)}` }}
           </div>
         </div>
       </div>
@@ -74,7 +74,7 @@ const { data: character } = await useAsyncData(
 // Fetch other characters
 const { data: otherCharacters } = await useAsyncData(
   "fetchOtherCharacters",
-  async () => (await $axios.get("/characters/?limit=20")).data.results
+  async () => (await $axios.get("/characters/?limit=10")).data.results
 );
 
 if (!character.value) {

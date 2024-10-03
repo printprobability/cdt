@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <div class="d-flex">
-      <p class="page-title">{{ props.title }}</p>
+      <p v-if="props.title" class="page-title">{{ props.title }}</p>
       <v-spacer />
       <slot name="left"></slot>
     </div>
@@ -54,14 +54,14 @@ const about = ref(
 
 <style>
 .page-header {
-  font-family: "Vollkorn";
+  font-family: "Source Serif 4";
   font-size: 1em;
   font-weight: 600;
   color: #b00;
 }
 
 .page-title {
-  font-family: "Cinzel";
+  font-family: "Open Sans";
   font-size: 2.5em;
   font-weight: 500;
   color: #b00;

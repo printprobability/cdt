@@ -59,7 +59,7 @@ const hasNextPage = computed(
 // Fetch data
 const { data: fetchedData } = await useAsyncData(
   "fetchCharacterClasses",
-  async () => (await $axios.get("/character_classes")).data
+  async () => (await $axios.get("/character_classes", { params: { group: "cu" } })).data
 );
 // Get character classes object
 const characterClasses = computed(() => fetchedData.value?.results ?? []);
