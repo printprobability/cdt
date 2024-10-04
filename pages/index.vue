@@ -185,7 +185,7 @@ const { data } = await useAsyncData(
   async () => (await filterAPI()).data
 );
 // Characters
-const characters = ref(data.value.results ?? []);
+const characters = ref(data.value?.results ?? []);
 // Total count
-const count = ref(data.value.count ?? 0);
+const count = ref(data.value?.count ?? 0);
 </script>
