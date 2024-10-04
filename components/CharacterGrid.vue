@@ -1,6 +1,6 @@
 <template>
   <div v-if="props.characters.length > 0">
-    <div class="d-flex flex-wrap ga-5 px-10">
+    <div class="d-flex flex-wrap ga-5 px-10 justify-center">
       <CharacterHoverableImage v-for="(_, i) in props.characters" :key="props.characters[i].id" :character="props.characters[i]"/>
     </div>
   </div>
