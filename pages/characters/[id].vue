@@ -52,7 +52,7 @@
           Other examples of character class (A, B, C, etx) for printer in CDT
         </h2>
 
-        <CharacterGrid v-if="otherCharacters" :characters="otherCharacters" />
+        <CharacterGrid v-if="otherCharacters" :characters="otherCharacters" center />
       </div>
     </v-main>
   </v-container>
