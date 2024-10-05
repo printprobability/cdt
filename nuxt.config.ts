@@ -132,6 +132,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       API_BASE_URL: process.env.API_BASE_URL,
+      APP_ENV: process.env.APP_ENV,
 
       // https://axios-http.com/docs/req_config
       axios: {
