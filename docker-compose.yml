@@ -3,7 +3,7 @@ version: "3"
 services:
   client:
     image: node:22.9-alpine
-    restart: always
+    restart: on-failure
     command: npm install && npm run build && node .output/server/index.mjs
     volumes:
       - .:/app
