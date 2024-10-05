@@ -2,7 +2,7 @@ version: "3"
 
 services:
   client:
-    build: 22.9-alpine
+    image: 22.9-alpine
     restart: always
     command: npm install && npm run build && node .output/server/index.mjs
     volumes:
