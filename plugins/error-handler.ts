@@ -4,7 +4,7 @@ export default defineNuxtPlugin((nuxtApp) => {
 
   nuxtApp.vueApp.config.errorHandler = (error, instance, info) => {
 
-    if (runtimeConfig.APP_ENV !== 'production') {
+    if (runtimeConfig.public.APP_ENV !== 'production') {
       // handle error, e.g. report to a service
       console.error(error)
       console.log("======================================");
@@ -17,7 +17,7 @@ export default defineNuxtPlugin((nuxtApp) => {
   // Also possible
   nuxtApp.hook('vue:error', (error, instance, info) => {
 
-    if (runtimeConfig.APP_ENV !== 'production') {
+    if (runtimeConfig.public.APP_ENV !== 'production') {
       // handle error, e.g. report to a service
       console.error(error)
       console.log("======================================");
