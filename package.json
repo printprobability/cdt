@@ -18,7 +18,7 @@
         "sass": "^1.79.4"
     },
     "devDependencies": {
-        "@types/lodash": "^4.17.9",
+        "@types/lodash": "^4.17.10",
         "@vueuse/core": "^11.1.0",
         "@vueuse/nuxt": "^11.1.0",
         "nuxt": "^3.13.2",
