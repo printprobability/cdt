@@ -1,7 +1,6 @@
 // Imports
 // import * as cdt_routes from "./assets/json/cdt_routes.json"
-import { resolve } from "path";
-import vuetify, { transformAssetUrls } from "vite-plugin-vuetify";
+import vuetify from "vite-plugin-vuetify";
 
 // const getStaticRoutes = async () => {
 
@@ -23,7 +22,6 @@ export default defineNuxtConfig({
   build: { transpile: ["vuetify"] },
 
   content: {
-
     // fullTextSearchFields: ["label", "notes"],
     // nestedProperties: ["page.sequence"]
     nestedProperties: [
@@ -39,27 +37,41 @@ export default defineNuxtConfig({
   css: ["~/assets/scss/custom.scss"],
   devtools: { enabled: true },
 
-  /* hooks: {
+  hooks: {
 
-      async "nitro:config"(nitroConfig) {
+      // async "nitro:config"(nitroConfig) {
 
-          // Fetch the routes from our function above
-          // const slugs = await getStaticRoutes();
+      //     // Fetch the routes from our function above
+      //     // const slugs = await getStaticRoutes();
 
-          const character_ids = cdt_routes.characters;
-          const book_ids = cdt_routes.books;
-          const grouping_ids = cdt_routes.groupings;
+      //     const character_ids = cdt_routes.characters;
+      //     const book_ids = cdt_routes.books;
+      //     const grouping_ids = cdt_routes.groupings;
 
-          const character_routes = character_ids.map(x => "/characters/" + x.id);
-          const book_routes = book_ids.map(x => "/books/" + x.id);
-          const grouping_routes = grouping_ids.map(x => "/groupings/" + x.id);
+      //     const character_routes = character_ids.map(x => "/characters/" + x.id);
+      //     const book_routes = book_ids.map(x => "/books/" + x.id);
+      //     const grouping_routes = grouping_ids.map(x => "/groupings/" + x.id);
 
-          const slugs = character_routes.concat(book_routes, grouping_routes);
+      //     const slugs = character_routes.concat(book_routes, grouping_routes);
 
-          // Add the characters, books, and groupings routes to the nitro config routes list
-          nitroConfig.prerender.routes.push(...slugs);
+      //     // Add the characters, books, and groupings routes to the nitro config routes list
+      //     nitroConfig.prerender.routes.push(...slugs);
+      // },
+
+      vite: {
+        extendConfig(config) {
+          // Vuetify Treeshake
+          config.plugins.push(vuetify())
+          // Vuetify customVariable
+          config.css.preprocessorOptions = {
+            scss: {
+              api: 'modern-compiler',
+              // additionalData: '@import "@/assets/scss/variables.scss";'
+            }
+          }
+        }
       }
-  },*/
+  },
 
   // hooks: {
 
@@ -89,15 +101,10 @@ export default defineNuxtConfig({
   // },
 
   modules: [
-
     // "@nuxt/content",
-
     "@vueuse/nuxt",
-
     (_options, nuxt) => {
-
       nuxt.hooks.hook("vite:extendConfig", (config) => {
-
         // @ts-expect-error
         config.plugins.push(vuetify({ autoImport: true }));
       });
@@ -117,17 +124,6 @@ export default defineNuxtConfig({
   sourcemap: true,
 
   ssr: true,
-
-  vite: {
-
-    vue: {
-
-      template: {
-
-        transformAssetUrls
-      },
-    },
-  },
 
   runtimeConfig: {
     public: {
