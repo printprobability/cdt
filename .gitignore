@@ -27,3 +27,4 @@ logs
 content/
 public/img/iiif/
 static/
+dldt_data/printer_jsons/
