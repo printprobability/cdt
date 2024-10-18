@@ -1,5 +1,6 @@
 // Imports
 // import * as cdt_routes from "./assets/json/cdt_routes.json"
+import {resolve} from "node:path"
 import vuetify, {transformAssetUrls} from "vite-plugin-vuetify";
 
 // const getStaticRoutes = async () => {
@@ -29,18 +30,20 @@ export default defineNuxtConfig({
     transpile: ['vuetify']
   },
 
-  // content: {
-  //   // fullTextSearchFields: ["label", "notes"],
-  //   // nestedProperties: ["page.sequence"]
-  //   nestedProperties: [
-  //     "image.buffer",
-  //     "image.thumbnail",
-  //     "image.webUrl",
-  //     "page.image.iiifBase",
-  //     "page.sequence"
-  //   ],
-  //   experimental: { search: true }
-  // },
+  content: {
+    // fullTextSearchFields: ["label", "notes"],
+    // nestedProperties: ["page.sequence"]
+    // nestedProperties: [
+    //   "image.buffer",
+    //   "image.thumbnail",
+    //   "image.webUrl",
+    //   "page.image.iiifBase",
+    //   "page.sequence"
+    // ],
+    // experimental: { search: true }
+    highlight: false,
+    navigation: false,
+  },
 
   css: ["~/assets/scss/custom.scss"],
 
@@ -87,7 +90,7 @@ export default defineNuxtConfig({
   },
 
   modules: [
-    // "@nuxt/content",
+    "@nuxt/content",
     "@vueuse/nuxt",
   ],
 
@@ -119,11 +122,5 @@ export default defineNuxtConfig({
     },
   },
 
-  nitro: {
-    routeRules: {
-      '/api/**': { proxy: process.env.PROXY_API_BASE_URL + '/api/**' },
-    }
-  },
-
-  compatibilityDate: "2024-10-09"
+  compatibilityDate: "2024-10-18"
 });
