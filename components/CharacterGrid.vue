@@ -1,7 +1,11 @@
 <template>
   <div v-if="props.characters.length > 0">
     <div :class="classObj">
-      <CharacterHoverableImage v-for="(_, i) in props.characters" :key="props.characters[i].id" :character="props.characters[i]"/>
+      <CharacterHoverableImage
+        v-for="character of props.characters"
+        :key="character.char_id"
+        :character="character"
+      />
     </div>
   </div>
 </template>

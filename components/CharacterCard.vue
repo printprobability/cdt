@@ -10,7 +10,7 @@
       style="margin: 0 !important;"
     >
       <v-card-text class="font-weight-black">
-        {{ props.character.label }}
+        {{ props?.character?.book?.label }}
       </v-card-text>
     </v-skeleton-loader>
 

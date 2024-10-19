@@ -21,7 +21,7 @@
             <td><CharacterImage :character="character" /></td>
             <td>{{ character.character_class }}</td>
             <td>
-              <NuxtLink :to="`/printer/${character.book.pp_printer}`">
+              <NuxtLink :to="`/printers/${character.book.pp_printer}`">
                 {{ character.book.pp_printer }}
               </NuxtLink>
             </td>
@@ -38,7 +38,7 @@
               </v-tooltip>
             </td>
             <td>
-              <NuxtLink :to="{ name: 'characters' }">
+              <NuxtLink :to="`/books/${character.book.id}`">
                 {{ character.book.id }}
               </NuxtLink>
             </td>

@@ -6,8 +6,8 @@
       variant="outlined"
       hide-details
       clearable
-      item-title="classname"
-      item-value="classname"
+      item-title="label"
+      item-value="charClass"
       :items="characterClasses"
     >
       <template #append-item>
@@ -59,7 +59,7 @@ const hasNextPage = computed(
 // Fetch data
 const { data: fetchedData } = await useAsyncData(
   "fetchCharacterClasses",
-  async () => (await $axios.get("/character_classes", { params: { group: "cu" } })).data
+  async () => (await $axios.get("/character_classes", { params: { group: "uc" } })).data
 );
 // Get character classes object
 const characterClasses = computed(() => fetchedData.value?.results ?? []);

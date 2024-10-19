@@ -38,7 +38,7 @@
       <CharacterGrid v-if="mode === 'grid'" :characters />
       <CharacterTable v-else-if="mode === 'table'" :characters />
 
-      <div v-if="pageNums > 0">
+      <div class="mt-3" v-if="pageNums > 0">
         <v-pagination
           :length="pageNums"
           v-model="page"
@@ -141,6 +141,7 @@ const characterClass = ref(null);
 const filterQuery = computed(() => {
   // Query
   const query = {
+    sort: true,
     limit: itemsPerPage.value,
     offset: itemsPerPage.value * (page.value - 1),
     pq_year_early: yearRange.value.yearEarly,
@@ -188,5 +189,4 @@ const { data } = await useAsyncData(
 const characters = ref(data.value?.results ?? []);
 // Total count
 const count = ref(data.value?.count ?? 0);
-const testing = ref([]);
 </script>

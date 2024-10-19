@@ -17,7 +17,7 @@ const props = defineProps({
   label: { type: String },
 });
 
-const emit = defineEmits(["update:modelValue", "blur"]);
+const emit = defineEmits(["update:modelValue", "blur", "end"]);
 
 // Model
 const model = useVModel(props, "modelValue", emit);

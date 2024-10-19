@@ -6,15 +6,15 @@
       <div class="d-flex">
         <div>
           <v-img
-            :id="character.id"
-            :alt="character.label"
             width="90px"
             height="110px"
             max-width="90px"
             max-height="110px"
             class="border border-sm border-opacity-100 border-black"
             lazy-src="/img/image.jpg"
-            src="https://printprobdb.psc.edu/iiif//books/redo/twarreniii_R38820_uk_8_acollectionofpoemsbyseveralREDO1693/pages_color/twarreniii_R38820_uk_8_acollectionofpoemsbyseveralREDO1693-0034.tif/35,1735,40,53/full/0/default.jpg"
+            :id="character.id"
+            :alt="character.label"
+            :src="character.web_url"
           />
           <!-- :src="props.character.image.webUrl" -->
         </div>
@@ -34,15 +34,15 @@
           <div style="width: 30vw" class="mt-2">
             <strong>Character Coordinate:</strong>
             <div class="pl-5">
-              x: {{ character.absolute_coords.x }}<br />
-              y: {{ character.absolute_coords.y }}<br />
-              w: {{ character.absolute_coords.w }}<br />
-              h: {{ character.absolute_coords.h }}<br />
+              x: {{ character.x_min }}<br/>
+              y: {{ character.y_min }}<br/>
+              w: {{ character.x_max - character.x_min }}<br/>
+              h: {{ character.y_max - character.y_min }}<br/>
             </div>
           </div>
 
           <div style="width: 30vw" class="mt-2">
-            <strong>Cite As</strong>: {{ `${character.character_class}${character.book.pp_printer}${(Math.random() + 1).toString(36).substring(8)}` }}
+            <strong>Cite As</strong>: {{ character.cite_as }}
           </div>
         </div>
       </div>
@@ -52,7 +52,7 @@
           Other examples of character class (A, B, C, etx) for printer in CDT
         </h2>
 
-        <CharacterGrid v-if="otherCharacters" :characters="otherCharacters" center />
+        <CharacterGrid v-if="otherCharacters" :characters="otherCharacters" center/>
       </div>
     </v-main>
   </v-container>
@@ -60,21 +60,31 @@
 
 <script setup>
 // Resoures
-const { $axios } = useNuxtApp();
+const {$axios} = useNuxtApp();
 
 // Route
 const route = useRoute();
 
 // Fetch detail
-const { data: character } = await useAsyncData(
+const {data: character} = await useAsyncData(
   "fetchCharacterDetail",
   async () => (await $axios.get(`/characters/${route.params.id}`)).data
 );
 
 // Fetch other characters
-const { data: otherCharacters } = await useAsyncData(
+const {data: otherCharacters} = await useAsyncData(
   "fetchOtherCharacters",
-  async () => (await $axios.get("/characters/?limit=10")).data.results
+  async () => (await $axios.get(
+    "/characters/?limit=10",
+    {
+      params: {
+        limit: 10,
+        pq_year_early: 1660,
+        pq_year_late: 1700,
+        // character_class: character.value['character_class'],
+      }
+    }
+  )).data.results
 );
 
 if (!character.value) {
@@ -86,5 +96,5 @@ if (!character.value) {
 }
 
 // Head
-useHead({ titleTemplate: `Character: ${character.value.label} - %s` });
+useHead({titleTemplate: `Character: ${character.value.label} - %s`});
 </script>
