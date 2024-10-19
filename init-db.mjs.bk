@@ -82,7 +82,6 @@ const getTypeOf = (data) => {
  * @returns {array}
  */
 const removeDuplicateByKey = (list, by) => {
-  console.warn(list)
   // Output
   const output = []
   // Existence map
@@ -255,7 +254,16 @@ const buildBulkInsertQuery = (name, schema, data, dataKey = null) => {
   return query + `${valuesSegments.join(', ')};\n`
 }
 
-const buildCreateForeignKeyQuery = (owner, owned, key, dataKey = null) => {}
+/**
+ * Build create index query
+ *
+ * @param {string} name
+ * @param {array|null} indexOn
+ * @returns {string}
+ */
+const buildCreateIndexQuery = (name, indexOn = null) => indexOn === null
+  ? ''
+  : `CREATE INDEX idx_${name}_on_${indexOn.join('_')} ON ${name}(${indexOn.join(', ')});\n`
 
 /**
  * Analyze JSON file and create a SQL query
@@ -264,9 +272,10 @@ const buildCreateForeignKeyQuery = (owner, owned, key, dataKey = null) => {}
  * @param {string} tableName
  * @param {string} idKey
  * @param {string|null} dataKey
+ * @param indexOn
  * @returns {string}
  */
-const analyzeJSONFile = (path, tableName, idKey, dataKey = null) => {
+const analyzeJSONFile = (path, tableName, idKey, dataKey = null, indexOn = null) => {
   // Get id dot notation
   const notation = (dataKey ? `${dataKey}.` : '') + idKey
 
@@ -278,15 +287,15 @@ const analyzeJSONFile = (path, tableName, idKey, dataKey = null) => {
   return ''
     + buildCreateQuery(tableName, schema)
     + buildBulkInsertQuery(tableName, schema, data, dataKey)
+    + buildCreateIndexQuery(tableName, indexOn)
 }
 
 // Query
 let query = ''
-  + analyzeJSONFile(resolve('dldt_data/books.json'), 'books', 'id', 'book_data')
-  + analyzeJSONFile(resolve('dldt_data/extracted_character_data.json'), 'characters', 'char_id')
+  + analyzeJSONFile(resolve('dldt_data/books.json'), 'books', 'id', 'book_data', ['pq_year_early', 'pq_year_late'])
+  + analyzeJSONFile(resolve('dldt_data/extracted_character_data.json'), 'characters', 'char_id', null, ['character_class'])
 
 // Create database instance
-const db = (new Database(databaseFile))
-db.pragma('foreign_keys = ON');
-db.exec(query)
-console.warn(db.prepare('SELECT * FROM books').all().length)
+;(new Database(databaseFile))
+    .exec(query)
+    .close()
