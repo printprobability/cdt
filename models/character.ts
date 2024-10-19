@@ -2,7 +2,7 @@ import {DataTypes, type Sequelize, type Model} from 'sequelize'
 
 export default function (sequelize: Sequelize): Model {
   return sequelize.define(
-    'Character',
+    'character',
     {
       group_id: {type: DataTypes.STRING},
       group_url: {type: DataTypes.STRING},
@@ -19,7 +19,7 @@ export default function (sequelize: Sequelize): Model {
     },
     {
       indexes:[
-        {fields:['character_class']}
+        {fields: ['character_class']}
       ]
     }
   )

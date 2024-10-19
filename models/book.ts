@@ -2,7 +2,7 @@ import {DataTypes, type Sequelize, type Model} from 'sequelize'
 
 export default function (sequelize: Sequelize): Model {
   return sequelize.define(
-    'Book',
+    'book',
     {
       url: {type: DataTypes.STRING},
       id: {type: DataTypes.UUID, primaryKey: true},
@@ -39,7 +39,7 @@ export default function (sequelize: Sequelize): Model {
     },
     {
       indexes:[
-        {fields:['pq_year_early', 'pq_year_late']}
+        {fields: ['pq_year_early', 'pq_year_late']}
       ]
     }
   )

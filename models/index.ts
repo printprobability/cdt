@@ -21,7 +21,7 @@ export const Character = character(sequelize)
 
 // Relations
 Book.hasMany(Character, {foreignKey: 'book_id', onDelete: 'NO ACTION', onUpdate: 'NO ACTION'})
-Character.belongsTo(Book)
+Character.belongsTo(Book, {foreignKey: 'book_id', onDelete: 'NO ACTION', onUpdate: 'NO ACTION'})
 
 // Sync
-await sequelize.sync();
+export const _syncPromise = (async () => await sequelize.sync())();

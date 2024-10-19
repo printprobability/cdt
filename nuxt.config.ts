@@ -30,20 +30,18 @@ export default defineNuxtConfig({
     transpile: ['vuetify']
   },
 
-  content: {
-    // fullTextSearchFields: ["label", "notes"],
-    // nestedProperties: ["page.sequence"]
-    // nestedProperties: [
-    //   "image.buffer",
-    //   "image.thumbnail",
-    //   "image.webUrl",
-    //   "page.image.iiifBase",
-    //   "page.sequence"
-    // ],
-    // experimental: { search: true }
-    highlight: false,
-    navigation: false,
-  },
+  // content: {
+  //   fullTextSearchFields: ["label", "notes"],
+  //   nestedProperties: ["page.sequence"]
+  //   nestedProperties: [
+  //     "image.buffer",
+  //     "image.thumbnail",
+  //     "image.webUrl",
+  //     "page.image.iiifBase",
+  //     "page.sequence"
+  //   ],
+  //   experimental: { search: true }
+  // },
 
   css: ["~/assets/scss/custom.scss"],
 
@@ -90,7 +88,7 @@ export default defineNuxtConfig({
   },
 
   modules: [
-    "@nuxt/content",
+    // "@nuxt/content",
     "@vueuse/nuxt",
   ],
 

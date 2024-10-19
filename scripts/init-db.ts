@@ -1,11 +1,14 @@
-import {sequelize, Book, Character} from "~/models";
-import {readFileSync} from "node:fs";
-import {resolve} from "node:path";
-import type {Model} from "sequelize";
-import {removeDuplicateByKey} from "~/scripts/utils";
+import {readFileSync} from "fs"
+import {resolve, parse} from "path"
+import type {Model} from "sequelize"
 
+import {_syncPromise, sequelize, Book, Character} from "~/models"
+import {removeDuplicateByKey} from "~/scripts/utils"
+
+// Await previous sync
+await _syncPromise
 // Sync
-await sequelize.sync({force: true, alter: true});
+await sequelize.sync({force: true})
 
 /**
  * Read data from JSON file
@@ -46,7 +49,25 @@ const bulkInsert = async (model: Model, data: [], idKey: string, dataKey: string
   await model.bulkCreate(batch)
 }
 
-// Import books.json
+// Import books.json to database
 await bulkInsert(Book, readData(resolve('dldt_data/books.json')), 'id', 'book_data')
+
 // Import extracted_character_data.json
-await bulkInsert(Character, readData(resolve('dldt_data/extracted_character_data.json')), 'char_id')
+const characters = readData(resolve('dldt_data/extracted_character_data.json'))
+// Loop and process IIIF link
+for (const character of characters) {
+  // Split slash (/) and only get the last 5 elements
+  const segments = (<string> character['web_url']).split('/').slice(-5)
+  // First element will be file name, parse it, get name only, attach the .jpg extension and replace
+  segments[0] = parse(segments[0]).name + '.jpg'
+  // Add new IIIF address
+  segments.unshift('http://printprobability.library.cmu.edu/iiif//page_images')
+
+  // Replace old link with new link
+  character['web_url'] = segments.join('/')
+}
+// Import extracted_character_data.json
+await bulkInsert(Character, characters, 'char_id')
+
+// Log
+console.warn('Database has been initialized.')

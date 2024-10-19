@@ -1,7 +1,7 @@
 import {resolve} from "path"
 import {readFileSync, existsSync, mkdirSync, writeFileSync} from "fs"
 import {EOL} from "os"
-import {getByKey, getDataTypesOf, capitalize} from "./utils"
+import {getByKey, getDataTypesOf} from "./utils"
 
 // **************************************************************
 // Main
@@ -83,7 +83,7 @@ const buildModelScript = (modelName: string, schema: string, idKey: string): str
   ``,
   `export default function (sequelize: Sequelize): Model {`,
   `  return sequelize.define(`,
-  `    '${capitalize(modelName)}',`,
+  `    '${modelName}',`,
   `    {`,
   ...Object.entries(schema).map(([k, v]) => `      ${k}: {type: ${v}${idKey === k ? ', primaryKey: true' : ''}},`),
   `    }`,
