@@ -9,6 +9,7 @@ type CharacterQuery = {
   pq_year_late: number,
   printer_like: string | undefined,
   character_class: string | undefined,
+  group_id: string | undefined,
   book: string | undefined,
 }
 
@@ -48,6 +49,8 @@ function createFilter(query: CharacterQuery): { where: object, include: [] } {
   if (query.book) filter.where['book_id'] = query.book
   // Filter by character_class
   if (query.character_class) filter.where['character_class'] = query.character_class
+  // Filter by group_id
+  if (query.group_id) filter.where['group_id'] = query.group_id
   // Filter by printer
   if (query.printer_like) filter.where['$book.pp_printer$'] = {[Op.like]: `%${query.printer_like}%`}
 
