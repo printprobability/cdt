@@ -1,9 +1,11 @@
 import {readFileSync} from "fs"
 import {resolve, parse} from "path"
 import type {Model} from "sequelize"
+import {trimEnd} from "lodash"
 
 import {_syncPromise, sequelize, Book, Character} from "~/models"
 import {removeDuplicateByKey} from "~/scripts/utils"
+
 
 // Await previous sync
 await _syncPromise
@@ -61,7 +63,7 @@ for (const character of characters) {
   // First element will be file name, parse it, get name only, attach the .jpg extension and replace
   segments[0] = parse(segments[0]).name + '.jpg'
   // Add new IIIF address
-  segments.unshift('http://printprobability.library.cmu.edu/iiif//page_images')
+  segments.unshift(`${trimEnd(process.env.IIIF_HOST, '/')}/iiif//page_images`)
 
   // Replace old link with new link
   character['web_url'] = segments.join('/')

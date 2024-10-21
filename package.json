@@ -5,7 +5,7 @@
   "scripts": {
     "build": "nuxt build",
     "build:model": "tsx scripts/build-model.ts",
-    "migrate": "tsx scripts/init-db.ts",
+    "migrate": "tsx --env-file=.env scripts/init-db.ts",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",

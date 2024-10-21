@@ -1,7 +1,7 @@
 // Imports
 // import * as cdt_routes from "./assets/json/cdt_routes.json"
-import {resolve} from "node:path"
 import vuetify, {transformAssetUrls} from "vite-plugin-vuetify";
+import {trimEnd} from "lodash"
 
 // const getStaticRoutes = async () => {
 
@@ -113,9 +113,9 @@ export default defineNuxtConfig({
       axios: {
         headers: {
           'Accept': 'application/json, text/plain, */*',
-          'Authorization': process.env.API_TOKEN,
+          // 'Authorization': process.env.API_TOKEN,
         },
-        baseURL: process.env.API_BASE_URL + "/api"
+        baseURL: `${trimEnd(process.env.API_BASE_URL, '/')}/api"`
       },
     },
   },
