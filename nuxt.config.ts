@@ -115,7 +115,7 @@ export default defineNuxtConfig({
           'Accept': 'application/json, text/plain, */*',
           // 'Authorization': process.env.API_TOKEN,
         },
-        baseURL: `${_.trimEnd(process.env.API_BASE_URL, '/')}/api"`
+        baseURL: `${_.trimEnd(process.env.API_BASE_URL, '/')}/api`
       },
     },
   },
