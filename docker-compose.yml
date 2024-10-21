@@ -11,3 +11,13 @@ services:
       - "3000:3000"
     env_file: .env
     working_dir: /app
+
+  iiif:
+    image: mdlincoln/go-iiif-vips:latest
+    restart: always
+    volumes:
+      - ./iiif:/etc/iiif-server:z
+      - ./dldt_data:/usr/local/images:z
+    ports:
+      - "8001:8001"
+    command: "/bin/iiif-server -host 0.0.0.0 -port 8001 -config-source file:///etc/iiif-server -config-name config.json"

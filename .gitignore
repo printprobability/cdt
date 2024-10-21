@@ -28,6 +28,7 @@ content/
 public/img/iiif/
 static/
 dldt_data/printer_jsons/
+dldt_data/page_images/
 
 # Sqlite datafile
 database.sqlite
