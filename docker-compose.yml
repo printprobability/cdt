@@ -3,8 +3,7 @@ version: "3"
 services:
   client:
     image: node:22.10-alpine
-    restart: on-failure
-    command: sh -c "npm install && npm run cleanup && npm run build && node .output/server/index.mjs"
+    command: sh -c "npm ci && npm run cleanup && npm run build && node .output/server/index.mjs"
     volumes:
       - .:/app
     ports:
