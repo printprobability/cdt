@@ -67,7 +67,6 @@ for (const character of characters) {
 
   // Replace old link with new link
   character['web_url'] = segments.join('/')
-  console.warn(character['web_url'])
 }
 // Import extracted_character_data.json
 await bulkInsert(Character, characters, 'char_id')
