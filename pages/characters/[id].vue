@@ -14,41 +14,42 @@
           </div>
         </v-col>
         <v-col cols="12" md="6">
-          <div class="d-flex justify-center">
-            <div>
-              <v-img
-                width="90px"
-                height="110px"
-                max-width="90px"
-                max-height="110px"
-                class="border border-sm border-opacity-100 border-black"
-                lazy-src="/img/image.jpg"
-                :alt="character.label"
-                :src="character.web_url"
-              />
-              <!-- :src="props.character.image.webUrl" -->
-            </div>
-            <div class="pl-2">
-              <div style="width: 40vw">
+          <v-row>
+            <v-col cols="5" md="3">
+              <div class="float-end">
+                <v-img
+                  width="90px"
+                  height="110px"
+                  max-width="90px"
+                  max-height="110px"
+                  class="border border-sm border-opacity-100 border-black"
+                  lazy-src="/img/image.jpg"
+                  :alt="character.label"
+                  :src="character.web_url"
+                />
+              </div>
+            </v-col>
+            <v-col cols="7" md="9">
+              <div style="width: 30vw">
                 <strong>Book:</strong> {{ character.book.label }}
               </div>
 
-              <div style="width: 40vw" class="mt-2">
+              <div style="width: 30vw" class="mt-2">
                 <strong>Date:</strong> {{ character.book.pq_year_early }}
               </div>
 
-              <div style="width: 40vw" class="mt-2">
+              <div style="width: 30vw" class="mt-2">
                 <strong>Printer:</strong>&nbsp;
                 <NuxtLink :to="{ name: 'index', query: { printer_like: character.book.pp_printer } }">
                   {{ character.book.pp_printer }}
                 </NuxtLink>
               </div>
 
-              <div style="width: 40vw" class="mt-2">
+              <div style="width: 30vw" class="mt-2">
                 <strong>Source Book:</strong> {{ character.book.estc }}
               </div>
 
-              <div style="width: 40vw" class="mt-2">
+              <div style="width: 30vw" class="mt-2">
                 <strong>Character Coordinate:</strong>
                 <div class="pl-5">
                   x: {{ annotation.x }}<br/>
@@ -58,11 +59,11 @@
                 </div>
               </div>
 
-              <div style="width: 40vw" class="mt-2">
+              <div style="width: 30vw" class="mt-2">
                 <strong>Cite As</strong>: {{ character.cite_as }}
               </div>
-            </div>
-          </div>
+            </v-col>
+          </v-row>
         </v-col>
       </v-row>
 
