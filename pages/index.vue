@@ -56,6 +56,10 @@
 import { useAsyncData } from "nuxt/app";
 import { ref, watch, computed, nextTick } from "vue";
 
+// Check if a popstate is occurred recently
+const isPopstateRecently = useState('popState', () => false);
+
+
 // Resources
 const { $axios, $loader } = useNuxtApp();
 // Get route
@@ -82,11 +86,9 @@ useHead({ titleTemplate: title.value });
 // View mode
 // ********************************
 // Mode
-const mode = ref("grid");
+const mode = useState('charactersListMode', () => "grid");
 // Change itemsPerPage when changing mode
 watch(mode, (value) => {
-  // Update items
-  itemsPerPage.value = value === "grid" ? 50 : 10;
   // Clear data
   characters.value = [];
   // Fetch at nextTick
@@ -97,14 +99,16 @@ watch(mode, (value) => {
 // Pagination
 // ********************************
 // Page
-const page = ref(1);
+const page = useState('charactersPage', () => 1);
+// If this page is rendered not because of a popstate, reset page to 1
+if (!isPopstateRecently.value) page.value = 1;
 // Number of pages
 const pageNums = computed(() => Math.ceil(count.value / itemsPerPage.value));
 // Page offset
 const pageOffset = computed(() => (page.value - 1) * itemsPerPage.value);
 
 // Items per page
-const itemsPerPage = ref(50);
+const itemsPerPage = computed(() => mode.value === "grid" ? 50 : 10);
 // Min item text
 const minItemText = computed(() => pageOffset.value + 1);
 // Max item text
@@ -131,7 +135,7 @@ const resetPage = () => {
 // Filter
 // ********************************
 // Printer
-const printer = ref("");
+const printer = ref(route.query.printer_like ?? '');
 // Year range
 const yearRange = ref({ yearEarly: MIN_YEAR, yearLate: MAX_YEAR });
 // Character class

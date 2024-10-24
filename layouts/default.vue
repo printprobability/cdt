@@ -13,7 +13,7 @@
       </v-app-bar-title>
 
       <!-- <v-list-item class="dldt-navbar-link px-2" :to="{ name: 'books' }">Books</v-list-item> -->
-      <v-list-item class="dldt-navbar-link px-2" :to="{ name: 'index' }"
+      <v-list-item class="dldt-navbar-link px-2" :to="{ name: 'index', meta: {ahihi: 'true'} }"
         >Characters</v-list-item
       >
       <!-- <v-list-item class="dldt-navbar-link px-2" :to="{ name: 'groupings' }">Groupings</v-list-item> -->

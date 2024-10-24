@@ -9,7 +9,7 @@
     <slot name="intro"></slot>
 
     <v-row class="mt-5">
-      <v-col cols="3">
+      <v-col cols="12" md="3">
         <p class="page-header">Search the Catalog</p>
         <v-form>
           <slot name="filter"></slot>
@@ -29,7 +29,7 @@
         </div>
       </v-col>
 
-      <v-col cols="9">
+      <v-col cols="12" md="9">
         <p v-if="empty" class="page-header">No results</p>
 
         <slot name="results"></slot>
