@@ -126,7 +126,7 @@ export default defineNuxtConfig({
     routeRules: {
       '/iiif//**': {proxy: process.env.IIIF_HOST + '/iiif//**'},
     }
-  } : '',
+  } : {},
 
   compatibilityDate: "2024-10-24"
 });
