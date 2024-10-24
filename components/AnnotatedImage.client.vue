@@ -93,7 +93,7 @@ onMounted( () => {
 }
 
 .osd {
-  height: 750px;
+  height: 400px;
   min-width: 100%;
 }
 
