@@ -12,7 +12,6 @@
             max-height="110px"
             class="border border-sm border-opacity-100 border-black"
             lazy-src="/img/image.jpg"
-            :id="character.id"
             :alt="character.label"
             :src="character.web_url"
           />
@@ -34,10 +33,10 @@
           <div style="width: 30vw" class="mt-2">
             <strong>Character Coordinate:</strong>
             <div class="pl-5">
-              x: {{ character.x_min }}<br/>
-              y: {{ character.y_min }}<br/>
-              w: {{ character.x_max - character.x_min }}<br/>
-              h: {{ character.y_max - character.y_min }}<br/>
+              x: {{ annotation.x }}<br/>
+              y: {{ annotation.y }}<br/>
+              w: {{ annotation.w }}<br/>
+              h: {{ annotation.h }}<br/>
             </div>
           </div>
 
@@ -45,6 +44,14 @@
             <strong>Cite As</strong>: {{ character.cite_as }}
           </div>
         </div>
+      </div>
+
+      <div class="mt-2" style="min-width: 100%">
+        <AnnotatedImage
+          :id="`char-${character.char_id}`"
+          :src="character.web_url"
+          :overlay="annotation"
+        />
       </div>
 
       <div class="mt-10" style="width: 80vw">
@@ -95,6 +102,14 @@ if (!character.value) {
     fatal: true,
   })
 }
+
+// Image annotation
+const annotation = computed(() => ({
+  x: character.value.x_min,
+  y: character.value.y_min,
+  w: character.value.x_max - character.value.x_min,
+  h: character.value.y_max - character.value.y_min,
+}))
 
 // Head
 useHead({titleTemplate: `Character: ${character.value.label} - %s`});

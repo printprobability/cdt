@@ -62,11 +62,12 @@ for (const character of characters) {
   const segments = (<string> character['web_url']).split('/').slice(-5)
   // First element will be file name, parse it, get name only, attach the .jpg extension and replace
   segments[0] = parse(segments[0]).name + '.jpg'
-  // Add new IIIF address
-  segments.unshift(`${_.trimEnd(process.env.IIIF_HOST, '/')}/iiif//page_images`)
+  // Add IIIF host (if in development, using routeRules to avoid CORS)
+  segments.unshift(_.trimEnd(process.env.APP_ENV === 'development' ? process.env.API_BASE_URL : process.env.IIIF_HOST, '/'), 'iiif//page_images')
 
   // Replace old link with new link
   character['web_url'] = segments.join('/')
+  console.warn(character['web_url'])
 }
 // Import extracted_character_data.json
 await bulkInsert(Character, characters, 'char_id')

@@ -22,7 +22,7 @@ export default defineNuxtConfig({
 
   app: {
     head: {
-      link: [{ rel: 'stylesheet', href: 'https://cdn.jsdelivr.net/npm/vuetify@3.x/dist/vuetify.min.css', preload: true }]
+      link: [{rel: 'stylesheet', href: 'https://cdn.jsdelivr.net/npm/vuetify@3.x/dist/vuetify.min.css', preload: true}]
     }
   },
 
@@ -45,7 +45,7 @@ export default defineNuxtConfig({
 
   css: ["~/assets/scss/custom.scss"],
 
-  devtools: { enabled: true },
+  devtools: {enabled: true},
 
   hooks: {
     // async "nitro:config"(nitroConfig) {
@@ -108,6 +108,7 @@ export default defineNuxtConfig({
     public: {
       API_BASE_URL: process.env.API_BASE_URL,
       APP_ENV: process.env.APP_ENV,
+      IIIF_HOST: process.env.IIIF_HOST,
 
       // https://axios-http.com/docs/req_config
       axios: {
@@ -120,5 +121,11 @@ export default defineNuxtConfig({
     },
   },
 
-  compatibilityDate: "2024-10-18"
+  nitro: process.env.APP_ENV === 'development' ? {
+    routeRules: {
+      '/iiif//**': {proxy: process.env.IIIF_HOST + '/iiif//**'},
+    }
+  } : '',
+
+  compatibilityDate: "2024-10-24"
 });
