@@ -102,8 +102,15 @@ watch(mode, (value) => {
 const page = useState('charactersPage', () => 1);
 // If this page is rendered not because of a popstate, reset page to 1
 if (!isPopstateRecently.value) page.value = 1;
+
 // Number of pages
 const pageNums = computed(() => Math.ceil(count.value / itemsPerPage.value));
+// Watch pageNums and prevent page exceed pageNums
+watch(pageNums, (value) => {
+  // Reset page to 1 if exceed pageNums
+  if (value > 0 && page.value > value) page.value = 1
+})
+
 // Page offset
 const pageOffset = computed(() => (page.value - 1) * itemsPerPage.value);
 
