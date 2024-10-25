@@ -20,7 +20,7 @@ export default defineEventHandler(async (event): Promise<[]> => {
   const {count, rows} = await Character.findAndCountAll({
     limit: query.limit,
     offset: query.offset,
-    order: query.sort && ['character_class'],
+    order: query.sort && ['character_group', 'character_class'],
     ...createFilter(query)
   })
 
@@ -48,7 +48,15 @@ function createFilter(query: CharacterQuery): { where: object, include: [] } {
   // Filter by book
   if (query.book) filter.where['book_id'] = query.book
   // Filter by character_class
-  if (query.character_class) filter.where['character_class'] = query.character_class
+  if (query.character_class && query.character_class.length > 0) {
+    // Split character_class
+    const classInfo = query.character_class.split('_')
+
+    // If classInfo has 2 item, assign the second one as 'character_group' filter
+    if (classInfo.length > 1) filter.where['character_group'] = classInfo[1]
+    // If classInfo only has 1 item, assign the first one as 'character_class' filter
+    if (classInfo.length > 0) filter.where['character_class'] = classInfo[0]
+  }
   // Filter by group_id
   if (query.group_id) filter.where['group_id'] = query.group_id
   // Filter by printer

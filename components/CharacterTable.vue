@@ -38,8 +38,8 @@
               </v-tooltip>
             </td>
             <td>
-              <NuxtLink :to="`/books/${character.book.id}`">
-                {{ character.book.id }}
+              <NuxtLink :to="`/characters/${character.char_id}`">
+                {{ character.char_id }}
               </NuxtLink>
             </td>
           </template>

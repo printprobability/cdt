@@ -12,6 +12,10 @@ await _syncPromise
 // Sync
 await sequelize.sync({force: true})
 
+// *********************************************
+// Utility
+// *********************************************
+
 /**
  * Read data from JSON file
  *
@@ -51,15 +55,18 @@ const bulkInsert = async (model: Model, data: [], idKey: string, dataKey: string
   await model.bulkCreate(batch)
 }
 
-// Import books.json to database
-await bulkInsert(Book, readData(resolve('dldt_data/books.json')), 'id', 'book_data')
+// *********************************************
+// Preprocessor
+// *********************************************
 
-// Import extracted_character_data.json
-const characters = readData(resolve('dldt_data/extracted_character_data.json'))
-// Loop and process IIIF link
-for (const character of characters) {
+/**
+ * Process character web-url
+ *
+ * @param character
+ */
+const processWebUrl = (character: {web_url: string}): void => {
   // Split slash (/) and only get the last 5 elements
-  const segments = (<string> character['web_url']).split('/').slice(-5)
+  const segments = character['web_url'].split('/').slice(-5)
   // First element will be file name, parse it, get name only, attach the .jpg extension and replace
   segments[0] = parse(segments[0]).name + '.jpg'
   // Add IIIF host (if in development, using routeRules to avoid CORS)
@@ -67,6 +74,59 @@ for (const character of characters) {
 
   // Replace old link with new link
   character['web_url'] = segments.join('/')
+}
+
+/**
+ * Process character character_class
+ *
+ * @param character
+ */
+const processCharacterClass = (character: {character_class: string, character_group: string}): void => {
+  // Split original character_class by _ (underscore)
+  const segments = character['character_class'].split('_')
+
+  // Assign first segment as new character_class
+  character['character_class'] = segments[0]
+  // Assign second segment as character_group
+  character['character_group'] = segments[1]
+}
+
+/**
+ * Process character cite_as
+ *
+ * @param character
+ */
+const processCiteAs = (character: {cite_as: string, book_id: string}): void => {
+  // Get corresponding book
+  const book = books[bookMap[character['book_id']]]['book_data']
+  // Create cite_as
+  character['cite_as'] = `${character.character_class}${book.pp_printer}${(Math.random() + 1).toString(36).substring(8)}`
+}
+
+// *********************************************
+// Main
+// *********************************************
+
+// Import books.json
+const books = readData(resolve('dldt_data/books.json'))
+// Import books.json to database
+await bulkInsert(Book, books, 'id', 'book_data')
+
+// Mapping book entry for fast access
+const bookMap = {}
+// Iterate through each book and map id to entry
+books.map((value, index) => bookMap[value.book_id] = index)
+
+// Import extracted_character_data.json
+const characters = readData(resolve('dldt_data/extracted_character_data.json'))
+// Loop and process IIIF link
+for (const character of characters) {
+  // Process IIIF image link
+  processWebUrl(character)
+  // Process character class
+  processCharacterClass(character)
+  // Process cite as
+  processCiteAs(character)
 }
 // Import extracted_character_data.json
 await bulkInsert(Character, characters, 'char_id')

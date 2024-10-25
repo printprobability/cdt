@@ -11,8 +11,5 @@ export default defineEventHandler(async (event): Promise<[]> => {
     statusMessage: 'Not found!',
   })
 
-  // Set cite_as
-  character.setDataValue('cite_as', `${character.character_class}${character.book.pp_printer}${(Math.random() + 1).toString(36).substring(8)}`)
-
   return character
 })

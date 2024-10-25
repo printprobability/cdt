@@ -24,14 +24,14 @@
                   max-height="110px"
                   class="border border-sm border-opacity-100 border-black"
                   lazy-src="/img/image.jpg"
-                  :alt="character.label"
+                  :alt="character.character_class"
                   :src="character.web_url"
                 />
               </div>
             </v-col>
             <v-col cols="7" md="9">
               <div style="width: 30vw">
-                <strong>Book:</strong> {{ character.book.label }}
+                <strong>Book:</strong> {{ character.book.pq_title }}
               </div>
 
               <div style="width: 30vw" class="mt-2">
@@ -47,16 +47,6 @@
 
               <div style="width: 30vw" class="mt-2">
                 <strong>Source Book:</strong> {{ character.book.estc }}
-              </div>
-
-              <div style="width: 30vw" class="mt-2">
-                <strong>Character Coordinate:</strong>
-                <div class="pl-5">
-                  x: {{ annotation.x }}<br/>
-                  y: {{ annotation.y }}<br/>
-                  w: {{ annotation.w }}<br/>
-                  h: {{ annotation.h }}<br/>
-                </div>
               </div>
 
               <div style="width: 30vw" class="mt-2">

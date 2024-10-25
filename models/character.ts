@@ -10,16 +10,18 @@ export default function (sequelize: Sequelize): Model {
       char_id: {type: DataTypes.UUID, primaryKey: true},
       web_url: {type: DataTypes.STRING},
       character_class: {type: DataTypes.STRING},
+      character_group: {type: DataTypes.STRING},
       created_by_run_id: {type: DataTypes.STRING},
       book_id: {type: DataTypes.STRING},
       x_min: {type: DataTypes.NUMBER},
       x_max: {type: DataTypes.NUMBER},
       y_min: {type: DataTypes.NUMBER},
       y_max: {type: DataTypes.NUMBER},
+      cite_as: {type: DataTypes.STRING},
     },
     {
       indexes:[
-        {fields: ['character_class']}
+        {fields: ['character_group', 'character_class']},
       ]
     }
   )
