@@ -9,8 +9,6 @@ import {removeDuplicateByKey} from "~/scripts/utils"
 
 // Await previous sync
 await _syncPromise
-// Sync
-await sequelize.sync({force: true})
 
 // *********************************************
 // Utility
@@ -92,15 +90,30 @@ const processCharacterClass = (character: {character_class: string, character_gr
 }
 
 /**
- * Process character cite_as
+ * Process character unique_id
  *
  * @param character
  */
-const processCiteAs = (character: {cite_as: string, book_id: string}): void => {
+const processUniqueID = (character: {group_label: string, character_class: string, book_id: string}): void => {
   // Get corresponding book
   const book = books[bookMap[character['book_id']]]['book_data']
-  // Create cite_as
-  character['cite_as'] = `${character.character_class}${book.pp_printer}${(Math.random() + 1).toString(36).substring(8)}`
+
+  // Get printer lastname
+  const printerLastname = character['group_label'].split(/\s/)[1]
+  // Get character class
+  const characterClass = character['character_class']
+  // Get date
+  const date = book['pq_year_early']
+
+  // Create cite
+  const cite = `${printerLastname}_${characterClass}${date}`
+  // Init cite occurrence
+  if (!Object.hasOwn(citeOccurrence, cite)) citeOccurrence[cite] = 1
+  // Get cite index
+  const citeIndex = `${citeOccurrence[cite]++}`.padStart(3, '0')
+
+  // Create unique_id
+  character['unique_id'] = `${cite}.${citeIndex}`
 }
 
 // *********************************************
@@ -117,6 +130,8 @@ const bookMap = {}
 // Iterate through each book and map id to entry
 books.map((value, index) => bookMap[value.book_id] = index)
 
+// Cite occurrence
+const citeOccurrence = {}
 // Import extracted_character_data.json
 const characters = readData(resolve('dldt_data/extracted_character_data.json'))
 // Loop and process IIIF link
@@ -125,8 +140,8 @@ for (const character of characters) {
   processWebUrl(character)
   // Process character class
   processCharacterClass(character)
-  // Process cite as
-  processCiteAs(character)
+  // Process unique ID
+  processUniqueID(character)
 }
 // Import extracted_character_data.json
 await bulkInsert(Character, characters, 'char_id')

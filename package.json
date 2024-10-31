@@ -5,7 +5,8 @@
   "scripts": {
     "build": "nuxt build",
     "build:model": "tsx scripts/build-model.ts",
-    "migrate": "tsx --env-file=.env scripts/init-db.ts",
+    "build:sqlite-ext": "tsx scripts/compile-sqlite-ext.ts",
+    "migrate": "tsx --env-file=.env scripts/init-db.ts --hard-sync",
     "dev": "nuxt dev",
     "cleanup": "nuxt cleanup",
     "generate": "nuxt generate",
