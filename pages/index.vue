@@ -13,13 +13,13 @@
         mandatory
         variant="outlined"
       >
-        <v-btn icon="mdi-view-grid" value="grid" />
-        <v-btn icon="mdi-table" value="table" />
+        <v-btn icon="mdi-view-grid" value="grid"/>
+        <v-btn icon="mdi-table" value="table"/>
       </v-btn-toggle>
     </template>
 
     <template #filter>
-      <TextField v-model="printer" label="Printer (Last name)" @end="filter" />
+      <TextField v-model="printer" label="Printer (Last name)" @end="filter"/>
       <YearSlider
         v-model="yearRange"
         :min-year="MIN_YEAR"
@@ -35,8 +35,8 @@
     </template>
 
     <template #results>
-      <CharacterGrid v-if="mode === 'grid'" :characters />
-      <CharacterTable v-else-if="mode === 'table'" :characters />
+      <CharacterGrid v-if="mode === 'grid'" :characters/>
+      <CharacterTable v-else-if="mode === 'table'" :characters/>
 
       <div class="mt-3" v-if="pageNums > 0">
         <v-pagination
@@ -53,15 +53,15 @@
 </template>
 
 <script setup>
-import { useAsyncData } from "nuxt/app";
-import { ref, watch, computed, nextTick } from "vue";
+import {useAsyncData} from "nuxt/app";
+import {ref, watch, computed, nextTick} from "vue";
 
 // Check if a popstate is occurred recently
 const isPopstateRecently = useState('popState', () => false);
 
 
 // Resources
-const { $axios, $loader } = useNuxtApp();
+const {$axios, $loader} = useNuxtApp();
 // Get route
 const route = useRoute();
 
@@ -80,7 +80,7 @@ const intro = ref(
 );
 
 // Head
-useHead({ titleTemplate: title.value });
+useHead({titleTemplate: title.value});
 
 // ********************************
 // View mode
@@ -108,13 +108,11 @@ const pageNums = computed(() => Math.ceil(count.value / itemsPerPage.value));
 const pageOffset = computed(() => (page.value - 1) * itemsPerPage.value);
 
 // Items per page
-const itemsPerPage = computed(() => mode.value === "grid" ? 50 : 10);
+const itemsPerPage = computed(() => mode.value === "grid" ? 50 : 50);
 // Min item text
 const minItemText = computed(() => pageOffset.value + 1);
 // Max item text
-const maxItemText = computed(() =>
-  Math.min(pageOffset.value + itemsPerPage.value, count.value)
-);
+const maxItemText = computed(() => Math.min(pageOffset.value + itemsPerPage.value, count.value));
 
 // Mark that user change page
 const isPageChanged = ref(false);
@@ -137,7 +135,7 @@ const resetPage = () => {
 // Printer
 const printer = ref(route.query.printer_like ?? '');
 // Year range
-const yearRange = ref({ yearEarly: MIN_YEAR, yearLate: MAX_YEAR });
+const yearRange = ref({yearEarly: MIN_YEAR, yearLate: MAX_YEAR});
 // Character class
 const characterClass = ref(null);
 
@@ -160,7 +158,7 @@ const filterQuery = computed(() => {
 });
 // Filter API
 const filterAPI = () =>
-  $axios.get("/characters/", { params: filterQuery.value });
+  $axios.get("/characters/", {params: filterQuery.value});
 // Filter
 const filter = () => {
   // Open loading overlay
@@ -185,7 +183,7 @@ watch(page, filter);
 // Characters
 // ********************************
 // Fetch characters
-const { data } = await useAsyncData(
+const {data} = await useAsyncData(
   "fetchCharacters",
   async () => (await filterAPI()).data
 );

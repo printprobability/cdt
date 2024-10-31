@@ -63,6 +63,12 @@
         <slot />
       </v-container>
     </v-main>
+
+    <v-footer class="mt-5">
+      <div class="d-flex justify-center w-100">
+        <img class="w-33" alt="Footer logo" src="/img/logo.jpg">
+      </div>
+    </v-footer>
   </v-app>
 </template>
 

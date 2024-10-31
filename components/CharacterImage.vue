@@ -1,10 +1,11 @@
 <template>
-  <NuxtLink :to="{ name: 'characters-id', params: { id: props.character.char_id } }">
+  <NuxtLink :to="{ name: 'characters-id', params: { id: props.character.unique_id} }">
     <v-img
-      width="45px"
-      height="55px"
-      max-width="45px"
-      max-height="55px"
+      cover
+      width="54px"
+      height="70px"
+      max-width="54px"
+      max-height="70px"
       class="border border-sm border-opacity-100 border-black"
       lazy-src="/img/image.jpg"
       :id="props.character.char_id"

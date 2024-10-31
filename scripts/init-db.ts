@@ -99,7 +99,7 @@ const processUniqueID = (character: {group_label: string, character_class: strin
   const book = books[bookMap[character['book_id']]]['book_data']
 
   // Get printer lastname
-  const printerLastname = character['group_label'].split(/\s/)[1]
+  const printerLastname = character['group_label'].split(/\s/)[1].toLowerCase()
   // Get character class
   const characterClass = character['character_class']
   // Get date

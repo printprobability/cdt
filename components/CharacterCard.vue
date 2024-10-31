@@ -32,7 +32,7 @@
       style="margin: 0 !important;"
     >
       <v-card-text class="d-flex pt-0">
-        Printer: {{ props.character.book.pp_printer }}
+        Printer: {{ props.character.group_label }}
       </v-card-text>
     </v-skeleton-loader>
 

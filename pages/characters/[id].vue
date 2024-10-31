@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-main>
-      <h1 class="text-center">{{ character.character_class }}</h1>
+      <h1 class="text-center">Character class: {{ character.character_class }}</h1>
 
       <v-row class="mt-2">
         <v-col cols="12" md="6">
@@ -40,17 +40,18 @@
 
               <div style="width: 30vw" class="mt-2">
                 <strong>Printer:</strong>&nbsp;
-                <NuxtLink :to="{ name: 'index', query: { printer_like: character.book.pp_printer } }">
-                  {{ character.book.pp_printer }}
+                <NuxtLink :to="{ name: 'index', query: { printer_like: character.group_label } }">
+                  {{ character.group_label }}
                 </NuxtLink>
               </div>
 
               <div style="width: 30vw" class="mt-2">
-                <strong>Source Book:</strong> {{ character.book.estc }}
+                <strong>Source Book:</strong> ESTC {{ character.book.estc }}
               </div>
 
               <div style="width: 30vw" class="mt-2">
-                <strong>Cite As</strong>: {{ character.cite_as }}
+                <strong>Cite As</strong>:
+                <NuxtLink :to="{ name: 'characters-id', params: { id: character.unique_id} }">{{ citeAs }}</NuxtLink>
               </div>
             </v-col>
           </v-row>
@@ -106,6 +107,8 @@ if (!character.value) {
   })
 }
 
+const citeAs = computed(() => `"${character.value['unique_id']}," in Catalog of Distinctive Type (CDT). Edited by Christopher N.Warren, et al.,`)
+
 // Image annotation
 const annotation = computed(() => ({
   x: character.value.x_min,
@@ -115,5 +118,5 @@ const annotation = computed(() => ({
 }))
 
 // Head
-useHead({titleTemplate: `Character: ${character.value.label} - %s`});
+useHead({titleTemplate: `Character: ${character.value.character_class} - %s`});
 </script>

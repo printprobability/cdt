@@ -17,11 +17,12 @@ export default function (sequelize: Sequelize): Model {
       x_max: {type: DataTypes.NUMBER},
       y_min: {type: DataTypes.NUMBER},
       y_max: {type: DataTypes.NUMBER},
-      cite_as: {type: DataTypes.STRING},
+      unique_id: {type: DataTypes.STRING},
     },
     {
       indexes:[
         {fields: ['character_group', 'character_class']},
+        {unique: true, fields: ['unique_id']},
       ]
     }
   )
