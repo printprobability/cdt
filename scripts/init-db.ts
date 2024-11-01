@@ -53,6 +53,22 @@ const bulkInsert = async (model: Model, data: [], idKey: string, dataKey: string
   await model.bulkCreate(batch)
 }
 
+/**
+ * Get lastname from name
+ *
+ * @param name
+ */
+const getLastname = (name: string): string => {
+  // Get part that contains lastname
+  const part = name.split(',')[0]
+  // Split by space
+  const segments = part.split(/\s/)
+  // Get last index
+  const last = segments.length - 1
+
+  return segments[last].startsWith('(') ? segments[last - 1] : segments[last]
+}
+
 // *********************************************
 // Preprocessor
 // *********************************************
@@ -99,7 +115,7 @@ const processUniqueID = (character: {group_label: string, character_class: strin
   const book = books[bookMap[character['book_id']]]['book_data']
 
   // Get printer lastname
-  const printerLastname = character['group_label'].split(/\s/)[1].toLowerCase()
+  const printerLastname = getLastname(character['group_label'])
   // Get character class
   const characterClass = character['character_class']
   // Get date
