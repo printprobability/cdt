@@ -40,11 +40,11 @@ export const _syncPromise = (async () => {
     // Sync
     await sequelize.sync()
     // Get connection
-    const connection: {
-      loadExtension: (file: string, cb: () => void) => void
-    } = (await sequelize.connectionManager.getConnection())
-    // Get all extension in ./ext
-    readdirSync(EXT_FOLDER).forEach((file) => connection.loadExtension(join(EXT_FOLDER, file), () => console.log(`Installed: ${file}`)))
+    // const connection: {
+    //   loadExtension: (file: string, cb: () => void) => void
+    // } = (await sequelize.connectionManager.getConnection())
+    // // Get all extension in ./ext
+    // readdirSync(EXT_FOLDER).forEach((file) => connection.loadExtension(join(EXT_FOLDER, file), () => console.log(`Installed: ${file}`)))
   } catch (error) {
     console.error(error)
   }

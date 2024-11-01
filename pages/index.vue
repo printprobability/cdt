@@ -1,5 +1,5 @@
 <template>
-  <InterfaceList v-model="page" :empty="characters.length === 0">
+  <List v-model="page" :empty="characters.length === 0">
     <template #intro>
       <!-- <p>{{ $siteConfig.browsecopy.characters }}</p> -->
       <div style="font-size: 18px; font-weight: bold">{{ title }}</div>
@@ -19,7 +19,7 @@
     </template>
 
     <template #filter>
-      <TextField v-model="printer" label="Printer (Last name)" @end="filter"/>
+      <PrinterSelect v-model="printer" @end="filter"/>
       <YearSlider
         v-model="yearRange"
         :min-year="MIN_YEAR"
@@ -27,7 +27,7 @@
         class="mt-3"
         @end="filter"
       />
-      <MenusCharacterClassSelect
+      <CharacterClassSelect
         v-model="characterClass"
         class="mt-3"
         @end="filter"
@@ -49,21 +49,27 @@
         </div>
       </div>
     </template>
-  </InterfaceList>
+  </List>
 </template>
 
 <script setup>
+import List from "~/components/Interface/List.vue";
+import CharacterGrid from "~/components/CharacterGrid.vue";
+import CharacterTable from "~/components/CharacterTable.vue";
+import PrinterSelect from "~/components/Menus/PrinterSelect.vue";
+import YearSlider from "~/components/YearSlider.vue";
+import CharacterClassSelect from "~/components/Menus/CharacterClassSelect.vue";
+
+import _ from "lodash";
 import {useAsyncData} from "nuxt/app";
 import {ref, watch, computed, nextTick} from "vue";
 
-// Check if a popstate is occurred recently
-const isPopstateRecently = useState('popState', () => false);
-
-
 // Resources
-const {$axios, $loader} = useNuxtApp();
+const {$axios, $loader, payload} = useNuxtApp();
 // Get route
 const route = useRoute();
+// Get router
+const router = useRouter();
 
 // ********************************
 // Config
@@ -86,9 +92,9 @@ useHead({titleTemplate: title.value});
 // View mode
 // ********************************
 // Mode
-const mode = useState('charactersListMode', () => "grid");
+const mode = useState('charsListMode', () => "grid");
 // Change itemsPerPage when changing mode
-watch(mode, (value) => {
+watch(mode, () => {
   // Clear data
   characters.value = [];
   // Fetch at nextTick
@@ -99,9 +105,7 @@ watch(mode, (value) => {
 // Pagination
 // ********************************
 // Page
-const page = useState('charactersPage', () => 1);
-// If this page is rendered not because of a popstate, reset page to 1
-if (!isPopstateRecently.value) page.value = 1;
+const page = useState('charsPage', () => 1);
 // Number of pages
 const pageNums = computed(() => Math.ceil(count.value / itemsPerPage.value));
 // Page offset
@@ -132,30 +136,44 @@ const resetPage = () => {
 // ********************************
 // Filter
 // ********************************
-// Printer
-const printer = ref(route.query.printer_like ?? '');
-// Year range
-const yearRange = ref({yearEarly: MIN_YEAR, yearLate: MAX_YEAR});
-// Character class
-const characterClass = ref(null);
 
-// Filter query
-const filterQuery = computed(() => {
+// Printer
+const printer = useState('charsFilterByPrinter', () => route.query.printer_like ?? null);
+// Year range
+const yearRange = useState('charsFilterByYearRange', () => ({
+  yearEarly: route.query.pq_year_early ?? MIN_YEAR,
+  yearLate: route.query.pq_year_late ?? MAX_YEAR
+}));
+// Character class
+const characterClass = useState('charsFilterByCharacterClass', () => route.query.character_class ?? null);
+// Book
+const book = useState('charsFilterByBook', () => route.query.book ?? null)
+
+// Extract filter from filterQuery
+const filterOnlyQuery = computed(() => {
   // Query
   const query = {
-    sort: true,
-    limit: itemsPerPage.value,
-    offset: itemsPerPage.value * (page.value - 1),
     pq_year_early: yearRange.value.yearEarly,
     pq_year_late: yearRange.value.yearLate,
   };
 
   if (printer.value) query["printer_like"] = printer.value;
   if (characterClass.value) query["character_class"] = characterClass.value;
-  if (route.query.book) query["book"] = route.query.book;
+  if (book.value) query["book"] = book.value;
 
   return query;
 });
+// Filter query
+const filterQuery = computed(() => ({
+  sort: true,
+  limit: itemsPerPage.value,
+  offset: itemsPerPage.value * (page.value - 1),
+  ...filterOnlyQuery.value
+}));
+
+// Watch filter to replace route
+watch(filterQuery, () => router.replace({query: filterOnlyQuery.value}), {immediate: true});
+
 // Filter API
 const filterAPI = () =>
   $axios.get("/characters/", {params: filterQuery.value});

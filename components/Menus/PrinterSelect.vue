@@ -1,14 +1,14 @@
 <template>
   <div class="d-flex align-center ga-2">
-    <v-select
+    <v-autocomplete
       v-model="model"
-      label="Character/Letterform"
-      variant="outlined"
-      hide-details
+      v-model:search="search"
       clearable
-      item-title="label"
-      item-value="charClass"
-      :items="characterClasses"
+      hide-details
+      variant="outlined"
+      label="Printer (Last name)"
+      :items="printers"
+      :custom-filter="filter"
     >
       <template #append-item>
         <v-list-item v-if="hasNextPage" class="text-center">
@@ -20,25 +20,26 @@
           />
         </v-list-item>
       </template>
-    </v-select>
+    </v-autocomplete>
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import {useVModel} from "@vueuse/core";
 import _ from "lodash";
-import { useVModel } from "@vueuse/core";
-import { defineProps, defineEmits, ref, computed, nextTick, watch } from "vue";
+import {defineProps, defineEmits, ref, computed, nextTick, watch} from "vue";
+import Fuse from 'fuse.js'
 
 // Props
 const props = defineProps({
-  modelValue: { type: String },
+  modelValue: {type: String},
 });
 
 // Emits
 const emit = defineEmits(["update:modelValue", "end"]);
 
 // Get resources
-const { $axios } = useNuxtApp();
+const {$axios} = useNuxtApp();
 
 // Model
 const model = useVModel(props, "modelValue", emit);
@@ -57,12 +58,9 @@ const hasNextPage = computed(
 // Data fetch from API
 // ********************************
 // Fetch data
-const { data: fetchedData } = await useAsyncData(
-  "fetchCharacterClasses",
-  async () => (await $axios.get("/character_classes", { params: { group: "uc" } })).data
-);
+const {data: fetchedData} = await useAsyncData("fetchPrinterLabels", async () => (await $axios.get("/printers")).data);
 // Get character classes object
-const characterClasses = computed(() => fetchedData.value?.results ?? []);
+const printers = computed(() => fetchedData.value?.results ?? []);
 
 // ********************************
 // Fetching next page
@@ -78,7 +76,7 @@ const fetchNextPage = (isIntersecting, entries, observer) => {
       // Mark as fetching
       isFetching.value = true;
       // Call API
-      $axios.request({ url: fetchedData.value.next }).then((res) => {
+      $axios.request({url: fetchedData.value.next}).then((res) => {
         // Merge new data into current data
         mergeData(res.data);
         // Mark as not fetching
@@ -89,4 +87,29 @@ const fetchNextPage = (isIntersecting, entries, observer) => {
 };
 // Merge data
 const mergeData = (data) => (fetchedData.value = {...data, results: _.concat(fetchedData.value.results, data.results)});
+
+// ********************************
+// Filter
+// ********************************
+
+// Fuse instance
+let fuse: Fuse<string> | null = null
+// Only init Fuse if data is not empty
+whenever(printers, value => fuse = new Fuse(value, {
+  shouldSort: false,
+  findAllMatches: true,
+  ignoreLocation: true,
+  threshold: 0.3
+}), {immediate: true})
+
+// Matched printer
+const matchedPrinter = ref([])
+
+// Search text
+const search = ref('')
+// watch for search text change, if truthy, execute fuzzy search to find matchedPrinter. Else, clear it
+watch(search, value => matchedPrinter.value = value ? fuse?.search(value).map(matched => matched.item) : [...printers.value])
+
+// Filter function for autocomplete
+const filter = (itemTitle) => matchedPrinter.value.length > 0 && matchedPrinter.value.indexOf(itemTitle) > -1
 </script>

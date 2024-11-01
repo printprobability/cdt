@@ -1,5 +1,7 @@
 <template>
   <v-container>
+    <v-btn variant="outlined" class="float-left" color="red-darken-3" icon="mdi-arrow-u-left-bottom" rounded="5" @click="goBack"/>
+
     <v-main>
       <h1 class="text-center">Character class: {{ character.character_class }}</h1>
 
@@ -40,7 +42,10 @@
 
               <div style="width: 30vw" class="mt-2">
                 <strong>Printer:</strong>&nbsp;
-                <NuxtLink :to="{ name: 'index', query: { printer_like: character.group_label } }">
+                <NuxtLink
+                  :to="{ name: 'index', query: { printer_like: character.group_label } }"
+                  @click="clearNuxtState((key) => key.startsWith('chars'))"
+                >
                   {{ character.group_label }}
                 </NuxtLink>
               </div>
@@ -70,11 +75,16 @@
 </template>
 
 <script setup>
+import CharacterGrid from "~/components/CharacterGrid.vue";
+import {AnnotatedImage} from '#components';
+
 // Resoures
 const {$axios} = useNuxtApp();
 
 // Route
 const route = useRoute();
+// Router
+const router = useRouter()
 
 // Fetch detail
 const {data: character} = await useAsyncData(
@@ -119,4 +129,7 @@ const annotation = computed(() => ({
 
 // Head
 useHead({titleTemplate: `Character: ${character.value.character_class} - %s`});
+
+// Go back
+const goBack = () => router.back()
 </script>

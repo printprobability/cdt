@@ -60,7 +60,7 @@ function createFilter(query: CharacterQuery): { where: object, include: [] } {
   // Filter by group_id
   if (query.group_id) filter.where['group_id'] = query.group_id
   // Filter by printer
-  if (query.printer_like) filter.where['group_label'] = {[Op.like]: `%${query.printer_like}%`}
+  if (query.printer_like) filter.where['group_label'] = query.printer_like
 
   return filter
 }
