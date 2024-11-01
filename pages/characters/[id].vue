@@ -1,6 +1,7 @@
 <template>
   <v-container>
-    <v-btn variant="outlined" class="float-left" color="red-darken-3" icon="mdi-arrow-u-left-bottom" rounded="5" @click="goBack"/>
+    <v-btn variant="outlined" class="float-left" color="red-darken-3" icon="mdi-arrow-u-left-bottom" rounded="5"
+           aria-label="Back to character list" @click="goBack"/>
 
     <v-main>
       <h1 class="text-center">Character class: {{ character.character_class }}</h1>
@@ -32,15 +33,15 @@
               </div>
             </v-col>
             <v-col cols="7" md="9">
-              <div style="width: 30vw">
+              <div aria-label="Book" style="width: 30vw">
                 <strong>Book:</strong> {{ character.book.pq_title }}
               </div>
 
-              <div style="width: 30vw" class="mt-2">
+              <div aria-label="Date" style="width: 30vw" class="mt-2">
                 <strong>Date:</strong> {{ character.book.pq_year_early }}
               </div>
 
-              <div style="width: 30vw" class="mt-2">
+              <div aria-label="Printer" style="width: 30vw" class="mt-2">
                 <strong>Printer:</strong>&nbsp;
                 <NuxtLink
                   :to="{ name: 'index', query: { printer_like: character.group_label } }"
@@ -50,11 +51,11 @@
                 </NuxtLink>
               </div>
 
-              <div style="width: 30vw" class="mt-2">
+              <div aria-label="Source book" style="width: 30vw" class="mt-2">
                 <strong>Source Book:</strong> ESTC {{ character.book.estc }}
               </div>
 
-              <div style="width: 30vw" class="mt-2">
+              <div aria-label="Cite As" style="width: 30vw" class="mt-2">
                 <strong>Cite As</strong>:
                 <NuxtLink :to="{ name: 'characters-id', params: { id: character.unique_id} }">{{ citeAs }}</NuxtLink>
               </div>
@@ -63,7 +64,7 @@
         </v-col>
       </v-row>
 
-      <div class="mt-10" style="width: 80vw">
+      <div aria-label="Grid of similar character" class="mt-10" style="width: 80vw">
         <h2 class="text-center">
           Other examples of character class (A, B, C, etx) for printer in CDT
         </h2>

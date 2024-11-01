@@ -22,7 +22,10 @@ export default defineNuxtConfig({
 
   app: {
     head: {
-      link: [{rel: 'stylesheet', href: 'https://cdn.jsdelivr.net/npm/vuetify@3.x/dist/vuetify.min.css', preload: true}]
+      link: [{rel: 'stylesheet', href: 'https://cdn.jsdelivr.net/npm/vuetify@3.x/dist/vuetify.min.css', preload: true}],
+      htmlAttrs: {
+        lang: 'en'
+      }
     }
   },
 

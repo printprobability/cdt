@@ -1,5 +1,5 @@
 <template>
-  <div class="osd" :id/>
+  <div class="osd" :id aria-label="Annotated image"/>
 </template>
 
 <script setup>

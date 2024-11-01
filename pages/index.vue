@@ -13,13 +13,13 @@
         mandatory
         variant="outlined"
       >
-        <v-btn icon="mdi-view-grid" value="grid"/>
-        <v-btn icon="mdi-table" value="table"/>
+        <v-btn icon="mdi-view-grid" value="grid" aria-label="Change to grid view"/>
+        <v-btn icon="mdi-table" value="table" aria-label="Change to table view"/>
       </v-btn-toggle>
     </template>
 
     <template #filter>
-      <PrinterSelect v-model="printer" @end="filter"/>
+      <PrinterSelect v-model="printer" class="mt-3" @end="filter"/>
       <YearSlider
         v-model="yearRange"
         :min-year="MIN_YEAR"
@@ -27,25 +27,23 @@
         class="mt-3"
         @end="filter"
       />
-      <CharacterClassSelect
-        v-model="characterClass"
-        class="mt-3"
-        @end="filter"
-      />
+      <CharacterClassSelect v-model="characterClass" class="mt-3" @end="filter"/>
     </template>
 
     <template #results>
-      <CharacterGrid v-if="mode === 'grid'" :characters/>
-      <CharacterTable v-else-if="mode === 'table'" :characters/>
+      <div :aria-label="`${modeLabel} of characters`">
+        <CharacterGrid v-if="mode === 'grid'" :characters/>
+        <CharacterTable v-else-if="mode === 'table'" :characters/>
 
-      <div class="mt-3" v-if="pageNums > 0">
-        <v-pagination
-          :length="pageNums"
-          v-model="page"
-          @update:model-value="onChangePage"
-        />
-        <div class="text-center">
-          {{ minItemText }}-{{ maxItemText }} of {{ count }}
+        <div class="mt-3" v-if="pageNums > 0">
+          <v-pagination
+            :length="pageNums"
+            v-model="page"
+            @update:model-value="onChangePage"
+          />
+          <div class="text-center">
+            {{ minItemText }}-{{ maxItemText }} of {{ count }}
+          </div>
         </div>
       </div>
     </template>
@@ -60,12 +58,12 @@ import PrinterSelect from "~/components/Menus/PrinterSelect.vue";
 import YearSlider from "~/components/YearSlider.vue";
 import CharacterClassSelect from "~/components/Menus/CharacterClassSelect.vue";
 
-import _ from "lodash";
 import {useAsyncData} from "nuxt/app";
 import {ref, watch, computed, nextTick} from "vue";
+import _ from "lodash";
 
 // Resources
-const {$axios, $loader, payload} = useNuxtApp();
+const {$axios, $loader} = useNuxtApp();
 // Get route
 const route = useRoute();
 // Get router
@@ -93,6 +91,8 @@ useHead({titleTemplate: title.value});
 // ********************************
 // Mode
 const mode = useState('charsListMode', () => "grid");
+// Model label
+const modeLabel = computed(() => _.capitalize(mode.value))
 // Change itemsPerPage when changing mode
 watch(mode, () => {
   // Clear data

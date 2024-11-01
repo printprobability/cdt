@@ -16,7 +16,7 @@
         </v-form>
         <div style="height: 15vh" />
         <div>
-          <img src="/img/pnp_logo.png" style="height: 40px" />
+          <img alt="Logo" src="/img/pnp_logo.png" style="height: 40px" />
           <h6>Print & Probability</h6>
           <br />
           <h6 style="font-size: 14px; font-weight: bolder">

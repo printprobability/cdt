@@ -56,52 +56,52 @@ $primary: #b00;
 
 .navbar-brand {
 
-    font-weight: 400;
+  font-weight: 400;
 }
 
 .v-toolbar-title.v-app-bar-title.dldt-navbar-title {
 
-    font-family: $font-family-base;
-    font-size: 1.25rem;
-    font-weight: 575;
+  font-family: $font-family-base;
+  font-size: 1.25rem;
+  font-weight: 575;
 }
 
 .v-toolbar__content > .dldt-navbar-link {
 
-    color: rgba(0,0,0,.5);
-    font-family: $font-family-base;
-    font-size: 1rem;
-    font-weight: 400 !important;
+  color: rgba(0, 0, 0, .5);
+  font-family: $font-family-base;
+  font-size: 1rem;
+  font-weight: 400 !important;
 }
 
 /* DLDT-specific */
 
 .dldt-text-h1 {
 
-    color: $headings-color;
-    font-family: $headings-font-family !important;
-    font-size: $display2-size;
+  color: $headings-color;
+  font-family: $headings-font-family !important;
+  font-size: $display2-size;
 }
 
 [id^="hoverCard-"] {
 
-    display: none;
+  display: none;
 }
 
 [id^="hoverParent-"]:hover > [id^="hoverCard-"] {
-    margin-left: 10px;
-    display: block !important;
-  }
+  margin-left: 10px;
+  display: block !important;
+}
 
 .text-h2 {
 
-    color: $headings-color;
-    font-family: $headings-font-family !important;
+  color: $headings-color;
+  font-family: $headings-font-family !important;
 }
 
 .text-h3 {
 
-    font-family: $font-family-base !important;
+  font-family: $font-family-base !important;
 }
 
 /* Matt */
@@ -109,71 +109,79 @@ $primary: #b00;
 .borderless-list,
 .borderless-list-item {
 
-    border: none;
+  border: none;
 }
 
 .fleuron {
 
-    font-size: xx-large;
+  font-size: xx-large;
 }
 
 .highlight {
 
-    border: 2px solid red;
+  border: 2px solid red;
 }
 
 img.thumbnail {
 
-    max-width: 200px;
-    max-height: 300px;
+  max-width: 200px;
+  max-height: 300px;
 }
 
 .openseadragon {
 
-    height: 600px;
+  height: 600px;
 }
 
 .parent {
 
-    min-height: 100vh;
+  min-height: 100vh;
 }
 
 .splashbox-title {
 
-    color: $headings-color;
-    font-family: $headings-font-family !important;
+  color: $headings-color;
+  font-family: $headings-font-family !important;
 }
 
 /* Tags */
 
 a {
 
-    color: #b00;
+  color: #b00;
 }
 
 body {
 
-    font-family: $font-family-base;
+  font-family: $font-family-base;
 }
 
 figure {
 
-    margin: 1rem 0 1rem 0;
+  margin: 1rem 0 1rem 0;
 }
 
 figcaption {
 
-    font-size: smaller;
-    margin: 1rem 2rem 0 2rem;
+  font-size: smaller;
+  margin: 1rem 2rem 0 2rem;
 }
 
 h3,
 h4,
 h5 {
 
-    font-family: $headings-font-family !important;
-    margin-bottom: .5rem;
-    font-weight: 500;
-    line-height: 1.2;
-    color: #b00
+  font-family: $headings-font-family !important;
+  margin-bottom: .5rem;
+  font-weight: 500;
+  line-height: 1.2;
+  color: #b00
+}
+
+.v-input__details:not(:has(.year-slider-entry)) {
+  display: none !important;
+}
+
+.v-label, .v-messages {
+  opacity: 1 !important;
 }

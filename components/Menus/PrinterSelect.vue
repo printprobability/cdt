@@ -4,9 +4,9 @@
       v-model="model"
       v-model:search="search"
       clearable
-      hide-details
+      messages="Filter characters by printer"
       variant="outlined"
-      label="Printer (Last name)"
+      :label
       :items="printers"
       :custom-filter="filter"
     >
@@ -29,6 +29,7 @@ import {useVModel} from "@vueuse/core";
 import _ from "lodash";
 import {defineProps, defineEmits, ref, computed, nextTick, watch} from "vue";
 import Fuse from 'fuse.js'
+import {useAriaLabelForRole} from "~/composables/useAriaLabelForRole";
 
 // Props
 const props = defineProps({
@@ -45,6 +46,10 @@ const {$axios} = useNuxtApp();
 const model = useVModel(props, "modelValue", emit);
 // Emit end event
 watch(model, () => emit("end"));
+
+// Label
+const label = ref('Printer (Last name)')
+useAriaLabelForRole(label)
 
 // ********************************
 // Menu status

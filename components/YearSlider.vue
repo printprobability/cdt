@@ -6,13 +6,13 @@
       :max="props.maxYear"
       strict
       step="1"
-      label="Year"
-      messages="a"
+      :label
+      messages="Filter characters by a year range"
       @end="emit('end')"
       @update:model-value="emitValue($event)"
     >
       <template #message>
-        <div class="d-flex" style="width: 100%">
+        <div class="d-flex year-slider-entry" style="width: 100%">
           <TextField class="year-entry" density="compact" type="number" @end="onEditEntryEnd"
                      v-model="from" label="From"/>
           <v-spacer/>
@@ -27,6 +27,7 @@
 
 <script setup>
 import {defineProps, defineEmits} from "vue";
+import {useAriaLabelForRole} from "~/composables/useAriaLabelForRole";
 
 const props = defineProps({
   modelValue: {type: Object},
@@ -38,6 +39,10 @@ const emit = defineEmits(["update:modelValue", "end"]);
 
 // Apply to model
 const emitValue = (value) => emit('update:modelValue', {yearEarly: value[0], yearLate: value[1]})
+
+// Label
+const label = ref('Year')
+// useAriaLabelForRole(label)
 
 // Year range array
 const yearRange = computed(() => [
