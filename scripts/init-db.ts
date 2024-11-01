@@ -60,7 +60,7 @@ const bulkInsert = async (model: Model, data: [], idKey: string, dataKey: string
  */
 const getLastname = (name: string): string => {
   // Get part that contains lastname
-  const part = name.split(',')[0]
+  const part = name.split(/\s*\(/)[0].split(/\s*,\s*/)[0]
   // Split by space
   const segments = part.split(/\s/)
   // Get last index
