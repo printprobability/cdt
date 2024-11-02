@@ -67,18 +67,31 @@ const overlays = computed(() => [
   }
 ]);
 
+// Fix link
+const fixURL = (url) => {
+  // Get the http version of IIIF_HOST
+  const httpHost = runtimeConfig.public.IIIF_HOST.replace('https:', 'http:');
+  // Get the https version of IIIF_HOST
+  const httpsHost = runtimeConfig.public.IIIF_HOST.replace('http:', 'https:');
+
+  // Get new host
+  const newHost = runtimeConfig.public.APP_ENV === 'production'
+    ? `${runtimeConfig.public.IIIF_HOST}/iiif/`
+    : `${runtimeConfig.public.API_BASE_URL}/iiif/`;
+  // Remove the old host out of old url
+  const newURL = url.replace(httpHost, '').replace(httpsHost, '');
+
+  return `${newHost}${newURL}`
+}
+
 // Get image info and initiate OSD
 onMounted( () => {
   $axios.get(imageInfoUrl.value, {withCredentials: true}).then(res => {
     // Get image info
     imageInfo.value = res.data;
     // Fix link in @id
-    imageInfo.value['@id'] = imageInfo.value['@id'].replace(
-      runtimeConfig.public.IIIF_HOST,
-      runtimeConfig.public.APP_ENV === 'production'
-        ? `${runtimeConfig.public.IIIF_HOST}/iiif/`
-        : `${runtimeConfig.public.API_BASE_URL}/iiif/`
-    );
+    imageInfo.value['@id'] = fixURL(imageInfo.value['@id']);
+
     // Init OSD
     nextTick(() => OpenSeadragon(options.value));
   })
