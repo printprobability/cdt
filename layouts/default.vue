@@ -67,13 +67,13 @@
 
     <footer class="footer">
       <div class="footer-container">
-        <div class="footer-logo">
+        <div class="footer-logo text-center">
           <h3>CDT - Restoration England</h3>
           <img class="w" alt="Footer logo" src="/img/logo.jpg"
                style="width: 271px; padding: 15px; background-color: white;">
         </div>
 
-        <div class="footer-contact">
+        <div class="footer-contact" :style="footerContactAndSocialStyles">
           <h4>Contact Us:</h4>
           <p>Carnegie Mellon University</p>
           <p>5000 Forbes Ave, Pittsburgh, PA 15213</p>
@@ -81,7 +81,7 @@
           <p>Email: <a href="mailto:library@cmu.edu">library@cmu.edu</a></p>
         </div>
 
-        <div class="footer-links">
+        <div class="footer-links" :style="footerLinksStyles">
           <h4>Quick Links:</h4>
           <ul>
             <li><a href="#">About Us</a></li>
@@ -92,7 +92,7 @@
           </ul>
         </div>
 
-        <div class="footer-social">
+        <div :class="footerSocialClasses" :style="footerContactAndSocialStyles">
           <h4>Connect with Us:</h4>
           <p>
             <a href="#">Facebook</a> |
@@ -114,9 +114,40 @@
 
 <script setup>
 const {$siteConfig} = useNuxtApp();
+import {useDisplay} from "vuetify";
 
 useHead({title: `${$siteConfig.maintitle} - ${$siteConfig.subtitle}`});
-</script>
+
+// Get Vuetify breakpoints
+const display = useDisplay();
+
+// *****************************
+// Classes
+// *****************************
+
+const footerContainerClasses = computed(() => ({
+  'footer-container': true,
+  // 'justify-space-evenly': display.smAndDown
+}));
+
+const footerSocialClasses = computed(() => ({
+  'footer-social': true,
+  'pl-2': display.mdAndUp.value,
+  // 'justify-space-evenly': display.smAndDown
+}));
+
+// *****************************
+// Styles
+// *****************************
+
+const footerContactAndSocialStyles = computed(() => ({
+  width: display.mdAndUp.value ? '250px' : '300px'
+}))
+
+const footerLinksStyles = computed(() => ({
+  // width: display.smAndDown ? '300px' : '283px'
+  width: display.mdAndUp.value ? '200px' : '300px'
+}))</script>
 
 <style scoped lang="scss">
 .shadow-sm {
@@ -141,16 +172,16 @@ useHead({title: `${$siteConfig.maintitle} - ${$siteConfig.subtitle}`});
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
-  justify-content: space-between;
+  justify-content: space-evenly;
+  gap: 20px;
 }
 
 .footer-logo h3 {
   font-size: 1.5em;
 }
 
-.footer-contact, .footer-links, .footer-social {
-  max-width: 250px;
-  margin-bottom: 20px;
+.footer-logo, .footer-contact, .footer-social {
+  width: 300px;
 }
 
 .footer-contact h4, .footer-links h4, .footer-social h4 {

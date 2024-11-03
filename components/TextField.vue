@@ -5,6 +5,7 @@
       :label
       :density
       :type
+      :messages
       hide-details
       variant="outlined"
     />
@@ -13,15 +14,20 @@
 <script setup>
 import {useVModel} from "@vueuse/core";
 import {defineProps, defineEmits} from "vue";
+import {useAriaLabelForRole} from "~/composables/useAriaLabelForRole";
 
 const props = defineProps({
   modelValue: {type: String},
   label: {type: String},
   density: {type: String},
-  type: {type: String}
+  type: {type: String},
+  messages: {type: String}
 });
 
 const emit = defineEmits(["update:modelValue", "blur", "end"]);
+
+// Label
+useAriaLabelForRole(props.label)
 
 // Model
 const model = useVModel(props, "modelValue", emit);

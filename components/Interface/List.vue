@@ -2,7 +2,7 @@
   <v-container>
     <div class="d-flex">
       <p v-if="props.title" class="page-title">{{ props.title }}</p>
-      <v-spacer />
+      <v-spacer/>
       <slot name="left"></slot>
     </div>
 
@@ -14,15 +14,15 @@
         <v-form>
           <slot name="filter"></slot>
         </v-form>
-        <div style="height: 15vh" />
-        <div>
-          <img alt="Logo" src="/img/pnp_logo.png" style="height: 40px" />
+        <div v-if="$vuetify.display.mdAndUp" style="height: calc(15vh - 20px)"/>
+        <div class="mt-5">
+          <img alt="Logo" src="/img/pnp_logo.png" style="height: 40px"/>
           <h6>Print & Probability</h6>
-          <br />
+          <br/>
           <h6 style="font-size: 14px; font-weight: bolder">
             About the project
           </h6>
-          <br />
+          <br/>
           <p>
             {{ about }}
           </p>

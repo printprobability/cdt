@@ -1,27 +1,24 @@
 <template>
-  <div class="d-flex align-center ga-2">
+  <div class="align-center ga-2">
+    <div class="ml-4">{{ label }}</div>
     <v-range-slider
       :model-value="yearRange"
       :min="props.minYear"
       :max="props.maxYear"
       strict
       step="1"
-      :label
       messages="Filter characters by a year range"
       @end="emit('end')"
       @update:model-value="emitValue($event)"
-    >
-      <template #message>
-        <div class="d-flex year-slider-entry" style="width: 100%">
-          <TextField class="year-entry" density="compact" type="number" @end="onEditEntryEnd"
-                     v-model="from" label="From"/>
-          <v-spacer/>
-          <TextField class="year-entry" density="compact" type="number" @end="onEditEntryEnd"
-                     v-model="to" label="To"/>
-        </div>
-      </template>
-      <template #details></template>
-    </v-range-slider>
+    />
+
+    <div class="d-flex year-slider-entry" style="width: 100%">
+      <TextField class="year-entry" density="compact" type="number" @end="onEditEntryEnd"
+                 v-model="from" label="From" messages="Filter character from year"/>
+      <v-spacer/>
+      <TextField class="year-entry" density="compact" type="number" @end="onEditEntryEnd"
+                 v-model="to" label="To" messages="Filter character to year"/>
+    </div>
   </div>
 </template>
 

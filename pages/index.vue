@@ -27,7 +27,7 @@
         class="mt-3"
         @end="filter"
       />
-      <CharacterClassSelect v-model="characterClass" class="mt-3" @end="filter"/>
+      <CharacterClassSelect v-model="characterClass" class="mt-5" @end="filter"/>
     </template>
 
     <template #results>

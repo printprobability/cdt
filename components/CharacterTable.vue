@@ -18,7 +18,7 @@
         class="py-2"
       >
         <template v-if="character">
-          <td>
+          <td class="py-2">
             <CharacterImage :character="character"/>
           </td>
           <td>{{ character.character_class }}</td>

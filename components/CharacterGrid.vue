@@ -1,6 +1,6 @@
 <template>
-  <div v-if="props.characters.length > 0">
-    <div :class="classObj">
+  <div v-if="props.characters.length > 0" class="mx-auto mx-auto" style="width: 90%">
+    <div class="character-grid">
       <CharacterHoverableImage
         v-for="character of props.characters"
         :key="character.char_id"
@@ -16,15 +16,15 @@ import {defineProps} from "vue";
 // Props
 const props = defineProps({
   characters: {type: Array, default: () => []},
-  center: {type: Boolean}
+  // center: {type: Boolean}
 });
-
-// Class object
-const classObj = computed(() => ({
-  'd-flex': true,
-  'flex-wrap': true,
-  'ga-5': true,
-  'px-10': true,
-  'justify-center': props.center
-}))
 </script>
+
+<style scoped lang="scss">
+.character-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 52px);
+  justify-content: space-between;
+  grid-gap: 20px;
+}
+</style>
