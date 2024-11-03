@@ -1,6 +1,5 @@
 <template>
   <div class="align-center ga-2">
-    <div class="ml-4">{{ label }}</div>
     <v-range-slider
       :model-value="yearRange"
       :min="props.minYear"

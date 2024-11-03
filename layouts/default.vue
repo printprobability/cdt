@@ -67,7 +67,7 @@
 
     <footer class="footer">
       <div class="footer-container">
-        <div class="footer-logo text-center" aria-label="Footer logoc">
+        <div class="footer-logo" aria-label="Footer logo">
           <h3>CDT - Restoration England</h3>
           <img class="w" alt="Footer logo" src="/img/logo.jpg"
                style="width: 271px; padding: 15px; background-color: white;">
