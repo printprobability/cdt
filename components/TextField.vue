@@ -6,7 +6,6 @@
       :density
       :type
       :messages
-      hide-details
       variant="outlined"
     />
   </div>

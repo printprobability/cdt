@@ -2,7 +2,7 @@
 
     <div>
         <InterfaceList title="Search books" v-model="page" :total_rows="booksCount" :page_size="page_size">
-
+        <h1>Printer list</h1>
 <!--            <template #intro>-->
 <!--                <p style="margin-top: 1em; margin-bottom: 1em;">{{ $siteConfig.browsecopy.books }}</p>-->
 <!--            </template>-->

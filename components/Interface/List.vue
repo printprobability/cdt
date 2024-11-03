@@ -17,7 +17,7 @@
         <div v-if="$vuetify.display.mdAndUp" style="height: calc(15vh - 20px)"/>
         <div class="mt-5">
           <img alt="Logo" src="/img/pnp_logo.png" style="height: 40px"/>
-          <h6>Print & Probability</h6>
+          <h6 style="font-size: 11px">Print &amp; Probability</h6>
           <br/>
           <h6 style="font-size: 14px; font-weight: bolder">
             About the project

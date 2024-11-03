@@ -27,7 +27,7 @@
                   max-height="110px"
                   class="border border-sm border-opacity-100 border-black"
                   lazy-src="/img/image.jpg"
-                  :alt="character.character_class"
+                  :alt="`Thumbnail of ${character.character_class}`"
                   :src="character.web_url"
                 />
               </div>
@@ -45,6 +45,7 @@
                 <strong>Printer:</strong>&nbsp;
                 <NuxtLink
                   :to="{ name: 'index', query: { printer_like: character.group_label } }"
+                  :aria-label="`Filter character by ${character.group_label} printer`"
                   @click="clearNuxtState((key) => key.startsWith('chars'))"
                 >
                   {{ character.group_label }}
@@ -57,7 +58,12 @@
 
               <div aria-label="Cite As" style="width: 30vw" class="mt-2">
                 <strong>Cite As</strong>:
-                <NuxtLink :to="{ name: 'characters-id', params: { id: character.unique_id} }">{{ citeAs }}</NuxtLink>
+                <NuxtLink
+                  :to="{ name: 'characters-id', params: {id: character.unique_id} }"
+                  :aria-label="`Character: ${character.unique_id}`"
+                >
+                  {{ citeAs }}
+                </NuxtLink>
               </div>
             </v-col>
           </v-row>

@@ -1,6 +1,7 @@
 <template>
 
   <v-container>
+    <h1>Printer detail</h1>
 
 <!--    <h1 class="dldt-text-h1">{{ book[0].pqTitle }}</h1>-->
 

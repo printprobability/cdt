@@ -39,7 +39,7 @@ const emitValue = (value) => emit('update:modelValue', {yearEarly: value[0], yea
 
 // Label
 const label = ref('Year')
-// useAriaLabelForRole(label)
+useAriaLabelForRole(label)
 
 // Year range array
 const yearRange = computed(() => [
@@ -91,6 +91,4 @@ const onEditEntryEnd = () => {
     -moz-appearance: textfield;
   }
 }
-
-
 </style>

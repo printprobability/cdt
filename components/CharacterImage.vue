@@ -1,5 +1,8 @@
 <template>
-  <NuxtLink :to="{ name: 'characters-id', params: { id: props.character.unique_id} }">
+  <NuxtLink
+    :to="{ name: 'characters-id', params: {id: props.character.unique_id} }"
+    :aria-label="`To detail page of ${props.character.unique_id}`"
+  >
     <v-img
       cover
       width="52px"
@@ -9,7 +12,7 @@
       class="border border-sm border-opacity-100 border-black"
       lazy-src="/img/image.jpg"
       :id="props.character.char_id"
-      :alt="props.character.label"
+      :alt="`Thumbnail of ${props.character.unique_id}`"
       :src="props.character.web_url"
     />
     <!-- :src="props.character.image.webUrl" -->

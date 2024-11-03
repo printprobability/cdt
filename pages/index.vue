@@ -1,6 +1,7 @@
 <template>
   <List v-model="page" :empty="characters.length === 0">
     <template #intro>
+      <h1 style="display: none">Character list</h1>
       <!-- <p>{{ $siteConfig.browsecopy.characters }}</p> -->
       <div style="font-size: 18px; font-weight: bold">{{ title }}</div>
       <p class="mt-2">{{ intro }}</p>

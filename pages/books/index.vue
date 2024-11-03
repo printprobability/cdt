@@ -2,42 +2,43 @@
 
   <div>
     <InterfaceList title="Search books" v-model="page" :total_rows="booksCount" :page_size="page_size">
+      <h1>Book list</h1>
 
-<!--      <template #intro>-->
-<!--        <p style="margin-top: 1em; margin-bottom: 1em;">{{ $siteConfig.browsecopy.books }}</p>-->
-<!--      </template>-->
+      <!--      <template #intro>-->
+      <!--        <p style="margin-top: 1em; margin-bottom: 1em;">{{ $siteConfig.browsecopy.books }}</p>-->
+      <!--      </template>-->
 
-<!--      <template #filter>-->
-<!--        <v-text-field-->
-<!--          id="input-book-title"-->
-<!--          debounce="500"-->
-<!--          label="Title"-->
-<!--          placeholder="Aeropagitica"-->
-<!--          v-model="form.title"/>-->
-<!--        <v-text-field-->
-<!--          id="input-book-printer"-->
-<!--          debounce="500"-->
-<!--          label="Printer"-->
-<!--          placeholder="Evan Tyler"-->
-<!--          v-model="form.printer"/>-->
+      <!--      <template #filter>-->
+      <!--        <v-text-field-->
+      <!--          id="input-book-title"-->
+      <!--          debounce="500"-->
+      <!--          label="Title"-->
+      <!--          placeholder="Aeropagitica"-->
+      <!--          v-model="form.title"/>-->
+      <!--        <v-text-field-->
+      <!--          id="input-book-printer"-->
+      <!--          debounce="500"-->
+      <!--          label="Printer"-->
+      <!--          placeholder="Evan Tyler"-->
+      <!--          v-model="form.printer"/>-->
 
-<!--        <DateSlider-->
-<!--          :minYear="1600"-->
-<!--          :maxYear="1800"-->
-<!--          @update:modelValue="changeDate"/>-->
-<!--      </template>-->
+      <!--        <DateSlider-->
+      <!--          :minYear="1600"-->
+      <!--          :maxYear="1800"-->
+      <!--          @update:modelValue="changeDate"/>-->
+      <!--      </template>-->
 
-<!--      <template #results>-->
-<!--        <v-pagination :length="numPages" v-model="page"></v-pagination>-->
-<!--        <v-list v-if="books || books.length > 0">-->
-<!--          <v-list-item v-for="book in paginationBooks" :key="book.id">-->
-<!--            <BookCard v-if="book.coverPage.image.thumbnail" :book="book" :characters="getBookCharacters(book.id)"/>-->
-<!--          </v-list-item>-->
-<!--        </v-list>-->
-<!--        <v-pagination :length="numPages" v-model="page"></v-pagination>-->
-<!--      </template>-->
+      <!--      <template #results>-->
+      <!--        <v-pagination :length="numPages" v-model="page"></v-pagination>-->
+      <!--        <v-list v-if="books || books.length > 0">-->
+      <!--          <v-list-item v-for="book in paginationBooks" :key="book.id">-->
+      <!--            <BookCard v-if="book.coverPage.image.thumbnail" :book="book" :characters="getBookCharacters(book.id)"/>-->
+      <!--          </v-list-item>-->
+      <!--        </v-list>-->
+      <!--        <v-pagination :length="numPages" v-model="page"></v-pagination>-->
+      <!--      </template>-->
 
-<!--      <template #footer></template>-->
+      <!--      <template #footer></template>-->
     </InterfaceList>
   </div>
 

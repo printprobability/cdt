@@ -13,7 +13,8 @@ const selectByRoleAttribute = (element: HTMLElement) => element?.querySelectorAl
  * @param elements
  * @param label
  */
-const applyAriaLabel = async (elements: HTMLElement[], label: string) => elements.forEach(element => element.setAttribute('aria-label', label))
+const applyAriaLabel = async (elements: HTMLElement[], label: string) => elements
+  .forEach(element => element.getAttribute('role') !== 'alert' && element.setAttribute('aria-label', label))
 
 /**
  * Apply aria-label for element that has attribute "role"

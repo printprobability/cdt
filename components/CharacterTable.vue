@@ -18,17 +18,17 @@
         class="py-2"
       >
         <template v-if="character">
-          <td class="py-2">
+          <td class="py-2" aria-label="Character thumbnail">
             <CharacterImage :character="character"/>
           </td>
           <td>{{ character.character_class }}</td>
-          <td>
-            <NuxtLink :to="`/printers/${character.group_label}`">
+          <td aria-label="Printer">
+            <NuxtLink :to="`/printers/${character.group_label}`" :aria-label="character.group_label">
               {{ character.group_label }}
             </NuxtLink>
           </td>
-          <td>{{ character.book.pq_year_early }}</td>
-          <td>
+          <td aria-label="Publish year">{{ character.book.pq_year_early }}</td>
+          <td aria-label="ESTC">
             <v-tooltip location="bottom">
               <template v-slot:activator="{ props }">
                 <div v-bind="props">
@@ -39,8 +39,11 @@
               <div>Book info</div>
             </v-tooltip>
           </td>
-          <td>
-            <NuxtLink :to="{ name: 'characters-id', params: { id: character.unique_id } }">
+          <td aria-label="Character Unique ID">
+            <NuxtLink
+              :to="{ name: 'characters-id', params: { id: character.unique_id } }"
+              :aria-label="character.unique_id"
+            >
               {{ character.unique_id }}
             </NuxtLink>
           </td>

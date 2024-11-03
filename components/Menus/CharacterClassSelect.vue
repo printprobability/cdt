@@ -3,9 +3,8 @@
     <v-select
       v-model="model"
       label="Character/Letterform"
-      message="Filter characters by character class"
+      messages="Filter characters by character class"
       variant="outlined"
-      hide-details
       clearable
       item-title="label"
       item-value="charClass"

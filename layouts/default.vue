@@ -7,13 +7,13 @@
                 :to="{ name: 'index' }"
             > -->
       <v-app-bar-title class="dldt-navbar-title">
-        <NuxtLink to="/" style="text-decoration: none">
+        <NuxtLink to="/" style="text-decoration: none" aria-label="Home">
           {{ $siteConfig.navbartitle }}
         </NuxtLink>
       </v-app-bar-title>
 
       <!-- <v-list-item class="dldt-navbar-link px-2" :to="{ name: 'books' }">Books</v-list-item> -->
-      <v-list-item class="dldt-navbar-link px-2" :to="{ name: 'index' }">
+      <v-list-item class="dldt-navbar-link px-2" :to="{ name: 'index' }" aria-label="To character list">
         Characters
       </v-list-item
       >
@@ -67,45 +67,45 @@
 
     <footer class="footer">
       <div class="footer-container">
-        <div class="footer-logo text-center">
+        <div class="footer-logo text-center" aria-label="Footer logoc">
           <h3>CDT - Restoration England</h3>
           <img class="w" alt="Footer logo" src="/img/logo.jpg"
                style="width: 271px; padding: 15px; background-color: white;">
         </div>
 
-        <div class="footer-contact" :style="footerContactAndSocialStyles">
+        <div class="footer-contact" aria-label="Contact" :style="footerContactAndSocialStyles">
           <h4>Contact Us:</h4>
           <p>Carnegie Mellon University</p>
           <p>5000 Forbes Ave, Pittsburgh, PA 15213</p>
           <p>Phone: +1 (412) 268-2000</p>
-          <p>Email: <a href="mailto:library@cmu.edu">library@cmu.edu</a></p>
+          <p>Email: <NuxtLink aria-label="Email" href="mailto:library@cmu.edu">library@cmu.edu</NuxtLink></p>
         </div>
 
-        <div class="footer-links" :style="footerLinksStyles">
+        <div class="footer-links" aria-label="Quick links" :style="footerLinksStyles">
           <h4>Quick Links:</h4>
           <ul>
-            <li><a href="#">About Us</a></li>
-            <li><a href="#">Collections</a></li>
-            <li><a href="#">Research Support</a></li>
-            <li><a href="#">Library Services</a></li>
-            <li><a href="#">News &amp; Events</a></li>
+            <li><NuxtLink aria-label="About Us" to="#">About Us</NuxtLink></li>
+            <li><NuxtLink aria-label="Collections" to="#">Collections</NuxtLink></li>
+            <li><NuxtLink aria-label="Research Support" to="#">Research Support</NuxtLink></li>
+            <li><NuxtLink aria-label="Library Services" to="#">Library Services</NuxtLink></li>
+            <li><NuxtLink aria-label="News & Events" to="#">News &amp; Events</NuxtLink></li>
           </ul>
         </div>
 
-        <div :class="footerSocialClasses" :style="footerContactAndSocialStyles">
+        <div :class="footerSocialClasses" aria-label="Social" :style="footerContactAndSocialStyles">
           <h4>Connect with Us:</h4>
           <p>
-            <a href="#">Facebook</a> |
-            <a href="#">Twitter</a> |
-            <a href="#">LinkedIn</a> |
-            <a href="#">Instagram</a>
+            <NuxtLink aria-label="Facebook" to="#">Facebook</NuxtLink> |
+            <NuxtLink aria-label="Twitter" to="#">Twitter</NuxtLink> |
+            <NuxtLink aria-label="LinkedIn" to="#">LinkedIn</NuxtLink> |
+            <NuxtLink aria-label="Instagram" to="#">Instagram</NuxtLink>
           </p>
         </div>
       </div>
 
       <div class="footer-bottom">
         <p>© 2024 CDT - Restoration England - All Rights Reserved</p>
-        <p><a href="#">Privacy Policy</a> | <a href="#">Terms of Use</a></p>
+        <p><NuxtLink aria-label="Privacy Policy" to="#">Privacy Policy</NuxtLink> | <NuxtLink aria-label="Terms of Use" to="#">Terms of Use</NuxtLink></p>
       </div>
     </footer>
 
@@ -124,11 +124,6 @@ const display = useDisplay();
 // *****************************
 // Classes
 // *****************************
-
-const footerContainerClasses = computed(() => ({
-  'footer-container': true,
-  // 'justify-space-evenly': display.smAndDown
-}));
 
 const footerSocialClasses = computed(() => ({
   'footer-social': true,
