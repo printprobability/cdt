@@ -25,9 +25,9 @@
 
           <h5>Print &amp; Probability</h5>
           <br/>
-          <p>The type impressions gathered on the CDT were identified  using machine learning and computer vision tools developed by the <a aria-label="Print & Probability" href="https://printprobability.org/">Print & Probability</a> project — an interdisciplinary team of literary historians, bibliographers, librarians, and computer scientists at Carnegie Mellon University and the University of California, San Diego.</p>
+          <p>The type impressions gathered on the CDT were identified  using machine learning and computer vision tools developed by the <a target="_blank" aria-label="Print & Probability" href="https://printprobability.org/">Print & Probability</a> project — an interdisciplinary team of literary historians, bibliographers, librarians, and computer scientists at Carnegie Mellon University and the University of California, San Diego.</p>
           <br/>
-          <p class="pl-10">To learn more about the Print & Probability project and our methods — what we call “computational bibliography” — see our <a aria-label="2021 lecture at the Grolier Club" href="https://vimeo.com/792949634">2021 lecture at the Grolier Club</a> or the list of publications available at <a aria-label="Print & Probability" href="https://printprobability.org/">https://printprobability.org/</a>.</p>
+          <p class="pl-10">To learn more about the Print & Probability project and our methods — what we call “computational bibliography” — see our <a target="_blank" aria-label="2021 lecture at the Grolier Club" href="https://vimeo.com/792949634">2021 lecture at the Grolier Club</a> or the list of publications available at <a target="_blank" aria-label="Print & Probability" href="https://printprobability.org/">https://printprobability.org/</a>.</p>
           <br/>
 
           <h5>(Known) Limitations in CDT Data</h5>

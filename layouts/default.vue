@@ -77,7 +77,7 @@
           <div class="footer-about" aria-label="About">
             <h3>ABOUT</h3>
             <br>
-            <p>To learn more about the <strong>Print & Probability project</strong>, visit <a aria-label="Print & Probability project" href="https://printprobability.org">https://printprobability.org</a>. Or connect with us on <strong>X</strong> (<a aria-label="Link to X profile" href="https://x.com/print_and_prob">@print_and_prob</a>).</p>
+            <p>To learn more about the <strong>Print & Probability project</strong>, visit <a target="_blank" aria-label="Print & Probability project" href="https://printprobability.org">https://printprobability.org</a>. Or connect with us on <strong>X</strong> (<a target="_blank" aria-label="Link to X profile" href="https://x.com/print_and_prob">@print_and_prob</a>).</p>
           </div>
         </v-col>
 
@@ -85,7 +85,7 @@
           <div class="footer-terms" aria-label="Terms of use">
             <h3>TERMS OF USE</h3>
             <br>
-            <p>The CDT is licensed under <a aria-label="CC-BY-NC license" href="https://creativecommons.org/licenses/by-nc/4.0/">a CC-BY-NC license</a>. Citations to individual letters begin with a  (see the “Cite as” field on individual letter pages, e.g., “thompson_A1685.001,” in Catalog of Distinctive Type (CDT). Edited by Christopher N.Warren, et al.). When placed after the final backslash in the url, the character identifier leads to the page for that character: <a aria-label="Link to character: thompson_A1685.001" href="https://cdt.library.cmu.edu/characters/thompson_A1685.001">https://cdt.library.cmu.edu/characters/thompson_A1685.001</a></p>
+            <p>The CDT is licensed under <a target="_blank" aria-label="CC-BY-NC license" href="https://creativecommons.org/licenses/by-nc/4.0/">a CC-BY-NC license</a>. Citations to individual letters begin with a  (see the “Cite as” field on individual letter pages, e.g., “thompson_A1685.001,” in Catalog of Distinctive Type (CDT). Edited by Christopher N.Warren, et al.). When placed after the final backslash in the url, the character identifier leads to the page for that character: <a target="_blank" aria-label="Link to character: thompson_A1685.001" href="https://cdt.library.cmu.edu/characters/thompson_A1685.001">https://cdt.library.cmu.edu/characters/thompson_A1685.001</a></p>
           </div>
         </v-col>
       </v-row>
