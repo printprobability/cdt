@@ -77,7 +77,7 @@ const MIN_YEAR = 1660;
 const MAX_YEAR = 1700;
 // Title
 const title = ref(
-  `Catalog & Distinctive Types, Restoration England (${MIN_YEAR}-${MAX_YEAR})`
+  `CATALOG of DISTINCTIVE TYPE (CDT), Restoration England (${MIN_YEAR}-${MAX_YEAR})`
 );
 // Intro
 const intro = ref(

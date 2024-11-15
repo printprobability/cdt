@@ -73,15 +73,15 @@
           </div>
         </v-col>
 
-        <v-col md="4" cols="12">
+        <v-col md="4" cols="12" class="px-4">
           <div class="footer-about" aria-label="About">
             <h3>ABOUT</h3>
             <br>
-            <p>To learn more about the <strong>Print & Probability project</strong>, visit https://printprobability.org. Or connect with us on X (@print_and_prob).</p>
+            <p>To learn more about the <strong>Print & Probability project</strong>, visit <a aria-label="Print & Probability project" href="https://printprobability.org">https://printprobability.org</a>. Or connect with us on <strong>X</strong> (<a aria-label="Link to X profile" href="https://x.com/print_and_prob">@print_and_prob</a>).</p>
           </div>
         </v-col>
 
-        <v-col md="4" cols="12">
+        <v-col md="4" cols="12" class="px-4">
           <div class="footer-terms" aria-label="Terms of use">
             <h3>TERMS OF USE</h3>
             <br>
@@ -121,7 +121,7 @@ const display = useDisplay();
 }
 
 .footer-container {
-  max-width: 1200px;
+  //max-width: 1200px;
   margin: 0 auto;
   justify-content: space-evenly;
 }
