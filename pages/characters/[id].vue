@@ -71,9 +71,9 @@
       </v-row>
 
       <div aria-label="Grid of similar character" class="mt-10" style="width: 80vw">
-        <h2 class="text-center">
+        <h3 aria-label="Other examples" class="text-center" style="font-weight: bold; font-size: 20px">
           Other examples of character class (A, B, C, etx) for printer in CDT
-        </h2>
+        </h3>
 
         <CharacterGrid v-if="otherCharacters" :characters="otherCharacters" center/>
       </div>
