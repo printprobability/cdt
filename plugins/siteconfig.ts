@@ -40,7 +40,8 @@ export default defineNuxtPlugin(() => {
 
                 maintitle: "Catalog of Distinctive Type",
 
-                navbartitle: "CDT - Restoration England",
+                // navbartitle: "CDT - Restoration England",
+                navbartitle: "Catalog of Distinctive Type (CDT)",
 
                 splashboxes: [
 

@@ -3,7 +3,7 @@
     <template #intro>
       <h1 style="display: none">Character list</h1>
       <!-- <p>{{ $siteConfig.browsecopy.characters }}</p> -->
-      <div style="font-size: 18px; font-weight: bold">{{ title }}</div>
+      <div class="header-font" style="font-size: 18px; font-weight: bold">{{ title }}</div>
       <p class="mt-2">{{ intro }}</p>
     </template>
 
@@ -81,7 +81,7 @@ const title = ref(
 );
 // Intro
 const intro = ref(
-  "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+  "The CDT is a visual catalog of distinctive and damaged printing type originating in books published in England from 1660 to 1700. These type impressions — some 30,000 individual letters or “sorts” —  form a new source of typographic evidence for more than 240 printers working in London during the English Restoration. Users can search by character class (letterform), printer, and date."
 );
 
 // Head
@@ -113,7 +113,7 @@ const pageNums = computed(() => Math.ceil(count.value / itemsPerPage.value));
 const pageOffset = computed(() => (page.value - 1) * itemsPerPage.value);
 
 // Items per page
-const itemsPerPage = computed(() => mode.value === "grid" ? 50 : 50);
+const itemsPerPage = computed(() => mode.value === "grid" ? 100 : 100);
 // Min item text
 const minItemText = computed(() => pageOffset.value + 1);
 // Max item text

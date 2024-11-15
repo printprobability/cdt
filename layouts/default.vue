@@ -13,10 +13,9 @@
       </v-app-bar-title>
 
       <!-- <v-list-item class="dldt-navbar-link px-2" :to="{ name: 'books' }">Books</v-list-item> -->
-      <v-list-item class="dldt-navbar-link px-2" :to="{ name: 'index' }" aria-label="To character list">
-        Characters
-      </v-list-item
-      >
+<!--      <v-list-item class="dldt-navbar-link px-2" :to="{ name: 'index' }" aria-label="To character list">-->
+<!--        Characters-->
+<!--      </v-list-item>-->
       <!-- <v-list-item class="dldt-navbar-link px-2" :to="{ name: 'groupings' }">Groupings</v-list-item> -->
       <!-- <v-list-item class="dldt-navbar-link px-2">Data</v-list-item>
             <v-list-item class="dldt-navbar-link pl-2 pr-3">About</v-list-item> -->
@@ -66,47 +65,30 @@
     </v-main>
 
     <footer class="footer">
-      <div class="footer-container">
-        <div class="footer-logo" aria-label="Footer logo">
-          <h3>CDT - Restoration England</h3>
-          <img class="w" alt="Footer logo" src="/img/logo.jpg"
-               style="width: 271px; padding: 15px; background-color: white;">
-        </div>
+      <v-row class="footer-container">
+        <v-col md="4" cols="12">
+          <div class="footer-logo text-center" aria-label="Footer logo">
+            <img class="w" alt="Footer logo" src="/img/logo.jpg"
+                 style="width: 203px; padding: 15px; background-color: white;">
+          </div>
+        </v-col>
 
-        <div class="footer-contact" aria-label="Contact" :style="footerContactAndSocialStyles">
-          <h4>Contact Us:</h4>
-          <p>Carnegie Mellon University</p>
-          <p>5000 Forbes Ave, Pittsburgh, PA 15213</p>
-          <p>Phone: +1 (412) 268-2000</p>
-          <p>Email: <NuxtLink aria-label="Email" href="mailto:library@cmu.edu">library@cmu.edu</NuxtLink></p>
-        </div>
+        <v-col md="4" cols="12">
+          <div class="footer-about" aria-label="About">
+            <h3>ABOUT</h3>
+            <br>
+            <p>To learn more about the <strong>Print & Probability project</strong>, visit https://printprobability.org. Or connect with us on X (@print_and_prob).</p>
+          </div>
+        </v-col>
 
-        <div class="footer-links" aria-label="Quick links" :style="footerLinksStyles">
-          <h4>Quick Links:</h4>
-          <ul>
-            <li><NuxtLink aria-label="About Us" to="#">About Us</NuxtLink></li>
-            <li><NuxtLink aria-label="Collections" to="#">Collections</NuxtLink></li>
-            <li><NuxtLink aria-label="Research Support" to="#">Research Support</NuxtLink></li>
-            <li><NuxtLink aria-label="Library Services" to="#">Library Services</NuxtLink></li>
-            <li><NuxtLink aria-label="News & Events" to="#">News &amp; Events</NuxtLink></li>
-          </ul>
-        </div>
-
-        <div :class="footerSocialClasses" aria-label="Social" :style="footerContactAndSocialStyles">
-          <h4>Connect with Us:</h4>
-          <p>
-            <NuxtLink aria-label="Facebook" to="#">Facebook</NuxtLink> |
-            <NuxtLink aria-label="Twitter" to="#">Twitter</NuxtLink> |
-            <NuxtLink aria-label="LinkedIn" to="#">LinkedIn</NuxtLink> |
-            <NuxtLink aria-label="Instagram" to="#">Instagram</NuxtLink>
-          </p>
-        </div>
-      </div>
-
-      <div class="footer-bottom">
-        <p>© 2024 CDT - Restoration England - All Rights Reserved</p>
-        <p><NuxtLink aria-label="Privacy Policy" to="#">Privacy Policy</NuxtLink> | <NuxtLink aria-label="Terms of Use" to="#">Terms of Use</NuxtLink></p>
-      </div>
+        <v-col md="4" cols="12">
+          <div class="footer-terms" aria-label="Terms of use">
+            <h3>TERMS OF USE</h3>
+            <br>
+            <p>The CDT is licensed under <a aria-label="CC-BY-NC license" href="https://creativecommons.org/licenses/by-nc/4.0/">a CC-BY-NC license</a>. Citations to individual letters begin with a  (see the “Cite as” field on individual letter pages, e.g., “thompson_A1685.001,” in Catalog of Distinctive Type (CDT). Edited by Christopher N.Warren, et al.). When placed after the final backslash in the url, the character identifier leads to the page for that character: <a aria-label="Link to character: thompson_A1685.001" href="https://cdt.library.cmu.edu/characters/thompson_A1685.001">https://cdt.library.cmu.edu/characters/thompson_A1685.001</a></p>
+          </div>
+        </v-col>
+      </v-row>
     </footer>
 
   </v-app>
@@ -120,29 +102,7 @@ useHead({title: `${$siteConfig.maintitle} - ${$siteConfig.subtitle}`});
 
 // Get Vuetify breakpoints
 const display = useDisplay();
-
-// *****************************
-// Classes
-// *****************************
-
-const footerSocialClasses = computed(() => ({
-  'footer-social': true,
-  'pl-2': display.mdAndUp.value,
-  // 'justify-space-evenly': display.smAndDown
-}));
-
-// *****************************
-// Styles
-// *****************************
-
-const footerContactAndSocialStyles = computed(() => ({
-  width: display.mdAndUp.value ? '250px' : '300px'
-}))
-
-const footerLinksStyles = computed(() => ({
-  // width: display.smAndDown ? '300px' : '283px'
-  width: display.mdAndUp.value ? '200px' : '300px'
-}))</script>
+</script>
 
 <style scoped lang="scss">
 .shadow-sm {
@@ -155,57 +115,24 @@ const footerLinksStyles = computed(() => ({
 
 // Footer Styling /
 .footer {
-  background-color: #333;
-  color: #f0f0f0;
+  background-color: white;
   padding: 20px 0;
   font-family: Arial, sans-serif;
 }
 
 .footer-container {
-  display: flex;
-  flex-wrap: wrap;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 20px;
   justify-content: space-evenly;
-  gap: 20px;
 }
 
 .footer-logo h3 {
   font-size: 1.5em;
 }
 
-.footer-logo, .footer-contact, .footer-social {
-  width: 300px;
-}
-
-.footer-contact h4, .footer-links h4, .footer-social h4 {
-  font-size: 1.2em;
-  margin-bottom: 10px;
-}
-
-.footer-contact p, .footer-social p, .footer-bottom p {
+.footer-about p, .footer-terms p {
   font-size: 0.9em;
   line-height: 1.6;
-}
-
-.footer-links ul {
-  list-style: none;
-  padding: 0;
-}
-
-.footer-links ul li {
-  margin: 5px 0;
-}
-
-.footer-links ul li a, .footer-social p a, .footer-bottom a {
-  color: #f0f0f0;
-  text-decoration: none;
-  font-size: 0.9em;
-}
-
-.footer-social p a:hover, .footer-links ul li a:hover, .footer-bottom a:hover {
-  text-decoration: underline;
 }
 
 .footer-bottom {
