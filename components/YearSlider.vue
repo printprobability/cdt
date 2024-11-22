@@ -11,7 +11,7 @@
       @update:model-value="emitValue($event)"
     />
 
-    <div class="d-flex year-slider-entry" style="width: 100%">
+    <div class="d-flex year-slider-entry mt-3" style="width: 100%">
       <TextField class="year-entry" density="compact" type="number" @end="onEditEntryEnd"
                  v-model="from" label="From" messages="Filter character from year"/>
       <v-spacer/>

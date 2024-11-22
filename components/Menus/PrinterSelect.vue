@@ -48,7 +48,7 @@ const model = useVModel(props, "modelValue", emit);
 watch(model, () => emit("end"));
 
 // Label
-const label = ref('Printer (Last name)')
+const label = ref('Printer')
 useAriaLabelForRole(label)
 
 // ********************************

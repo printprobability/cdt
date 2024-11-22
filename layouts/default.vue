@@ -7,15 +7,15 @@
                 :to="{ name: 'index' }"
             > -->
       <v-app-bar-title class="dldt-navbar-title">
-        <NuxtLink to="/" style="text-decoration: none" aria-label="Home">
+        <a href="/?pq_year_early=1660&pq_year_late=1700" style="text-decoration: none" aria-label="Home">
           {{ $siteConfig.navbartitle }}
-        </NuxtLink>
+        </a>
       </v-app-bar-title>
 
       <!-- <v-list-item class="dldt-navbar-link px-2" :to="{ name: 'books' }">Books</v-list-item> -->
-<!--      <v-list-item class="dldt-navbar-link px-2" :to="{ name: 'index' }" aria-label="To character list">-->
-<!--        Characters-->
-<!--      </v-list-item>-->
+      <v-list-item class="dldt-navbar-link px-2 mr-3" :to="{ name: 'about' }" aria-label="To about">
+        About
+      </v-list-item>
       <!-- <v-list-item class="dldt-navbar-link px-2" :to="{ name: 'groupings' }">Groupings</v-list-item> -->
       <!-- <v-list-item class="dldt-navbar-link px-2">Data</v-list-item>
             <v-list-item class="dldt-navbar-link pl-2 pr-3">About</v-list-item> -->
@@ -57,9 +57,6 @@
                         <v-list-item>About</v-list-item>
                     </div>
                 </v-app-bar> -->
-
-        <AlphaAlert v-if="$siteConfig.alpha" :contact="$siteConfig.contact"/>
-
         <slot/>
       </v-container>
     </v-main>
@@ -77,7 +74,7 @@
           <div class="footer-about" aria-label="About">
             <h3>ABOUT</h3>
             <br>
-            <p>To learn more about the <strong>Print & Probability project</strong>, visit <a target="_blank" aria-label="Print & Probability project" href="https://printprobability.org">https://printprobability.org</a>. Or connect with us on <strong>X</strong> (<a target="_blank" aria-label="Link to X profile" href="https://x.com/print_and_prob">@print_and_prob</a>).</p>
+            <p>To learn more about the Print & Probability project, visit <a target="_blank" aria-label="Print & Probability project" href="https://printprobability.org">https://printprobability.org</a>. Or connect with us on Bluesky (<a target="_blank" aria-label="Link to Bluesky profile" href="https://bsky.app/profile/print-and-prob.bsky.social">https://bsky.app/profile/print-and-prob.bsky.social</a>).</p>
           </div>
         </v-col>
 
@@ -85,7 +82,7 @@
           <div class="footer-terms" aria-label="Terms of use">
             <h3>TERMS OF USE</h3>
             <br>
-            <p>The CDT is licensed under <a target="_blank" aria-label="CC-BY-NC license" href="https://creativecommons.org/licenses/by-nc/4.0/">a CC-BY-NC license</a>. Citations to individual letters begin with a  (see the “Cite as” field on individual letter pages, e.g., “thompson_A1685.001,” in Catalog of Distinctive Type (CDT). Edited by Christopher N.Warren, et al.). When placed after the final backslash in the url, the character identifier leads to the page for that character: <a target="_blank" aria-label="Link to character: thompson_A1685.001" href="https://cdt.library.cmu.edu/characters/thompson_A1685.001">https://cdt.library.cmu.edu/characters/thompson_A1685.001</a></p>
+            <p>The CDT is licensed under <a target="_blank" aria-label="CC-BY-NC license" href="https://creativecommons.org/licenses/by-nc/4.0/">a CC-BY-NC license</a>. See the “Cite as” field on individual letter pages for citation format: e.g., “thompson_A1685.001,” in Catalog of Distinctive Type (CDT). Edited by Christopher N. Warren, et al., <a target="_blank" aria-label="Link to character: thompson_A1685.001" href="https://cdt.library.cmu.edu/characters/thompson_A1685.001">https://cdt.library.cmu.edu/characters/thompson_A1685.001</a>.</p>
           </div>
         </v-col>
       </v-row>

@@ -4,7 +4,7 @@
            aria-label="Back to character list" @click="goBack"/>
 
     <v-main>
-      <h1 class="text-center">Character class: {{ character.character_class }}</h1>
+      <h1 class="text-center">Character ID: {{ character.unique_id }}</h1>
 
       <v-row class="mt-2">
         <v-col cols="12" md="6">
@@ -37,6 +37,10 @@
                 <strong>Book:</strong> {{ character.book.pq_title }}
               </div>
 
+              <div aria-label="Character class" style="width: 30vw" class="mt-2">
+                <strong>Character class:</strong> {{ character.character_class }}
+              </div>
+
               <div aria-label="Date" style="width: 30vw" class="mt-2">
                 <strong>Date:</strong> {{ character.book.pq_year_early }}
               </div>
@@ -53,17 +57,28 @@
               </div>
 
               <div aria-label="Source book" style="width: 30vw" class="mt-2">
-                <strong>Source Book:</strong> ESTC {{ character.book.estc }}
+                <strong>Source book:</strong> ESTC {{ character.book.estc }}
               </div>
 
-              <div aria-label="Cite As" style="width: 30vw" class="mt-2">
-                <strong>Cite As</strong>:
+              <div aria-label="Cite as" style="width: 30vw" class="mt-2">
+                <strong>Cite as</strong>:
+                {{ citeAs }}&nbsp;
                 <NuxtLink
                   :to="{ name: 'characters-id', params: {id: character.unique_id} }"
                   :aria-label="`Character: ${character.unique_id}`"
                 >
-                  {{ citeAs }}
+                  {{ absoluteURL }}
                 </NuxtLink>
+
+                <v-btn
+                  variant="outlined"
+                  class="text-none mt-3"
+                  aria-label="Copy citation"
+                  base-color="red-darken-3"
+                  @click="copyCitation"
+                >
+                  Copy citation to clipboard
+                </v-btn>
               </div>
             </v-col>
           </v-row>
@@ -124,7 +139,10 @@ if (!character.value) {
   })
 }
 
-const citeAs = computed(() => `"${character.value['unique_id']}," in Catalog of Distinctive Type (CDT). Edited by Christopher N.Warren, et al.,`)
+// Citation
+const citeAs = computed(() => `"${character.value['unique_id']}," in Catalog of Distinctive Type (CDT). Edited by Christopher N. Warren, et al.,`)
+// Copy
+const copyCitation = () => navigator.clipboard.writeText(citeAs.value);
 
 // Image annotation
 const annotation = computed(() => ({
@@ -136,6 +154,11 @@ const annotation = computed(() => ({
 
 // Head
 useHead({titleTemplate: `Character: ${character.value.character_class} - %s`});
+
+// Absolute URL
+const absoluteURL = ref('')
+// Get absolute URL
+onMounted(() => absoluteURL.value = window.location.href)
 
 // Go back
 const goBack = () => router.back()
