@@ -1,7 +1,8 @@
-import {resolve} from "path"
+import {resolve, extname} from "path"
 import {readFileSync, existsSync, mkdirSync, writeFileSync} from "fs"
 import {EOL} from "os"
 import {getByKey, getDataTypesOf} from "./utils"
+import {parse as parseCsv} from "csv-parse/sync";
 
 // **************************************************************
 // Main
@@ -58,15 +59,25 @@ const analyzeTableSchema = (data: [], idKey: string, dataKey: string | null = nu
 }
 
 /**
- * Analyze JSON file and return file schema
+ * Analyze file and return file schema
  *
  * @param path
  * @param idKey
  * @param dataKey
  */
-const analyzeJSONFile = (path: string, idKey: string, dataKey: string | null = null): { [key: string]: string } => {
+const analyzeFile = (path: string, idKey: string, dataKey: string | null = null): { [key: string]: string } => {
   // Import data from JSON file
-  const data = JSON.parse(readFileSync(path, 'utf8'))
+  let data: any[]
+
+  switch (extname(path)) {
+    case '.csv':
+      data = parseCsv(readFileSync(path, 'utf8'), {skipEmptyLines: true, columns: true})
+      break
+    default:
+      data = JSON.parse(readFileSync(path, 'utf8'))
+      break
+  }
+
   // Analyze data and retrieve table schema
   return analyzeTableSchema(data, idKey, dataKey)
 }
@@ -95,10 +106,10 @@ const buildModelScript = (modelName: string, schema: string, idKey: string): str
 // Args
 // **************************************************************
 
-// JSON file
-const jsonFile = process.argv[2]
-if (!jsonFile) {
-  console.error("Error: Require JSON data file!")
+// File
+const dataFile = process.argv[2]
+if (!dataFile) {
+  console.error("Error: Require data file!")
   process.exit()
 }
 
@@ -120,7 +131,7 @@ if (!modelName) {
 const dataKey = process.argv[5] || null
 
 // Get schema
-const schema = analyzeJSONFile(resolve(jsonFile), idKey, dataKey)
+const schema = analyzeFile(resolve(dataFile), idKey, dataKey)
 // Build model script
 const script = buildModelScript(modelName, schema, idKey)
 

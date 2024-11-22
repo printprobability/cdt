@@ -2,10 +2,10 @@ import {readFileSync} from "fs"
 import {resolve, parse} from "path"
 import type {Model} from "sequelize"
 import _ from "lodash"
+import {parse as parseCsv} from 'csv-parse/sync';
 
 import {_syncPromise, sequelize, Book, Character} from "~/models"
 import {removeDuplicateByKey} from "~/scripts/utils"
-
 
 // Await previous sync
 await _syncPromise
@@ -20,6 +20,13 @@ await _syncPromise
  * @param path
  */
 const readData = (path: string): [] => JSON.parse(readFileSync(path, 'utf8'))
+
+/**
+ * Read data from CSV file
+ *
+ * @param path
+ */
+const readCSV = (path: string): [] => parseCsv(readFileSync(path, 'utf8'), {skipEmptyLines: true, columns: true})
 
 /**
  * Bulk insert
@@ -78,7 +85,7 @@ const getLastname = (name: string): string => {
  *
  * @param character
  */
-const processWebUrl = (character: {web_url: string}): void => {
+const processWebUrl = (character: { web_url: string }): void => {
   // Split slash (/) and only get the last 5 elements
   const segments = character['web_url'].split('/').slice(-5)
   // First element will be file name, parse it, get name only, attach the .jpg extension and replace
@@ -95,7 +102,7 @@ const processWebUrl = (character: {web_url: string}): void => {
  *
  * @param character
  */
-const processCharacterClass = (character: {character_class: string, character_group: string}): void => {
+const processCharacterClass = (character: { character_class: string, character_group: string }): void => {
   // Split original character_class by _ (underscore)
   const segments = character['character_class'].split('_')
 
@@ -106,11 +113,20 @@ const processCharacterClass = (character: {character_class: string, character_gr
 }
 
 /**
+ * Process character group_label
+ *
+ * @param character
+ */
+const processCharacterGroupLabel = (character: { group_id: string, group_label: string }): void => {
+  character['group_label'] = printerMap[character['group_id']]['printer_string']
+}
+
+/**
  * Process character unique_id
  *
  * @param character
  */
-const processUniqueID = (character: {group_label: string, character_class: string, book_id: string}): void => {
+const processUniqueID = (character: { group_label: string, character_class: string, book_id: string }): void => {
   // Get corresponding book
   const book = books[bookMap[character['book_id']]]['book_data']
 
@@ -136,6 +152,10 @@ const processUniqueID = (character: {group_label: string, character_class: strin
 // Main
 // *********************************************
 
+// Construct printer map
+const printerMap = {}
+readCSV(resolve('dldt_data/cdt_printers.csv')).map(printer => printerMap[printer['group_id']] = printer)
+
 // Import books.json
 const books = readData(resolve('dldt_data/books.json'))
 // Import books.json to database
@@ -156,9 +176,12 @@ for (const character of characters) {
   processWebUrl(character)
   // Process character class
   processCharacterClass(character)
+  // Process group label
+  processCharacterGroupLabel(character)
   // Process unique ID
   processUniqueID(character)
 }
+
 // Import extracted_character_data.json
 await bulkInsert(Character, characters, 'char_id')
 
