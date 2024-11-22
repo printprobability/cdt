@@ -4,6 +4,7 @@ import {readdirSync} from 'fs'
 
 import book from './book'
 import character from './character'
+import printer from './printer'
 
 // ********************************
 // Implement
@@ -26,6 +27,7 @@ export const sequelize = new Sequelize({
 // Create model
 export const Book = book(sequelize)
 export const Character = character(sequelize)
+export const Printer = printer(sequelize)
 
 // Relations
 Book.hasMany(Character, {foreignKey: 'book_id', onDelete: 'NO ACTION', onUpdate: 'NO ACTION'})

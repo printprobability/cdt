@@ -4,7 +4,7 @@ import type {Model} from "sequelize"
 import _ from "lodash"
 import {parse as parseCsv} from 'csv-parse/sync';
 
-import {_syncPromise, sequelize, Book, Character} from "~/models"
+import {_syncPromise, sequelize, Book, Character, Printer} from "~/models"
 import {removeDuplicateByKey} from "~/scripts/utils"
 
 // Await previous sync
@@ -152,9 +152,13 @@ const processUniqueID = (character: { group_label: string, character_class: stri
 // Main
 // *********************************************
 
+// Import cdt_printers.csv
+const printers = readCSV(resolve('dldt_data/cdt_printers.csv'))
+// Import cdt_printers.csv to database
+await bulkInsert(Printer, printers, 'group_id')
 // Construct printer map
 const printerMap = {}
-readCSV(resolve('dldt_data/cdt_printers.csv')).map(printer => printerMap[printer['group_id']] = printer)
+printers.map(printer => printerMap[printer['group_id']] = printer)
 
 // Import books.json
 const books = readData(resolve('dldt_data/books.json'))

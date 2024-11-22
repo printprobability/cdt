@@ -147,11 +147,17 @@ watch(() => route.query, (query) => {
   }
   characterClass.value = query.character_class
   book.value = query.book
+  sortBy.value = query.sort_by
 })
 
 // ********************************
 // Filter
 // ********************************
+
+/// Sort by
+const sortBy = useState('charsSortBy', () => route.query.sort_by ? (route.query.sort_by === 'date_desc' ? 'date_desc' : 'date_asc') : null);
+// Filter when sortBy is changed
+watch(sortBy, () => nextTick(filter))
 
 // Printer
 const printer = useState('charsFilterByPrinter', () => route.query.printer_like ?? null);
@@ -176,6 +182,7 @@ const filterOnlyQuery = computed(() => {
   if (printer.value) query["printer_like"] = printer.value;
   if (characterClass.value) query["character_class"] = characterClass.value;
   if (book.value) query["book"] = book.value;
+  if (sortBy.value) query["sort_by"] = sortBy.value
 
   return query;
 });

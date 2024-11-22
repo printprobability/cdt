@@ -22,6 +22,7 @@ export default function (sequelize: Sequelize): Model {
     {
       indexes:[
         {fields: ['character_group', 'character_class']},
+        {fields: ['group_label']},
         {unique: true, fields: ['unique_id']},
       ]
     }

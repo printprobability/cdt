@@ -3,6 +3,7 @@ import {Op} from "sequelize";
 
 type CharacterQuery = {
   sort: boolean,
+  sort_by: 'data_asc' | 'date_desc'
   limit: number,
   offset: number,
   pq_year_early: number,
@@ -20,10 +21,19 @@ export default defineEventHandler(async (event): Promise<[]> => {
   const {count, rows} = await Character.findAndCountAll({
     limit: query.limit,
     offset: query.offset,
-    order: query.sort && ['character_group', 'character_class'],
+    order: query.sort && [
+      ...query.sort_by ? [[Book, 'pq_year_early', query.sort_by === 'date_desc' ? 'DESC' : 'ASC']] : [],
+      'character_group',
+      'character_class'
+    ],
+
     ...createFilter(query)
   })
-
+console.warn(query.sort && [
+  ...query.sort_by ? [[Book, 'pq_year_early', query.sort_by === 'date_desc' ? 'DESC' : 'ASC']] : [],
+  'character_group',
+  'character_class'
+])
   return {count, results: rows}
 })
 
@@ -41,7 +51,7 @@ function createFilter(query: CharacterQuery): { where: object, include: [] } {
       where: {
         'pq_year_early': {[Op.gte]: query.pq_year_early},
         'pq_year_late': {[Op.lte]: query.pq_year_late},
-      }
+      },
     }]
   }
 

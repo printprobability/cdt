@@ -6,7 +6,17 @@
         <th class="text-center">Type Sort</th>
         <th class="text-center">Character Name</th>
         <th class="text-center">Printer</th>
-        <th class="text-center">Date</th>
+        <th class="text-center">
+          <v-btn
+            :ripple="false"
+            :append-icon="sortIcon"
+            variant="plain"
+            class="text-none opacity-100"
+            @click="toggleDateSortMode"
+          >
+            Date
+          </v-btn>
+        </th>
         <th class="text-center">Source Book</th>
         <th class="text-center">UniqueID</th>
       </tr>
@@ -68,15 +78,28 @@
 
 <script setup>
 import {useNuxtApp} from "nuxt/app";
-import {defineProps, watch} from "vue";
+import {defineProps, watch, computed} from "vue";
 
 // Resources
 const {$axios} = useNuxtApp();
+// Get route
+const route = useRoute();
 
 // Props
 const props = defineProps({
   characters: {type: Array, default: () => []},
 });
+
+// Sort by
+const sortBy = useState('charsSortBy', () => route.query.sort_by ? (route.query.sort_by === 'date_desc' ? 'date_desc' : 'date_asc') : null);
+// Sort icon
+const sortIcon = computed(() => sortBy.value ? (sortBy.value === 'date_asc' ? 'mdi-arrow-up' : 'mdi-arrow-down') : null);
+// Change sort mode
+const toggleDateSortMode = () => {
+  if (sortBy.value === null) sortBy.value = 'date_asc'
+  else if (sortBy.value === 'date_asc') sortBy.value = 'date_desc'
+  else sortBy.value = null
+};
 
 // List of character detail
 const characterDetails = ref(new Array(props.characters.length));

@@ -1,15 +1,13 @@
-import {Character} from "~/models";
+import {Printer} from "~/models";
 
-type Printer = string
-
-export default defineEventHandler(async (event): Promise<Printer[]> => {
+export default defineEventHandler(async (event): Promise<string[]> => {
   return {
-    results: (await Character.findAll({
-      attributes: ['group_label'],
-      group: 'group_label',
-      order: [['group_label', 'ASC']],
+    results: (await Printer.findAll({
+      attributes: ['printer_string'],
+      group: 'printer_string',
+      order: [['printer_string', 'ASC']],
       raw: true
     }))
-      .map((m: { group_label: string }) => m['group_label'])
+      .map((m: { printer_string: string }) => m['printer_string'])
   }
 })

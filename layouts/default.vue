@@ -13,6 +13,9 @@
       </v-app-bar-title>
 
       <!-- <v-list-item class="dldt-navbar-link px-2" :to="{ name: 'books' }">Books</v-list-item> -->
+      <v-list-item class="dldt-navbar-link px-2 mr-3" :to="{ name: 'printers' }" aria-label="To printer list">
+        Printers
+      </v-list-item>
       <v-list-item class="dldt-navbar-link px-2 mr-3" :to="{ name: 'about' }" aria-label="To about">
         About
       </v-list-item>
