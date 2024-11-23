@@ -7,18 +7,21 @@
                 :to="{ name: 'index' }"
             > -->
       <v-app-bar-title class="dldt-navbar-title">
-        <a href="/?pq_year_early=1660&pq_year_late=1700" style="text-decoration: none" aria-label="Home">
+        <a href="/?pq_year_early=1660&pq_year_late=1700" style="text-decoration: none; text-wrap: wrap" aria-label="Home">
           {{ $siteConfig.navbartitle }}
         </a>
       </v-app-bar-title>
 
       <!-- <v-list-item class="dldt-navbar-link px-2" :to="{ name: 'books' }">Books</v-list-item> -->
-      <v-list-item class="dldt-navbar-link px-2 mr-3" :to="{ name: 'printers' }" aria-label="To printer list">
-        Printers
-      </v-list-item>
-      <v-list-item class="dldt-navbar-link px-2 mr-3" :to="{ name: 'about' }" aria-label="To about">
-        About
-      </v-list-item>
+      <v-app-bar-nav-icon v-if="isXs" class="dldt-navbar-link px-2 mr-3" variant="text" @click.stop="drawer = !drawer"/>
+      <template v-else>
+        <v-list-item class="dldt-navbar-link px-2 mr-3" :to="{ name: 'printers' }" aria-label="To printer list">
+          Printers
+        </v-list-item>
+        <v-list-item class="dldt-navbar-link px-2 mr-3" :to="{ name: 'about' }" aria-label="To about">
+          About
+        </v-list-item>
+      </template>
       <!-- <v-list-item class="dldt-navbar-link px-2" :to="{ name: 'groupings' }">Groupings</v-list-item> -->
       <!-- <v-list-item class="dldt-navbar-link px-2">Data</v-list-item>
             <v-list-item class="dldt-navbar-link pl-2 pr-3">About</v-list-item> -->
@@ -45,6 +48,23 @@
             <v-list-item :to="{ name: 'articles-slug', params: { slug: 'data' } }">Data</v-list-item>
             <v-list-item :to="{ name: 'articles-slug', params: { slug: 'about' } }">About</v-list-item> -->
     </v-app-bar>
+
+    <v-navigation-drawer
+      v-if="isXs"
+      v-model="drawer"
+      location="right"
+      disable-resize-watcher
+      temporary
+    >
+      <v-list>
+        <v-list-item class="dldt-navbar-link px-2 mr-3" :to="{ name: 'printers' }" aria-label="To printer list">
+          Printers
+        </v-list-item>
+        <v-list-item class="dldt-navbar-link px-2 mr-3" :to="{ name: 'about' }" aria-label="To about">
+          About
+        </v-list-item>
+      </v-list>
+    </v-navigation-drawer>
 
     <!-- NOTE: v-app is the Vuetify app tag and is required to use vuetify components without error -->
     <v-main class="main-padding-top" style="">
@@ -95,13 +115,20 @@
 </template>
 
 <script setup>
-const {$siteConfig} = useNuxtApp();
 import {useDisplay} from "vuetify";
+import {ref, watch} from "vue";
+
+const {$siteConfig} = useNuxtApp();
 
 useHead({title: `${$siteConfig.maintitle} - ${$siteConfig.subtitle}`});
 
 // Get Vuetify breakpoints
-const display = useDisplay();
+const isXs = useDisplay().xs;
+// Watch breakpoint to control drawer
+watch(isXs, (value) => {if (!value) drawer.value = false})
+
+// Drawer
+const drawer = ref(false)
 </script>
 
 <style scoped lang="scss">

@@ -147,7 +147,7 @@ watch(() => route.query, (query) => {
   }
   characterClass.value = query.character_class
   book.value = query.book
-  sortBy.value = query.sort_by
+  sortBy.value = query.sort_by ?? null
 })
 
 // ********************************

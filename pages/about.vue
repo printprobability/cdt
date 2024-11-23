@@ -27,6 +27,34 @@
       <p class="pl-10">To learn more about the Print & Probability project and our methods — what we call “computational bibliography” — see our <a target="_blank" aria-label="2021 lecture at the Grolier Club" href="https://vimeo.com/792949634">2021 lecture at the Grolier Club</a> or the list of publications available at <a target="_blank" aria-label="Print & Probability project" href="https://printprobability.org/">https://printprobability.org/</a>.</p>
       <br/>
 
+      <h5>The CDT Team</h5>
+      <br/>
+      <strong>Editor</strong>
+      <p>Christopher N. Warren, Carnegie Mellon University, Department of English</p>
+      <br/>
+      <strong>Editorial & Technical Team</strong>
+      <p>Taylor Berg-Kirkpatrick, UC San Diego, Computer Science & Engineering</p>
+      <p>Laura DeLuca, Carnegie Mellon University, Department of English</p>
+      <p>Baron Glanvill, Carnegie Mellon University, Department of English</p>
+      <p>Kartik Goyal, Georgia Tech, College of Computing</p>
+      <p>John Ladd, Washington & Jefferson College</p>
+      <p>Sam Lemley, Carnegie Mellon University Libraries</p>
+      <p>DJ Schuldt, Burke Library, Hamilton College</p>
+      <p>Kari Thomas, Carnegie Mellon University, Department of History</p>
+      <p>Nikolai Vogler, UC San Diego, Computer Science & Engineering</p>
+      <br/>
+      <strong>Editorial & Technical Team</strong>
+      <p>Jonathan Kiritharan, Carnegie Mellon University Libraries</p>
+      <p>Sam Lemley, Carnegie Mellon University Libraries</p>
+      <p>Talia Perry, Carnegie Mellon University Libraries</p>
+      <br/>
+      <strong>Frontend design</strong>
+      <p>@Henry Ph.</p>
+      <p>Jonathan Armoza (edited)</p>
+      <br/>
+      <p>The CDT gratefully acknowledges support from the National Endowment for the Humanities.</p>
+      <br/>
+
       <img alt="Logo" :src="image" style="height: 50px"/>
     </div>
   </v-container>

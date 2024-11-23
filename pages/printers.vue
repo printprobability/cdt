@@ -9,6 +9,7 @@
       <v-list-item
         v-for="(printer, i) in printers"
         rounded="lg"
+        variant="outlined"
         :key="i"
         :active="false"
         :value="printer"

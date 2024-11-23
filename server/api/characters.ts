@@ -29,11 +29,7 @@ export default defineEventHandler(async (event): Promise<[]> => {
 
     ...createFilter(query)
   })
-console.warn(query.sort && [
-  ...query.sort_by ? [[Book, 'pq_year_early', query.sort_by === 'date_desc' ? 'DESC' : 'ASC']] : [],
-  'character_group',
-  'character_class'
-])
+
   return {count, results: rows}
 })
 
