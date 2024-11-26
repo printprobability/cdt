@@ -42,15 +42,14 @@
       <p>DJ Schuldt, Burke Library, Hamilton College</p>
       <p>Kari Thomas, Carnegie Mellon University, Department of History</p>
       <p>Nikolai Vogler, UC San Diego, Computer Science & Engineering</p>
+      <p>Henry Pham, Bachelor of Science in Information Technology, Software Development</p>
+      <p>Jonathan Armoza</p>
       <br/>
-      <strong>Editorial & Technical Team</strong>
+      <strong>Deployment & Publishing</strong>
       <p>Jonathan Kiritharan, Carnegie Mellon University Libraries</p>
       <p>Sam Lemley, Carnegie Mellon University Libraries</p>
       <p>Talia Perry, Carnegie Mellon University Libraries</p>
-      <br/>
-      <strong>Frontend design</strong>
-      <p>@Henry Ph.</p>
-      <p>Jonathan Armoza (edited)</p>
+      <p>Henry Pham, Bachelor of Science in Information Technology, Software Development</p>
       <br/>
       <p>The CDT gratefully acknowledges support from the National Endowment for the Humanities.</p>
       <br/>
