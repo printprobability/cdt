@@ -3,7 +3,7 @@ version: "3"
 services:
   client:
     image: node:22.10-alpine
-    command: sh -c "npm ci && npm run cleanup && npm run build && node .output/server/index.mjs"
+    command: sh -c "npm ci && npm run cleanup && npm run build && NODE_ENV=production node .output/server/index.mjs"
     volumes:
       - .:/app
     ports:

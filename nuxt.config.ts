@@ -48,7 +48,7 @@ export default defineNuxtConfig({
 
   css: ["~/assets/scss/custom.scss"],
 
-  devtools: {enabled: true},
+  devtools: {enabled: process.env.APP_ENV === 'development'},
 
   hooks: {
     // async "nitro:config"(nitroConfig) {
@@ -103,7 +103,7 @@ export default defineNuxtConfig({
   //     ]
   // },
 
-  sourcemap: true,
+  sourcemap: process.env.APP_ENV === 'development',
 
   ssr: true,
 
@@ -131,5 +131,5 @@ export default defineNuxtConfig({
     }
   } : {},
 
-  compatibilityDate: "2024-10-24"
+  compatibilityDate: "2024-11-26"
 });
