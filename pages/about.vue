@@ -17,39 +17,21 @@
 
       <h5>A Note on Printers</h5>
       <br/>
-      <p>Some Restoration printers worked exclusively in collaboration with a second printer. The respective types of these printers — if they had separate type cases at all — are impossible to reliably assign or differentiate. In these cases, the names of both collaborators are given as a single entry in the CDT. An index of printers included in the CDT is linked <NuxtLink target="_blank" :to="{ name: 'printers' }" aria-label="To printers">here</NuxtLink>.</p>
+      <p>Some Restoration printers worked exclusively in collaboration with a second printer. The respective types of these printers — if they had separate type cases at all — are impossible to reliably assign or differentiate. In these cases, the names of both collaborators are given as a single entry in the CDT. An index of printers included in the CDT is linked <NuxtLink target="_blank" :to="{ src: person, name: 'printers' }" aria-label="To printers">here</NuxtLink>.</p>
       <br/>
 
       <h5>Print &amp; Probability</h5>
       <br/>
-      <p>The type impressions gathered on the CDT were identified using machine learning and computer vision tools developed by the <a target="_blank" aria-label="Print & Probability project" href="https://printprobability.org/">Print & Probability</a> project — an interdisciplinary team of literary historians, bibliographers, librarians, and computer scientists at Carnegie Mellon University and the University of California, San Diego.</p>
+      <p>The type impressions gathered on the CDT were identified using machine learning and computer vision tools developed by the <a target="_blank" aria-label="Print & Probability project" href="https://printprobability.org/">Print & Probability</a> project — an interdisciplinary of literary historians, bibliographers, librarians, and computer scientists at Carnegie Mellon University and the University of California, San Diego.</p>
       <br/>
       <p class="pl-10">To learn more about the Print & Probability project and our methods — what we call “computational bibliography” — see our <a target="_blank" aria-label="2021 lecture at the Grolier Club" href="https://vimeo.com/792949634">2021 lecture at the Grolier Club</a> or the list of publications available at <a target="_blank" aria-label="Print & Probability project" href="https://printprobability.org/">https://printprobability.org/</a>.</p>
       <br/>
 
       <h5>The CDT Team</h5>
       <br/>
-      <strong>Editor</strong>
-      <p>Christopher N. Warren, Carnegie Mellon University, Department of English</p>
-      <br/>
-      <strong>Editorial & Technical Team</strong>
-      <p>Taylor Berg-Kirkpatrick, UC San Diego, Computer Science & Engineering</p>
-      <p>Laura DeLuca, Carnegie Mellon University, Department of English</p>
-      <p>Baron Glanvill, Carnegie Mellon University, Department of English</p>
-      <p>Kartik Goyal, Georgia Tech, College of Computing</p>
-      <p>John Ladd, Washington & Jefferson College</p>
-      <p>Sam Lemley, Carnegie Mellon University Libraries</p>
-      <p>DJ Schuldt, Burke Library, Hamilton College</p>
-      <p>Kari Thomas, Carnegie Mellon University, Department of History</p>
-      <p>Nikolai Vogler, UC San Diego, Computer Science & Engineering</p>
-      <p>Henry Pham, Bachelor of Science in Information Technology, Software Development</p>
-      <p>Jonathan Armoza</p>
-      <br/>
-      <strong>Deployment & Publishing</strong>
-      <p>Jonathan Kiritharan, Carnegie Mellon University Libraries</p>
-      <p>Sam Lemley, Carnegie Mellon University Libraries</p>
-      <p>Talia Perry, Carnegie Mellon University Libraries</p>
-      <p>Henry Pham, Bachelor of Science in Information Technology, Software Development</p>
+      <div class="person-card-grid">
+        <PersonCard v-for="member in members" :src="member.src" :name="member.name" :degree="member.degree" :roles="member.roles" />
+      </div>
       <br/>
       <p>The CDT gratefully acknowledges support from the National Endowment for the Humanities.</p>
       <br/>
@@ -60,5 +42,37 @@
 </template>
 
 <script setup>
+import {ref} from "vue";
+
 import image from '~/public/img/pnp_logo.png'
+import person from '~/public/img/person.png';
+
+const members = ref([
+  {src: person, name: 'Christopher N. Warren', degree: 'Carnegie Mellon University, Department of English', roles: ['Editor']},
+  {src: person, name: 'Taylor Berg-Kirkpatrick', degree: 'UC San Diego, Computer Science & Engineering', roles: ['Editorial & Technical']},
+  {src: person, name: 'Laura DeLuca', degree: 'Carnegie Mellon University, Department of English', roles: ['Editorial & Technical']},
+  {src: person, name: 'Baron Glanvill', degree: 'Carnegie Mellon University, Department of English', roles: ['Editorial & Technical']},
+  {src: person, name: 'Kartik Goyal', degree: 'Georgia Tech, College of Computing', roles: ['Editorial & Technical']},
+  {src: person, name: 'John Ladd', degree: 'Washington & Jefferson College', roles: ['Editorial & Technical']},
+  {src: 'img/lemley.jpg', name: 'Sam Lemley', degree: 'Carnegie Mellon University Libraries', roles: ['Editorial & Technical', 'Deployment & Publishing']},
+  {src: person, name: 'DJ Schuldt', degree: 'Burke Library, Hamilton College', roles: ['Editorial & Technical']},
+  {src: person, name: 'Kari Thomas', degree: 'Carnegie Mellon University, Department of History', roles: ['Editorial & Technical']},
+  {src: person, name: 'Nikolai Vogler', degree: 'UC San Diego, Computer Science & Engineering', roles: ['Editorial & Technical']},
+  {src: person, name: 'Henry Pham', degree: 'Bachelor of Science in Information Technology, Software Development', roles: ['Editorial & Technical', 'Deployment & Publishing']},
+  {src: person, name: 'Jonathan Armoza', degree: null, roles: ['Editorial & Technical']},
+  {src: person, name: 'Jonathan Kiritharan', degree: 'Carnegie Mellon University Libraries', roles: ['Deployment & Publishing']},
+  {src: person, name: 'Talia Perry', degree: 'Carnegie Mellon University Libraries', roles: ['Deployment & Publishing']},
+])
 </script>
+
+<style scoped lang="scss">
+.person-card-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  justify-content: space-around;
+
+  @media (max-width: 960px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+</style>
