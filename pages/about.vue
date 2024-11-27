@@ -49,17 +49,17 @@ import person from '~/public/img/person.png';
 
 const members = ref([
   {src: person, name: 'Christopher N. Warren', degree: 'Carnegie Mellon University, Department of English', roles: ['Editor']},
-  {src: person, name: 'Taylor Berg-Kirkpatrick', degree: 'UC San Diego, Computer Science & Engineering', roles: ['Editorial & Technical']},
-  {src: person, name: 'Laura DeLuca', degree: 'Carnegie Mellon University, Department of English', roles: ['Editorial & Technical']},
-  {src: person, name: 'Baron Glanvill', degree: 'Carnegie Mellon University, Department of English', roles: ['Editorial & Technical']},
-  {src: person, name: 'Kartik Goyal', degree: 'Georgia Tech, College of Computing', roles: ['Editorial & Technical']},
-  {src: person, name: 'John Ladd', degree: 'Washington & Jefferson College', roles: ['Editorial & Technical']},
-  {src: 'img/lemley.jpg', name: 'Sam Lemley', degree: 'Carnegie Mellon University Libraries', roles: ['Editorial & Technical', 'Deployment & Publishing']},
-  {src: person, name: 'DJ Schuldt', degree: 'Burke Library, Hamilton College', roles: ['Editorial & Technical']},
-  {src: person, name: 'Kari Thomas', degree: 'Carnegie Mellon University, Department of History', roles: ['Editorial & Technical']},
-  {src: person, name: 'Nikolai Vogler', degree: 'UC San Diego, Computer Science & Engineering', roles: ['Editorial & Technical']},
-  {src: person, name: 'Henry Pham', degree: 'Bachelor of Science in Information Technology, Software Development', roles: ['Editorial & Technical', 'Deployment & Publishing']},
-  {src: person, name: 'Jonathan Armoza', degree: null, roles: ['Editorial & Technical']},
+  {src: person, name: 'Taylor Berg-Kirkpatrick', degree: 'UC San Diego, Computer Science & Engineering', roles: ['Editorial & Technical Team']},
+  {src: person, name: 'Laura DeLuca', degree: 'Carnegie Mellon University, Department of English', roles: ['Editorial & Technical Team']},
+  {src: person, name: 'Baron Glanvill', degree: 'Carnegie Mellon University, Department of English', roles: ['Editorial & Technical Team']},
+  {src: person, name: 'Kartik Goyal', degree: 'Georgia Tech, College of Computing', roles: ['Editorial & Technical Team']},
+  {src: person, name: 'John Ladd', degree: 'Washington & Jefferson College', roles: ['Editorial & Technical Team']},
+  {src: 'img/lemley.jpg', name: 'Sam Lemley', degree: 'Carnegie Mellon University Libraries', roles: ['Editorial & Technical Team', 'Deployment & Publishing']},
+  {src: person, name: 'DJ Schuldt', degree: 'Burke Library, Hamilton College', roles: ['Editorial & Technical Team']},
+  {src: person, name: 'Kari Thomas', degree: 'Carnegie Mellon University, Department of History', roles: ['Editorial & Technical Team']},
+  {src: person, name: 'Nikolai Vogler', degree: 'UC San Diego, Computer Science & Engineering', roles: ['Editorial & Technical Team']},
+  {src: person, name: 'Henry Pham', degree: 'Bachelor of Science in Information Technology, Software Development', roles: ['Editorial & Technical Team', 'Deployment & Publishing']},
+  {src: person, name: 'Jonathan Armoza', degree: null, roles: ['Editorial & Technical Team']},
   {src: person, name: 'Jonathan Kiritharan', degree: 'Carnegie Mellon University Libraries', roles: ['Deployment & Publishing']},
   {src: person, name: 'Talia Perry', degree: 'Carnegie Mellon University Libraries', roles: ['Deployment & Publishing']},
 ])
@@ -73,6 +73,10 @@ const members = ref([
 
   @media (max-width: 960px) {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 600px) {
+    grid-template-columns: repeat(1, 1fr);
   }
 }
 </style>
