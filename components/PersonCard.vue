@@ -19,7 +19,8 @@
       </div>
 
       <div class="person-card-social">
-        <v-icon tag="a" :href="props.social?.linkedin ?? '#'" icon="mdi-linkedin" size="20" title="Linkedin" :aria-label="`${props.name}'s Twitter`"/>
+        <v-icon tag="a" icon="mdi-linkedin" size="20" title="Linkedin" target="_blank"
+                :href="props.social?.linkedin ?? '#'" :aria-label="`${props.name}'s Twitter`"/>
       </div>
     </div>
   </v-card>
@@ -33,7 +34,7 @@ const props = defineProps({
   name: {type: String, default: 'name'},
   roles: {type: Array},
   degree: {type: String, default: 'Bachelor of ...'},
-  social: {linkedin: '#'},
+  social: {type: String},
   src: {type: String},
 });
 </script>
@@ -49,6 +50,10 @@ const props = defineProps({
 
 .person-card-avatar {
   display: block !important;
+
+  & img {
+    object-position: 0 10%;
+  }
 }
 
 .person-card-name, .person-card-role {
@@ -75,7 +80,7 @@ const props = defineProps({
 }
 
 .person-card-role {
-  height: 139px;
+  height: 160px;
   text-transform: none;
   letter-spacing: 2px;
   font-size: 1.125rem;
@@ -86,15 +91,16 @@ const props = defineProps({
   }
 
   @media (max-width: 960px) {
-    height: 112px;
+    height: 139px;
   }
 
   @media (max-width: 600px) {
-    height: 85px;
+    height: 112px;
   }
 
   @media (max-width: 350px) {
-    height: 139px;
+    height: fit-content;
+    margin-bottom: 27px;
   }
 }
 
@@ -106,7 +112,8 @@ const props = defineProps({
   width: 80px;
   min-width: 68px;
   margin: 0 auto 0;
-  justify-content: space-between;
+  //justify-content: space-between;
+  justify-content: center;
 
   & a {
     text-decoration: none !important;
