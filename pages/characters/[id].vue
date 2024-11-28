@@ -143,6 +143,7 @@ if (!character.value) {
 const citeAs = computed(() => `"${character.value['unique_id']}," in Catalog of Distinctive Type (CDT). Edited by Christopher N. Warren, et al.,`)
 // Copy
 const copyCitation = () => navigator.clipboard.writeText(citeAs.value);
+const copyCitation = () => navigator.clipboard.writeText(citeAs.value + ' ' + absoluteURL.value);
 
 // Image annotation
 const annotation = computed(() => ({
