@@ -19,9 +19,7 @@
       </div>
 
       <div class="person-card-social">
-        <v-icon tag="a" href="#" icon="mdi-facebook" size="20" title="Facebook" :aria-label="`${props.name}'s Facebook`"/>
-        <v-icon tag="a" href="#" icon="mdi-twitter" size="20" title="Twitter" :aria-label="`${props.name}'s Twitter`"/>
-        <v-icon tag="a" href="#" icon="mdi-instagram" size="20" title="Instagram" :aria-label="`${props.name}'s Instagram`"/>
+        <v-icon tag="a" :href="props.social?.linkedin ?? '#'" icon="mdi-linkedin" size="20" title="Linkedin" :aria-label="`${props.name}'s Twitter`"/>
       </div>
     </div>
   </v-card>
@@ -35,6 +33,7 @@ const props = defineProps({
   name: {type: String, default: 'name'},
   roles: {type: Array},
   degree: {type: String, default: 'Bachelor of ...'},
+  social: {linkedin: '#'},
   src: {type: String},
 });
 </script>
