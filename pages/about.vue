@@ -113,14 +113,24 @@ const members = ref([
     degree: 'Georgia Tech, College of Computing',
     roles: ['Editorial & Technical Team']
   },
-  {src: person, name: 'John Ladd', degree: 'Washington & Jefferson College', roles: ['Editorial & Technical Team']},
+  {
+    src: person,
+    name: 'John Ladd',
+    degree: 'Washington & Jefferson College',
+    roles: ['Editorial & Technical Team']
+  },
   {
     src: 'img/lemley.jpg',
     name: 'Sam Lemley',
     degree: 'Carnegie Mellon University Libraries',
     roles: ['Editorial & Technical Team', 'Frontend design']
   },
-  {src: person, name: 'DJ Schuldt', degree: 'Burke Library, Hamilton College', roles: ['Editorial & Technical Team']},
+  {
+    src: person,
+    name: 'DJ Schuldt',
+    degree: 'Burke Library, Hamilton College',
+    roles: ['Editorial & Technical Team']
+  },
   {
     src: person,
     name: 'Kari Thomas',
@@ -137,10 +147,15 @@ const members = ref([
     src: 'img/henry.jpg',
     name: 'Henry Pham',
     degree: 'Bachelor of Science in Information Technology, Software Development',
-    roles: ['Editorial & Technical Team', 'Deployment & Publishing'],
+    roles: ['Frontend design'],
     social: {linkedin: 'https://www.linkedin.com/in/hungphamlk/'}
   },
-  {src: person, name: 'Jonathan Armoza', degree: null, roles: ['Editorial & Technical Team']},
+  {
+    src: person,
+    name: 'Jonathan Armoza',
+    degree: null,
+    roles: ['Frontend design']
+  },
   {
     src: person,
     name: 'Jonathan Kiritharan',
@@ -159,15 +174,14 @@ const members = ref([
 <style scoped lang="scss">
 .person-card-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(1, 1fr);
   justify-content: space-around;
+  grid-row-gap: 10px;
+}
 
-  @media (max-width: 960px) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  @media (max-width: 600px) {
-    grid-template-columns: repeat(1, 1fr);
-  }
+.person-role-section {
+  top: calc(64px + 10px);
+  padding: 0 64px 0 0;
+  width: 384px;
 }
 </style>
