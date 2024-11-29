@@ -11,9 +11,9 @@
           <!--        <v-tooltip v-if="props.degree" activator="parent" location="bottom">{{ props.degree }}</v-tooltip>-->
         </div>
 
-        <div class="person-card-role" :aria-label="`${props.name}'s degree`">
-          <p v-for="role in props.roles">{{ role }}</p>
-        </div>
+<!--        <div class="person-card-role" :aria-label="`${props.name}'s degree`">-->
+<!--          <p v-for="role in props.roles">{{ role }}</p>-->
+<!--        </div>-->
 
         <div class="person-card-degree" :aria-label="`${props.name}'s degree`">
           {{ props.degree }}
@@ -42,22 +42,23 @@ const props = defineProps({
   name: {type: String, default: 'name'},
   roles: {type: Array},
   degree: {type: String, default: 'Bachelor of ...'},
-  social: {type: String},
+  social: {type: Object},
   src: {type: String},
 });
 </script>
 
 <style lang="scss">
 .person-card {
-  width: 60%;
+  width: 100%;
   background: #f9f9f9 !important;
   border-radius: 8px;
+  display: block;
 }
 
 .person-card-container {
   padding: 30px;
   display: flex;
-  flex-direction: row;
+  flex-grow: 1;
   height: 100%;
 }
 
@@ -102,6 +103,10 @@ const props = defineProps({
 
     &:not(:first-of-type) {
       margin-left: 8px;
+    }
+
+    &:hover {
+      color: #000;
     }
   }
 }

@@ -57,15 +57,25 @@
 
       <h5>The CDT Team</h5>
       <br/>
-      <div class="person-card-grid">
-        <PersonCard
-          v-for="member in members"
-          :src="member.src"
-          :name="member.name"
-          :degree="member.degree"
-          :roles="member.roles"
-          :social="member.social"
-        />
+      <div v-for="[role, group] of Object.entries(groups)" class="group-of-role">
+        <div class="flex flex-grow-1 align-center">
+          <v-divider class="mx-auto mt-5"/>
+        </div>
+        <v-row class="group-of-role-container mt-3">
+          <v-col class="person-role-section" md="5" cols="12">
+            <h3 style="font-size: 20px">{{ role }}</h3>
+          </v-col>
+          <v-col class="person-card-section" md="7" cols="12">
+            <PersonCard
+              v-for="member in group"
+              :src="member.src"
+              :name="member.name"
+              :degree="member.degree"
+              :roles="member.roles"
+              :social="member.social"
+            />
+          </v-col>
+        </v-row>
       </div>
       <br/>
       <p>The CDT gratefully acknowledges support from the National Endowment for the Humanities.</p>
@@ -77,7 +87,7 @@
 </template>
 
 <script setup>
-import {ref} from "vue";
+import {ref, computed} from "vue";
 
 import image from '~/public/img/pnp_logo.png'
 import person from '~/public/img/person.png';
@@ -168,22 +178,56 @@ const members = ref([
     degree: 'Carnegie Mellon University Libraries',
     roles: ['Deployment & Publishing']
   },
-])
+]);
+
+const groups = computed(() => {
+  // Output
+  const groups = {'Editor': [], 'Editorial & Technical Team': [], 'Deployment & Publishing': [], 'Frontend design': []};
+
+  // Iterate through each member
+  for (const member of members.value) {
+    // Iterate through each role
+    for (const [role, group] of Object.entries(groups)) {
+      if (member.roles.indexOf(role) > -1) group.push(member)
+    }
+  }
+
+  return groups
+});
 </script>
 
 <style scoped lang="scss">
-.person-card-grid {
-  display: grid;
-  grid-template-columns: repeat(1, 1fr);
-  justify-content: space-around;
-  grid-row-gap: 10px;
+.group-of-role {
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  max-width: 960px;
+}
+
+.group-of-role-container {
+  display: flex;
+  flex-grow: 1;
+  align-items: flex-start;
 }
 
 .person-role-section {
-  top: calc(64px + 10px);
-  padding: 0 64px 0 0;
+  top: calc(64px + 32px);
+  padding: 0 32px 0 0;
   width: 384px;
   position: sticky;
-  left: 0;
+  direction: rtl;
+
+  @media(max-width: 960px) {
+    direction: ltr;
+    padding-left: 16px;
+    position: static;
+  }
+}
+
+.person-card-section {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  justify-content: flex-start;
+  grid-row-gap: 12px;
 }
 </style>
