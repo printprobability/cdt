@@ -92,108 +92,222 @@ import {ref, computed} from "vue";
 import image from '~/public/img/pnp_logo.png'
 import person from '~/public/img/person.png';
 
-const members = ref([
-  {
-    src: person,
-    name: 'Christopher N. Warren',
-    degree: 'Carnegie Mellon University, Department of English',
-    roles: ['Editor']
-  },
-  {
-    src: person,
-    name: 'Taylor Berg-Kirkpatrick',
-    degree: 'UC San Diego, Computer Science & Engineering',
-    roles: ['Editorial & Technical Team']
-  },
-  {
-    src: person,
-    name: 'Laura DeLuca',
-    degree: 'Carnegie Mellon University, Department of English',
-    roles: ['Editorial & Technical Team']
-  },
-  {
-    src: person,
-    name: 'Baron Glanvill',
-    degree: 'Carnegie Mellon University, Department of English',
-    roles: ['Editorial & Technical Team']
-  },
-  {
-    src: person,
-    name: 'Kartik Goyal',
-    degree: 'Georgia Tech, College of Computing',
-    roles: ['Editorial & Technical Team']
-  },
-  {
-    src: person,
-    name: 'John Ladd',
-    degree: 'Washington & Jefferson College',
-    roles: ['Editorial & Technical Team']
-  },
-  {
-    src: 'img/lemley.jpg',
-    name: 'Sam Lemley',
-    degree: 'Carnegie Mellon University Libraries',
-    roles: ['Editorial & Technical Team', 'Frontend design']
-  },
-  {
-    src: person,
-    name: 'DJ Schuldt',
-    degree: 'Burke Library, Hamilton College',
-    roles: ['Editorial & Technical Team']
-  },
-  {
-    src: person,
-    name: 'Kari Thomas',
-    degree: 'Carnegie Mellon University, Department of History',
-    roles: ['Editorial & Technical Team']
-  },
-  {
-    src: person,
-    name: 'Nikolai Vogler',
-    degree: 'UC San Diego, Computer Science & Engineering',
-    roles: ['Editorial & Technical Team', 'Deployment & Publishing', 'Frontend design']
-  },
-  {
-    src: 'img/henry.jpg',
-    name: 'Henry Pham',
-    degree: 'Bachelor of Science in Information Technology, Software Development',
-    roles: ['Frontend design'],
-    social: {linkedin: 'https://www.linkedin.com/in/hungphamlk/'}
-  },
-  {
-    src: person,
-    name: 'Jonathan Armoza',
-    degree: null,
-    roles: ['Frontend design']
-  },
-  {
-    src: person,
-    name: 'Jonathan Kiritharan',
-    degree: 'Carnegie Mellon University Libraries',
-    roles: ['Deployment & Publishing']
-  },
-  {
-    src: person,
-    name: 'Talia Perry',
-    degree: 'Carnegie Mellon University Libraries',
-    roles: ['Deployment & Publishing']
-  },
-]);
+// const members = ref([
+//   {
+//     src: person,
+//     name: 'Christopher N. Warren',
+//     degree: 'Carnegie Mellon University, Department of English',
+//     roles: ['Editor']
+//   },
+//   {
+//     src: person,
+//     name: 'Taylor Berg-Kirkpatrick',
+//     degree: 'UC San Diego, Computer Science & Engineering',
+//     roles: ['Editorial & Technical Team']
+//   },
+//   {
+//     src: person,
+//     name: 'Laura DeLuca',
+//     degree: 'Carnegie Mellon University, Department of English',
+//     roles: ['Editorial & Technical Team']
+//   },
+//   {
+//     src: person,
+//     name: 'Baron Glanvill',
+//     degree: 'Carnegie Mellon University, Department of English',
+//     roles: ['Editorial & Technical Team']
+//   },
+//   {
+//     src: person,
+//     name: 'Kartik Goyal',
+//     degree: 'Georgia Tech, College of Computing',
+//     roles: ['Editorial & Technical Team']
+//   },
+//   {
+//     src: person,
+//     name: 'John Ladd',
+//     degree: 'Washington & Jefferson College',
+//     roles: ['Editorial & Technical Team']
+//   },
+//   {
+//     src: 'img/lemley.jpg',
+//     name: 'Sam Lemley',
+//     degree: 'Carnegie Mellon University Libraries',
+//     roles: ['Editorial & Technical Team', 'Frontend design']
+//   },
+//   {
+//     src: person,
+//     name: 'DJ Schuldt',
+//     degree: 'Burke Library, Hamilton College',
+//     roles: ['Editorial & Technical Team']
+//   },
+//   {
+//     src: person,
+//     name: 'Kari Thomas',
+//     degree: 'Carnegie Mellon University, Department of History',
+//     roles: ['Editorial & Technical Team']
+//   },
+//   {
+//     src: person,
+//     name: 'Nikolai Vogler',
+//     degree: 'UC San Diego, Computer Science & Engineering',
+//     roles: ['Editorial & Technical Team', 'Deployment & Publishing', 'Frontend design']
+//   },
+//   {
+//     src: 'img/henry.jpg',
+//     name: 'Henry Pham',
+//     degree: 'Bachelor of Science in Information Technology, Software Development',
+//     roles: ['Frontend design'],
+//     social: {linkedin: 'https://www.linkedin.com/in/hungphamlk/'}
+//   },
+//   {
+//     src: person,
+//     name: 'Jonathan Armoza',
+//     degree: null,
+//     roles: ['Frontend design']
+//   },
+//   {
+//     src: person,
+//     name: 'Jonathan Kiritharan',
+//     degree: 'Carnegie Mellon University Libraries',
+//     roles: ['Deployment & Publishing']
+//   },
+//   {
+//     src: person,
+//     name: 'Talia Perry',
+//     degree: 'Carnegie Mellon University Libraries',
+//     roles: ['Deployment & Publishing']
+//   },
+// ]);
+//
+// const groups = computed(() => {
+//   // Output
+//   const groups = {'Editor': [], 'Editorial & Technical Team': [], 'Deployment & Publishing': [], 'Frontend design': []};
+//
+//   // Iterate through each member
+//   for (const member of members.value) {
+//     // Iterate through each role
+//     for (const [role, group] of Object.entries(groups)) {
+//       if (member.roles.indexOf(role) > -1) group.push(member)
+//     }
+//   }
+//
+//   return groups
+// });
 
-const groups = computed(() => {
-  // Output
-  const groups = {'Editor': [], 'Editorial & Technical Team': [], 'Deployment & Publishing': [], 'Frontend design': []};
-
-  // Iterate through each member
-  for (const member of members.value) {
-    // Iterate through each role
-    for (const [role, group] of Object.entries(groups)) {
-      if (member.roles.indexOf(role) > -1) group.push(member)
+const groups = {
+  "Editor": [
+    {
+      "src": "/_nuxt/public/img/person.png",
+      "name": "Christopher N. Warren",
+      "degree": "Carnegie Mellon University, Department of English",
+      "roles": ["Editor"]
     }
-  }
-
-  return groups
-});
+  ],
+  "Editorial & Technical Team": [
+    {
+      "src": "/_nuxt/public/img/person.png",
+      "name": "Taylor Berg-Kirkpatrick",
+      "degree": "UC San Diego, Computer Science & Engineering",
+      "roles": ["Editorial & Technical Team"]
+    },
+    {
+      "src": "/_nuxt/public/img/person.png",
+      "name": "Laura DeLuca",
+      "degree": "Carnegie Mellon University, Department of English",
+      "roles": ["Editorial & Technical Team"]
+    },
+    {
+      "src": "/_nuxt/public/img/person.png",
+      "name": "Baron Glanvill",
+      "degree": "Carnegie Mellon University, Department of English",
+      "roles": ["Editorial & Technical Team"]
+    },
+    {
+      "src": "/_nuxt/public/img/person.png",
+      "name": "Kartik Goyal",
+      "degree": "Georgia Tech, College of Computing",
+      "roles": ["Editorial & Technical Team"]
+    },
+    {
+      "src": "/_nuxt/public/img/person.png",
+      "name": "John Ladd",
+      "degree": "Washington & Jefferson College",
+      "roles": ["Editorial & Technical Team"]
+    },
+    {
+      "src": "img/lemley.jpg",
+      "name": "Sam Lemley",
+      "degree": "Carnegie Mellon University Libraries",
+      "roles": ["Editorial & Technical Team", "Frontend design"]
+    },
+    {
+      "src": "/_nuxt/public/img/person.png",
+      "name": "DJ Schuldt",
+      "degree": "Burke Library, Hamilton College",
+      "roles": ["Editorial & Technical Team"]
+    },
+    {
+      "src": "/_nuxt/public/img/person.png",
+      "name": "Kari Thomas",
+      "degree": "Carnegie Mellon University, Department of History",
+      "roles": ["Editorial & Technical Team"]
+    },
+    {
+      "src": "/_nuxt/public/img/person.png",
+      "name": "Nikolai Vogler",
+      "degree": "UC San Diego, Computer Science & Engineering",
+      "roles": ["Editorial & Technical Team", "Deployment & Publishing", "Frontend design"]
+    }
+  ],
+  "Deployment & Publishing": [
+    {
+      "src": "/_nuxt/public/img/person.png",
+      "name": "Jonathan Kiritharan",
+      "degree": "Carnegie Mellon University Libraries",
+      "roles": ["Deployment & Publishing"]
+    },
+    {
+      "src": "/_nuxt/public/img/person.png",
+      "name": "Talia Perry",
+      "degree": "Carnegie Mellon University Libraries",
+      "roles": ["Deployment & Publishing"]
+    },
+    {
+      "src": "/_nuxt/public/img/person.png",
+      "name": "Nikolai Vogler",
+      "degree": "UC San Diego, Computer Science & Engineering",
+      "roles": ["Editorial & Technical Team", "Deployment & Publishing", "Frontend design"]
+    }
+  ],
+  "Frontend design": [
+    {
+      "src": "img/henry.jpg",
+      "name": "Henry Pham",
+      "degree": "Bachelor of Science in Information Technology, Software Development",
+      "roles": ["Frontend design"],
+      "social": {"linkedin": "https://www.linkedin.com/in/hungphamlk/"}
+    },
+    {
+      "src": "/_nuxt/public/img/person.png",
+      "name": "Jonathan Armoza",
+      "degree": null,
+      "roles": ["Frontend design"]
+    },
+    {
+      "src": "img/lemley.jpg",
+      "name": "Sam Lemley",
+      "degree": "Carnegie Mellon University Libraries",
+      "roles": ["Editorial & Technical Team", "Frontend design"]
+    },
+    {
+      "src": "/_nuxt/public/img/person.png",
+      "name": "Nikolai Vogler",
+      "degree": "UC San Diego, Computer Science & Engineering",
+      "roles": ["Editorial & Technical Team", "Deployment & Publishing", "Frontend design"]
+    }
+  ]
+}
 </script>
 
 <style scoped lang="scss">
