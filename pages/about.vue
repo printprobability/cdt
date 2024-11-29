@@ -183,5 +183,7 @@ const members = ref([
   top: calc(64px + 10px);
   padding: 0 64px 0 0;
   width: 384px;
+  position: sticky;
+  left: 0;
 }
 </style>
