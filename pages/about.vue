@@ -62,10 +62,15 @@
           <v-divider class="mx-auto mt-5"/>
         </div>
         <v-row class="group-of-role-container mt-3">
-          <v-col class="person-role-section" md="5" cols="12">
-            <h3 style="font-size: 20px">{{ role }}</h3>
+          <v-col class="person-role-section" md="3" cols="12">
+            <template v-if="$vuetify.display.mdAndUp && role.indexOf('&') > -1">
+              <h3 style="font-size: 20px">{{role.split(' & ')[0]}}</h3>
+              <h3 style="font-size: 20px">&</h3>
+              <h3 style="font-size: 20px">{{role.split(' & ')[1]}}</h3>
+            </template>
+            <h3 v-else style="font-size: 20px">{{ role }}</h3>
           </v-col>
-          <v-col class="person-card-section" md="7" cols="12">
+          <v-col class="person-card-section" md="9" cols="12">
             <PersonCard
               v-for="member in group"
               :src="member.src"
@@ -198,7 +203,7 @@ import person from '~/public/img/person.png';
 const groups = {
   "Editor": [
     {
-      "src": "/_nuxt/public/img/person.png",
+      "src": person,
       "name": "Christopher N. Warren",
       "degree": "Carnegie Mellon University, Department of English",
       "roles": ["Editor"]
@@ -206,31 +211,31 @@ const groups = {
   ],
   "Editorial & Technical Team": [
     {
-      "src": "/_nuxt/public/img/person.png",
+      "src": person,
       "name": "Taylor Berg-Kirkpatrick",
       "degree": "UC San Diego, Computer Science & Engineering",
       "roles": ["Editorial & Technical Team"]
     },
     {
-      "src": "/_nuxt/public/img/person.png",
+      "src": person,
       "name": "Laura DeLuca",
       "degree": "Carnegie Mellon University, Department of English",
       "roles": ["Editorial & Technical Team"]
     },
     {
-      "src": "/_nuxt/public/img/person.png",
+      "src": person,
       "name": "Baron Glanvill",
       "degree": "Carnegie Mellon University, Department of English",
       "roles": ["Editorial & Technical Team"]
     },
     {
-      "src": "/_nuxt/public/img/person.png",
+      "src": person,
       "name": "Kartik Goyal",
       "degree": "Georgia Tech, College of Computing",
       "roles": ["Editorial & Technical Team"]
     },
     {
-      "src": "/_nuxt/public/img/person.png",
+      "src": person,
       "name": "John Ladd",
       "degree": "Washington & Jefferson College",
       "roles": ["Editorial & Technical Team"]
@@ -242,19 +247,19 @@ const groups = {
       "roles": ["Editorial & Technical Team", "Frontend design"]
     },
     {
-      "src": "/_nuxt/public/img/person.png",
+      "src": person,
       "name": "DJ Schuldt",
       "degree": "Burke Library, Hamilton College",
       "roles": ["Editorial & Technical Team"]
     },
     {
-      "src": "/_nuxt/public/img/person.png",
+      "src": person,
       "name": "Kari Thomas",
       "degree": "Carnegie Mellon University, Department of History",
       "roles": ["Editorial & Technical Team"]
     },
     {
-      "src": "/_nuxt/public/img/person.png",
+      "src": person,
       "name": "Nikolai Vogler",
       "degree": "UC San Diego, Computer Science & Engineering",
       "roles": ["Editorial & Technical Team", "Deployment & Publishing", "Frontend design"]
@@ -262,19 +267,19 @@ const groups = {
   ],
   "Deployment & Publishing": [
     {
-      "src": "/_nuxt/public/img/person.png",
+      "src": person,
       "name": "Jonathan Kiritharan",
       "degree": "Carnegie Mellon University Libraries",
       "roles": ["Deployment & Publishing"]
     },
     {
-      "src": "/_nuxt/public/img/person.png",
+      "src": person,
       "name": "Talia Perry",
       "degree": "Carnegie Mellon University Libraries",
       "roles": ["Deployment & Publishing"]
     },
     {
-      "src": "/_nuxt/public/img/person.png",
+      "src": person,
       "name": "Nikolai Vogler",
       "degree": "UC San Diego, Computer Science & Engineering",
       "roles": ["Editorial & Technical Team", "Deployment & Publishing", "Frontend design"]
@@ -289,7 +294,7 @@ const groups = {
       "social": {"linkedin": "https://www.linkedin.com/in/hungphamlk/"}
     },
     {
-      "src": "/_nuxt/public/img/person.png",
+      "src": person,
       "name": "Jonathan Armoza",
       "degree": null,
       "roles": ["Frontend design"]
@@ -301,7 +306,7 @@ const groups = {
       "roles": ["Editorial & Technical Team", "Frontend design"]
     },
     {
-      "src": "/_nuxt/public/img/person.png",
+      "src": person,
       "name": "Nikolai Vogler",
       "degree": "UC San Diego, Computer Science & Engineering",
       "roles": ["Editorial & Technical Team", "Deployment & Publishing", "Frontend design"]
@@ -327,9 +332,9 @@ const groups = {
 .person-role-section {
   top: calc(64px + 32px);
   padding: 0 32px 0 0;
-  width: 384px;
+  width: 100px;
   position: sticky;
-  direction: rtl;
+  text-align: center;
 
   @media(max-width: 960px) {
     direction: ltr;
