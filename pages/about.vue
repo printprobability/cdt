@@ -203,7 +203,7 @@ import person from '~/public/img/person.png';
 const groups = {
   "Editor": [
     {
-      "src": person,
+      "src": 'img/warren.jpg',
       "name": "Christopher N. Warren",
       "degree": "Carnegie Mellon University, Department of English",
       "roles": ["Editor"]
@@ -217,7 +217,7 @@ const groups = {
       "roles": ["Editorial & Technical Team"]
     },
     {
-      "src": person,
+      "src": 'img/deluca.jpg',
       "name": "Laura DeLuca",
       "degree": "Carnegie Mellon University, Department of English",
       "roles": ["Editorial & Technical Team"]
@@ -235,7 +235,7 @@ const groups = {
       "roles": ["Editorial & Technical Team"]
     },
     {
-      "src": person,
+      "src": 'img/ladd.jpg',
       "name": "John Ladd",
       "degree": "Washington & Jefferson College",
       "roles": ["Editorial & Technical Team"]
@@ -253,13 +253,13 @@ const groups = {
       "roles": ["Editorial & Technical Team"]
     },
     {
-      "src": person,
+      "src": 'img/thomas.jpg',
       "name": "Kari Thomas",
       "degree": "Carnegie Mellon University, Department of History",
       "roles": ["Editorial & Technical Team"]
     },
     {
-      "src": person,
+      "src": 'img/vogler.jpg',
       "name": "Nikolai Vogler",
       "degree": "UC San Diego, Computer Science & Engineering",
       "roles": ["Editorial & Technical Team", "Deployment & Publishing", "Frontend design"]
@@ -279,7 +279,7 @@ const groups = {
       "roles": ["Deployment & Publishing"]
     },
     {
-      "src": person,
+      "src": 'img/vogler.jpg',
       "name": "Nikolai Vogler",
       "degree": "UC San Diego, Computer Science & Engineering",
       "roles": ["Editorial & Technical Team", "Deployment & Publishing", "Frontend design"]
@@ -306,7 +306,7 @@ const groups = {
       "roles": ["Editorial & Technical Team", "Frontend design"]
     },
     {
-      "src": person,
+      "src": 'img/vogler.jpg',
       "name": "Nikolai Vogler",
       "degree": "UC San Diego, Computer Science & Engineering",
       "roles": ["Editorial & Technical Team", "Deployment & Publishing", "Frontend design"]
