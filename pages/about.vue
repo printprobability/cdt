@@ -55,7 +55,7 @@
                                         href="https://printprobability.org/">https://printprobability.org/</a>.</p>
       <br/>
 
-      <h5>The CDT Team</h5>
+      <h5 class="text-center" style="font-size: 25px">The CDT Team</h5>
       <br/>
       <div v-for="[role, group] of Object.entries(groups)" class="group-of-role">
         <div class="flex flex-grow-1 align-center">
