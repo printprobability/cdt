@@ -33,19 +33,19 @@
               </div>
             </v-col>
             <v-col cols="7" md="9">
-              <div aria-label="Book" style="width: 30vw">
+              <div aria-label="Book" style="width: 30vw; max-width: 450px">
                 <strong>Book:</strong> {{ character.book.pq_title }}
               </div>
 
-              <div aria-label="Character class" style="width: 30vw" class="mt-2">
+              <div aria-label="Character class" style="width: 30vw; max-width: 450px" class="mt-2">
                 <strong>Character class:</strong> {{ character.character_class }}
               </div>
 
-              <div aria-label="Date" style="width: 30vw" class="mt-2">
+              <div aria-label="Date" style="width: 30vw; max-width: 450px" class="mt-2">
                 <strong>Date:</strong> {{ character.book.pq_year_early }}
               </div>
 
-              <div aria-label="Printer" style="width: 30vw" class="mt-2">
+              <div aria-label="Printer" style="width: 30vw; max-width: 450px" class="mt-2">
                 <strong>Printer:</strong>&nbsp;
                 <NuxtLink
                   :to="{ name: 'index', query: { printer_like: character.group_label } }"
@@ -56,13 +56,13 @@
                 </NuxtLink>
               </div>
 
-              <div aria-label="Source book" style="width: 30vw" class="mt-2">
+              <div aria-label="Source book" style="width: 30vw; max-width: 450px" class="mt-2">
                 <strong>Source book:</strong> ESTC {{ character.book.estc }}
               </div>
 
-              <div aria-label="Cite as" style="width: 30vw" class="mt-2">
+              <div aria-label="Cite as" style="width: 30vw; max-width: 450px" class="mt-2">
                 <strong>Cite as</strong>:
-                {{ citeAs }}&nbsp;
+                {{ citeAs[0] }} <i>{{citeAs[1]}}</i> {{ citeAs[2] }}&nbsp;
                 <NuxtLink
                   :to="{ name: 'characters-id', params: {id: character.unique_id} }"
                   :aria-label="`Character: ${character.unique_id}`"
@@ -85,9 +85,9 @@
         </v-col>
       </v-row>
 
-      <div aria-label="Grid of similar character" class="mt-10" style="width: 80vw">
+      <div v-if="otherCharacters.length > 0" aria-label="Grid of similar character" class="mt-10" style="width: 80vw">
         <h3 aria-label="Other examples" class="text-center" style="font-weight: bold; font-size: 20px">
-          Other examples of character class (A, B, C, etx) for printer in CDT
+          Other examples of character class (A, B, C, etc.) for printer in CDT
         </h3>
 
         <CharacterGrid v-if="otherCharacters" :characters="otherCharacters" center/>
@@ -99,6 +99,8 @@
 <script setup>
 import CharacterGrid from "~/components/CharacterGrid.vue";
 import {AnnotatedImage} from '#components';
+
+import _ from "lodash";
 
 // Resoures
 const {$axios} = useNuxtApp();
@@ -140,7 +142,11 @@ if (!character.value) {
 }
 
 // Citation
-const citeAs = computed(() => `"${character.value['unique_id']}," in Catalog of Distinctive Type (CDT). Edited by Christopher N. Warren, et al.,`)
+const citeAs = computed(() => ([
+  `"${_.capitalize(character.value['unique_id'])}," in`,
+  'Catalog of Distinctive Type',
+  '(CDT). Edited by Christopher N. Warren, et al.,',
+]))
 // Copy
 const copyCitation = () => navigator.clipboard.writeText(citeAs.value + ' ' + absoluteURL.value);
 

@@ -105,7 +105,7 @@
           <div class="footer-terms" aria-label="Terms of use">
             <h3>TERMS OF USE</h3>
             <br>
-            <p>The CDT is licensed under <a target="_blank" aria-label="CC-BY-NC license" href="https://creativecommons.org/licenses/by-nc/4.0/">a CC-BY-NC license</a>. See the “Cite as” field on individual letter pages for citation format: e.g., “thompson_A1685.001,” in Catalog of Distinctive Type (CDT). Edited by Christopher N. Warren, et al., <a target="_blank" aria-label="Link to character: thompson_A1685.001" href="https://cdt.library.cmu.edu/characters/thompson_A1685.001">https://cdt.library.cmu.edu/characters/thompson_A1685.001</a>.</p>
+            <p>The CDT is licensed under <a target="_blank" aria-label="CC-BY-NC license" href="https://creativecommons.org/licenses/by-nc/4.0/">a CC-BY-NC license</a>. See the “Cite as” field on individual letter pages for citation format.</p>
           </div>
         </v-col>
       </v-row>

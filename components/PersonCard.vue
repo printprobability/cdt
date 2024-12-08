@@ -19,16 +19,16 @@
           {{ props.degree }}
         </div>
 
-        <div class="person-card-social">
-          <v-icon tag="a" icon="mdi-facebook" size="20" title="Facebook"
-                  :href="props.social?.facebook ?? '#'" :aria-label="`${props.name}'s Facebook`"/>
-          <v-icon tag="a" icon="mdi-twitter" size="20" title="Twitter"
-                  :href="props.social?.twitter ?? '#'" :aria-label="`${props.name}'s Twitter`"/>
-          <v-icon tag="a" icon="mdi-instagram" size="20" title="Instagram"
-                  :href="props.social?.instagram ?? '#'" :aria-label="`${props.name}'s Instagram`"/>
-          <v-icon tag="a" icon="mdi-linkedin" size="20" title="Linkedin" target="_blank"
-                  :href="props.social?.linkedin ?? '#'" :aria-label="`${props.name}'s Twitter`"/>
-        </div>
+<!--        <div class="person-card-social">-->
+<!--          <v-icon tag="a" icon="mdi-facebook" size="20" title="Facebook"-->
+<!--                  :href="props.social?.facebook ?? '#'" :aria-label="`${props.name}'s Facebook`"/>-->
+<!--          <v-icon tag="a" icon="mdi-twitter" size="20" title="Twitter"-->
+<!--                  :href="props.social?.twitter ?? '#'" :aria-label="`${props.name}'s Twitter`"/>-->
+<!--          <v-icon tag="a" icon="mdi-instagram" size="20" title="Instagram"-->
+<!--                  :href="props.social?.instagram ?? '#'" :aria-label="`${props.name}'s Instagram`"/>-->
+<!--          <v-icon tag="a" icon="mdi-linkedin" size="20" title="Linkedin" target="_blank"-->
+<!--                  :href="props.social?.linkedin ?? '#'" :aria-label="`${props.name}'s Twitter`"/>-->
+<!--        </div>-->
       </div>
     </div>
   </v-card>

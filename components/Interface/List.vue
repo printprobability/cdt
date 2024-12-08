@@ -18,7 +18,7 @@
       </v-col>
 
       <v-col cols="12" md="9">
-        <p v-if="empty" class="page-header">No results</p>
+        <p v-if="empty" class="page-header">Sorry, nothing in the CDT matches your search.</p>
 
         <slot name="results"></slot>
       </v-col>

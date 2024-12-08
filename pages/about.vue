@@ -48,7 +48,7 @@
         of literary historians, bibliographers, librarians, and computer scientists at Carnegie Mellon University and
         the University of California, San Diego.</p>
       <br/>
-      <p class="pl-10">To learn more about the Print & Probability project and our methods — what we call “computational
+      <p>To learn more about the Print & Probability project and our methods — what we call “computational
         bibliography” — see our <a target="_blank" aria-label="2021 lecture at the Grolier Club"
                                    href="https://vimeo.com/792949634">2021 lecture at the Grolier Club</a> or the list
         of publications available at <a target="_blank" aria-label="Print & Probability project"
@@ -83,10 +83,6 @@
         </v-row>
       </div>
       <br/>
-      <p>The CDT gratefully acknowledges support from the National Endowment for the Humanities.</p>
-      <br/>
-
-      <img alt="Logo" :src="image" style="height: 50px"/>
     </div>
   </v-container>
 </template>
@@ -206,63 +202,53 @@ const groups = {
       "src": 'img/warren.jpg',
       "name": "Christopher N. Warren",
       "degree": "Carnegie Mellon University, Department of English",
-      "roles": ["Editor"]
-    }
+    },
+    {
+      "src": "img/lemley.jpg",
+      "name": "Sam Lemley",
+      "degree": "Carnegie Mellon University Libraries",
+    },
   ],
   "Editorial & Technical Team": [
     {
       "src": person,
       "name": "Taylor Berg-Kirkpatrick",
       "degree": "UC San Diego, Computer Science & Engineering",
-      "roles": ["Editorial & Technical Team"]
     },
     {
       "src": 'img/deluca.jpg',
       "name": "Laura DeLuca",
       "degree": "Carnegie Mellon University, Department of English",
-      "roles": ["Editorial & Technical Team"]
     },
     {
       "src": person,
       "name": "Baron Glanvill",
       "degree": "Carnegie Mellon University, Department of English",
-      "roles": ["Editorial & Technical Team"]
     },
     {
       "src": person,
       "name": "Kartik Goyal",
       "degree": "Georgia Tech, College of Computing",
-      "roles": ["Editorial & Technical Team"]
     },
     {
       "src": 'img/ladd.jpg',
       "name": "John Ladd",
       "degree": "Washington & Jefferson College",
-      "roles": ["Editorial & Technical Team"]
-    },
-    {
-      "src": "img/lemley.jpg",
-      "name": "Sam Lemley",
-      "degree": "Carnegie Mellon University Libraries",
-      "roles": ["Editorial & Technical Team", "Frontend design"]
     },
     {
       "src": person,
       "name": "DJ Schuldt",
       "degree": "Burke Library, Hamilton College",
-      "roles": ["Editorial & Technical Team"]
     },
     {
       "src": 'img/thomas.jpg',
       "name": "Kari Thomas",
       "degree": "Carnegie Mellon University, Department of History",
-      "roles": ["Editorial & Technical Team"]
     },
     {
       "src": 'img/vogler.jpg',
       "name": "Nikolai Vogler",
       "degree": "UC San Diego, Computer Science & Engineering",
-      "roles": ["Editorial & Technical Team", "Deployment & Publishing", "Frontend design"]
     }
   ],
   "Deployment & Publishing": [
@@ -270,19 +256,16 @@ const groups = {
       "src": person,
       "name": "Jonathan Kiritharan",
       "degree": "Carnegie Mellon University Libraries",
-      "roles": ["Deployment & Publishing"]
     },
     {
       "src": person,
       "name": "Talia Perry",
       "degree": "Carnegie Mellon University Libraries",
-      "roles": ["Deployment & Publishing"]
     },
     {
       "src": 'img/vogler.jpg',
       "name": "Nikolai Vogler",
       "degree": "UC San Diego, Computer Science & Engineering",
-      "roles": ["Editorial & Technical Team", "Deployment & Publishing", "Frontend design"]
     }
   ],
   "Frontend design": [
@@ -290,27 +273,18 @@ const groups = {
       "src": "img/henry.jpg",
       "name": "Henry Pham",
       "degree": "Bachelor of Science in Information Technology, Software Development",
-      "roles": ["Frontend design"],
       "social": {"linkedin": "https://www.linkedin.com/in/hungphamlk/"}
-    },
-    {
-      "src": person,
-      "name": "Jonathan Armoza",
-      "degree": null,
-      "roles": ["Frontend design"]
     },
     {
       "src": "img/lemley.jpg",
       "name": "Sam Lemley",
       "degree": "Carnegie Mellon University Libraries",
-      "roles": ["Editorial & Technical Team", "Frontend design"]
     },
     {
-      "src": 'img/vogler.jpg',
-      "name": "Nikolai Vogler",
-      "degree": "UC San Diego, Computer Science & Engineering",
-      "roles": ["Editorial & Technical Team", "Deployment & Publishing", "Frontend design"]
-    }
+      "src": person,
+      "name": "Jonathan Armoza",
+      "degree": null,
+    },
   ]
 }
 </script>
@@ -348,5 +322,13 @@ const groups = {
   grid-template-columns: repeat(1, 1fr);
   justify-content: flex-start;
   grid-row-gap: 12px;
+}
+
+h3 {
+  font-size: 21px;
+}
+
+h5 {
+  font-size: 17px;
 }
 </style>
