@@ -68,7 +68,7 @@
 
     <!-- NOTE: v-app is the Vuetify app tag and is required to use vuetify components without error -->
     <v-main class="main-padding-top" style="">
-      <v-container class="parent">
+      <v-container class="parent" max-width="1280px">
         <!-- <v-app-bar class="shadow-sm mb-3">
                     <v-app-bar-title :to="{ name: 'index' }" :text="$siteConfig.navbartitle"></v-app-bar-title>
                     <v-divider></v-divider>

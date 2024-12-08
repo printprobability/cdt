@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container max-width="1280px">
     <div class="d-flex">
       <p v-if="props.title" class="page-title">{{ props.title }}</p>
       <v-spacer/>

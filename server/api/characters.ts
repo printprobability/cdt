@@ -1,4 +1,4 @@
-import {Book, Character} from "~/models";
+import {Book, Character, sequelize} from "~/models";
 import {Op} from "sequelize";
 
 type CharacterQuery = {
@@ -17,15 +17,19 @@ type CharacterQuery = {
 export default defineEventHandler(async (event): Promise<[]> => {
   // Get query parameter
   const query: CharacterQuery = getQuery(event)
+
   // Find
   const {count, rows} = await Character.findAndCountAll({
     limit: query.limit,
     offset: query.offset,
-    order: query.sort && [
-      ...query.sort_by ? [[Book, 'pq_year_early', query.sort_by === 'date_desc' ? 'DESC' : 'ASC']] : [],
-      'character_group',
-      'character_class'
-    ],
+    order: query.sort === 'true'
+      ? [
+        ...query.sort_by ? [[Book, 'pq_year_early', query.sort_by === 'date_desc' ? 'DESC' : 'ASC']] : [],
+        'character_group',
+        'character_class'
+      ] : [
+        sequelize.literal('RANDOM()'),
+      ],
 
     ...createFilter(query)
   })

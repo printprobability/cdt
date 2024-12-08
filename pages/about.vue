@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container max-width="1280px">
     <div class="mt-5">
       <h3>ABOUT</h3>
       <br/>
@@ -326,6 +326,7 @@ const groups = {
 
 h3 {
   font-size: 21px;
+  font-weight: bold;
 }
 
 h5 {

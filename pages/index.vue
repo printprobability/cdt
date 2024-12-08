@@ -184,6 +184,8 @@ const filterOnlyQuery = computed(() => {
   if (book.value) query["book"] = book.value;
   if (sortBy.value) query["sort_by"] = sortBy.value
 
+  if (!printer.value && !characterClass.value && query.pq_year_early === 1660 && query.pq_year_late === 1700) query["sort"] = false
+
   return query;
 });
 // Filter query
