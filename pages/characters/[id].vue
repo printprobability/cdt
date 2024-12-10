@@ -143,7 +143,7 @@ if (!character.value) {
 
 // Citation
 const citeAs = computed(() => ([
-  `"${_.capitalize(character.value['unique_id'])}," in`,
+  `"${character.value['unique_id']}," in`,
   'Catalog of Distinctive Type',
   '(CDT). Edited by Christopher N. Warren, et al.,',
 ]))

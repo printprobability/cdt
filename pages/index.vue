@@ -113,7 +113,7 @@ const pageNums = computed(() => Math.ceil(count.value / itemsPerPage.value));
 const pageOffset = computed(() => (page.value - 1) * itemsPerPage.value);
 
 // Items per page
-const itemsPerPage = computed(() => mode.value === "grid" ? 100 : 100);
+const itemsPerPage = computed(() => mode.value === "grid" ? 100 : 50);
 // Min item text
 const minItemText = computed(() => pageOffset.value + 1);
 // Max item text
@@ -183,8 +183,6 @@ const filterOnlyQuery = computed(() => {
   if (characterClass.value) query["character_class"] = characterClass.value;
   if (book.value) query["book"] = book.value;
   if (sortBy.value) query["sort_by"] = sortBy.value
-
-  if (!printer.value && !characterClass.value && yearRange.value.yearEarly === '1660' && yearRange.value.yearLate === '1700') query["sort"] = false
 
   return query;
 });

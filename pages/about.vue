@@ -1,5 +1,5 @@
 <template>
-  <v-container max-width="1280px">
+  <v-container max-width="1000px">
     <div class="mt-5">
       <h3>ABOUT</h3>
       <br/>
@@ -197,7 +197,7 @@ import person from '~/public/img/person.png';
 // });
 
 const groups = {
-  "Editor": [
+  "Editors": [
     {
       "src": 'img/warren.jpg',
       "name": "Christopher N. Warren",

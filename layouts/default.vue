@@ -67,24 +67,11 @@
     </v-navigation-drawer>
 
     <!-- NOTE: v-app is the Vuetify app tag and is required to use vuetify components without error -->
-    <v-main class="main-padding-top" style="">
-      <v-container class="parent" max-width="1280px">
-        <!-- <v-app-bar class="shadow-sm mb-3">
-                    <v-app-bar-title :to="{ name: 'index' }" :text="$siteConfig.navbartitle"></v-app-bar-title>
-                    <v-divider></v-divider>
-                    <div class="d-flex ml-auto">
-                        <v-list-item>Books</v-list-item>
-                        <v-list-item>Characters</v-list-item>
-                        <v-list-item>Groupings</v-list-item>
-                        <v-list-item>Data</v-list-item>
-                        <v-list-item>About</v-list-item>
-                    </div>
-                </v-app-bar> -->
-        <slot/>
-      </v-container>
+    <v-main class="flex-0-0 main-padding-top" style="height: fit-content">
+      <slot/>
     </v-main>
 
-    <footer class="footer">
+    <footer class="footer" style="max-width: 1520px; margin: 0 auto">
       <v-row class="footer-container">
         <v-col md="4" cols="12">
           <div class="footer-logo text-center" aria-label="Footer logo">
@@ -97,7 +84,7 @@
           <div class="footer-about" aria-label="About">
             <h3>ABOUT</h3>
             <br>
-            <p>To learn more about the Print & Probability project, visit <a target="_blank" aria-label="Print & Probability project" href="https://printprobability.org">https://printprobability.org</a>. Or connect with us on Bluesky (<a target="_blank" aria-label="Link to Bluesky profile" href="https://bsky.app/profile/print-and-prob.bsky.social">https://bsky.app/profile/print-and-prob.bsky.social</a>).</p>
+            <p>To learn more about the Print & Probability project, visit <a target="_blank" aria-label="Print & Probability project" href="https://printprobability.org">https://printprobability.org</a>. Or <a target="_blank" aria-label="Link to Bluesky profile" href="https://bsky.app/profile/print-and-prob.bsky.social">connect with us on Bluesky</a>.</p>
           </div>
         </v-col>
 
