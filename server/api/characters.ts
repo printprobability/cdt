@@ -6,8 +6,8 @@ type CharacterQuery = {
   sort_by: 'data_asc' | 'date_desc'
   limit: number,
   offset: number,
-  pq_year_early: number,
-  pq_year_late: number,
+  pq_year_early: number|string,
+  pq_year_late: number|string,
   printer_like: string | undefined,
   character_class: string | undefined,
   group_id: string | undefined,
@@ -17,6 +17,11 @@ type CharacterQuery = {
 export default defineEventHandler(async (event): Promise<[]> => {
   // Get query parameter
   const query: CharacterQuery = getQuery(event)
+
+  // Check if sorting random (based on sequence)
+  if (!query.printer_like && !query.character_class && query.pq_year_early === '1660' && query.pq_year_late === '1700') {
+    query.sort = 'false'
+  }
 
   // Find
   const {count, rows} = await Character.findAndCountAll({
@@ -28,7 +33,7 @@ export default defineEventHandler(async (event): Promise<[]> => {
         'character_group',
         'character_class'
       ] : [
-        sequelize.literal('RANDOM()'),
+        'sequence',
       ],
 
     ...createFilter(query)

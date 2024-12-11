@@ -9,6 +9,7 @@ export default function (sequelize: Sequelize): Model {
       group_label: {type: DataTypes.STRING},
       char_id: {type: DataTypes.UUID, primaryKey: true},
       web_url: {type: DataTypes.STRING},
+      sequence: {type: DataTypes.NUMBER},
       character_class: {type: DataTypes.STRING},
       character_group: {type: DataTypes.STRING},
       created_by_run_id: {type: DataTypes.STRING},

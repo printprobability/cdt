@@ -149,6 +149,15 @@ const processUniqueID = (character: { group_label: string, character_class: stri
 }
 
 /**
+ * Process character sequence
+ *
+ * @param character
+ */
+const processSequence = (character: { sequence: number }): void => {
+  character.sequence = _.random(1, 500000)
+}
+
+/**
  * Process printer years
  * @param character
  */
@@ -199,6 +208,8 @@ for (const character of characters) {
   processCharacterGroupLabel(character)
   // Process unique ID
   processUniqueID(character)
+  // Process sequence
+  processSequence(character)
   // Process printer years
   processPrinterYears(character)
 }
@@ -207,6 +218,6 @@ for (const character of characters) {
 await bulkInsert(Character, characters, 'char_id')
 // Import cdt_printers.csv to database
 await bulkInsert(Printer, printers, 'group_id')
-
+console.warn(characters)
 // Log
 console.warn('Database has been initialized.')
