@@ -128,7 +128,7 @@ const processCharacterGroupLabel = (character: { group_id: string, group_label: 
  */
 const processUniqueID = (character: { group_label: string, character_class: string, book_id: string }): void => {
   // Get corresponding book
-  const book = books[bookMap[character['book_id']]]['book_data']
+  const book = bookMap[character['book_id']]['book_data']
 
   // Get printer lastname
   const printerLastname = _.capitalize(getLastname(character['group_label']).toLowerCase())
@@ -148,16 +148,31 @@ const processUniqueID = (character: { group_label: string, character_class: stri
   character['unique_id'] = `${cite}.${citeIndex}`
 }
 
+/**
+ * Process printer years
+ * @param character
+ */
+const processPrinterYears = (character: { book_id: string, group_id: string }): void => {
+  // Get book
+  const book = bookMap[character['book_id']]['book_data']
+  // Get printer
+  const printer = printerMap[character['group_id']]
+
+  // Set printer years
+  printer.pq_year_early = Math.min(printer.pq_year_early ?? 2000, book.pq_year_early)
+  printer.pq_year_late = Math.max(printer.pq_year_late ?? 0, book.pq_year_late)
+}
+
 // *********************************************
 // Main
 // *********************************************
 
 // Import cdt_printers.csv
 const printers = readCSV(resolve('dldt_data/cdt_printers.csv'))
-// Import cdt_printers.csv to database
-await bulkInsert(Printer, printers, 'group_id')
+
 // Construct printer map
 const printerMap = {}
+// Iterate through each printer and map id to entry
 printers.map(printer => printerMap[printer['group_id']] = printer)
 
 // Import books.json
@@ -168,7 +183,7 @@ await bulkInsert(Book, books, 'id', 'book_data')
 // Mapping book entry for fast access
 const bookMap = {}
 // Iterate through each book and map id to entry
-books.map((value, index) => bookMap[value.book_id] = index)
+books.map((book) => bookMap[book.book_id] = book)
 
 // Cite occurrence
 const citeOccurrence = {}
@@ -184,10 +199,14 @@ for (const character of characters) {
   processCharacterGroupLabel(character)
   // Process unique ID
   processUniqueID(character)
+  // Process printer years
+  processPrinterYears(character)
 }
 
 // Import extracted_character_data.json
 await bulkInsert(Character, characters, 'char_id')
+// Import cdt_printers.csv to database
+await bulkInsert(Printer, printers, 'group_id')
 
 // Log
 console.warn('Database has been initialized.')

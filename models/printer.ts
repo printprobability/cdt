@@ -11,6 +11,8 @@ export default function (sequelize: Sequelize): Model {
       // workbench_set: {type: DataTypes.STRING},
       // export_cdt: {type: DataTypes.STRING},
       group_id: {type: DataTypes.UUID, primaryKey: true},
+      pq_year_early: {type: DataTypes.NUMBER},
+      pq_year_late: {type: DataTypes.NUMBER},
     }
   )
 }

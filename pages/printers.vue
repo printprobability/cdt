@@ -12,11 +12,15 @@
         variant="outlined"
         :key="i"
         :active="false"
-        :value="printer"
-        :to="{name: 'index', query: {pq_year_early: 1660, pq_year_late: 1700, printer_like: printer}}"
+        :value="printer['printer_string']"
+        :to="{name: 'index', query: {pq_year_early: printer['pq_year_early'], pq_year_late: printer['pq_year_late'], printer_like: printer['printer_string']}}"
         @click="clearNuxtState((key) => key.startsWith('chars'))"
       >
-        <v-list-item-title class="text-center" v-text="printer" :aria-label="`Characters of ${printer}`"/>
+        <v-list-item-title
+          class="text-center"
+          v-text="printer['printer_string']"
+          :aria-label="`Characters of ${printer['printer_string']}`"
+        />
       </v-list-item>
     </v-list>
 

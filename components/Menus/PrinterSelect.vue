@@ -63,7 +63,7 @@ const hasNextPage = computed(
 // Data fetch from API
 // ********************************
 // Fetch data
-const {data: fetchedData} = await useAsyncData("fetchPrinterLabels", async () => (await $axios.get("/printers")).data);
+const {data: fetchedData} = await useAsyncData("fetchPrinterLabels", async () => (await $axios.get("/printers", {params: {labelOnly: true}})).data);
 // Get character classes object
 const printers = computed(() => fetchedData.value?.results ?? []);
 
