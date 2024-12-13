@@ -35,10 +35,10 @@ import {useAsyncData} from "nuxt/app";
 const {$axios, $loader} = useNuxtApp();
 
 // Title
-const title = ref(`INDEX of PRINTERS in CATALOG OF DISTINCTIVE TYPE, Restoration England (1660-1700)`);
+const title = ref(`INDEX of PRINTERS in CATALOG OF DISTINCTIVE TYPE, Restoration England (1650-1710)`);
 // Intro
 const intro = ref(
-  "The CDT includes a curated subset of damaged and distinctive type used by the following printers in Restoration England (1660-1700). Note that some printers worked exclusively in collaboration with a second printer. The respective types of these printers — if they had separate type cases or print shops at all — are impossible to reliably assign or differentiate. In these cases, the names of both collaborators are given as a single entry in the CDT."
+  "The CDT includes a curated subset of damaged and distinctive type used by the following printers in Restoration England (1650-1710). Note that some printers worked exclusively in collaboration with a second printer. The respective types of these printers — if they had separate type cases or print shops at all — are impossible to reliably assign or differentiate. In these cases, the names of both collaborators are given as a single entry in the CDT."
 );
 
 // Fetch data

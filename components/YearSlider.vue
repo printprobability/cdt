@@ -27,8 +27,8 @@ import {useAriaLabelForRole} from "~/composables/useAriaLabelForRole";
 
 const props = defineProps({
   modelValue: {type: Object},
-  maxYear: {type: Number, default: 1700},
-  minYear: {type: Number, default: 1660},
+  maxYear: {type: Number, default: 1710},
+  minYear: {type: Number, default: 1650},
 });
 
 const emit = defineEmits(["update:modelValue", "end"]);

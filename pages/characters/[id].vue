@@ -124,8 +124,8 @@ const {data: otherCharacters} = await useAsyncData(
     {
       params: {
         limit: 10,
-        pq_year_early: 1660,
-        pq_year_late: 1700,
+        pq_year_early: 1650,
+        pq_year_late: 1710,
         character_class: character.value['character_class'],
         group_id: character.value['group_id']
       }

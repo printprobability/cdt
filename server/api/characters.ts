@@ -19,7 +19,7 @@ export default defineEventHandler(async (event): Promise<[]> => {
   const query: CharacterQuery = getQuery(event)
 
   // Check if sorting random (based on sequence)
-  if (!query.printer_like && !query.character_class && query.pq_year_early === '1660' && query.pq_year_late === '1700') {
+  if (!query.printer_like && !query.character_class && query.pq_year_early === '1650' && query.pq_year_late === '1710') {
     query.sort = 'false'
   }
 
