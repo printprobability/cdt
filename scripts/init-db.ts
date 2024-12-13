@@ -218,6 +218,6 @@ for (const character of characters) {
 await bulkInsert(Character, characters, 'char_id')
 // Import cdt_printers.csv to database
 await bulkInsert(Printer, printers, 'group_id')
-console.warn(characters)
+
 // Log
 console.warn('Database has been initialized.')
