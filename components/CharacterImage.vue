@@ -4,7 +4,6 @@
     :aria-label="`To detail page of ${props.character.unique_id}`"
   >
     <v-img
-      cover
       width="52px"
       height="68px"
       max-width="52px"
