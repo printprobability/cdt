@@ -34,7 +34,7 @@
           <td>{{ character.character_class }}</td>
           <td aria-label="Printer">
             <NuxtLink
-              :to="{ name: 'index', query: { pq_year_early: 1650, pq_year_late: 1710, printer_like: character.group_label } }"
+              :to="{ name: 'index', query: { pq_year_early: 1644, pq_year_late: 1715, printer_like: character.group_label } }"
               :aria-label="character.group_label"
             >
               {{ character.group_label }}

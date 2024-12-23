@@ -7,7 +7,7 @@
                 :to="{ name: 'index' }"
             > -->
       <v-app-bar-title class="dldt-navbar-title">
-        <a href="/?pq_year_early=1650&pq_year_late=1710" style="text-decoration: none; text-wrap: wrap" aria-label="Home">
+        <a href="/?pq_year_early=1644&pq_year_late=1715" style="text-decoration: none; text-wrap: wrap" aria-label="Home">
           {{ $siteConfig.navbartitle }}
         </a>
       </v-app-bar-title>

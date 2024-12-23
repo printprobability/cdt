@@ -18,7 +18,7 @@
       <h5>(Known) Limitations in CDT Data</h5>
       <br/>
       <p>While the CDT is a first-of-its-kind resource for the analysis of distinctive and damaged types at scale, it is
-        not comprehensive for its period of coverage (1650-1710). Damaged type data for many printers remains limited
+        not comprehensive for its period of coverage (1660-1700). Damaged type data for many printers remains limited
         for a variety of reasons. In many cases, a printer’s output survives only through a handful of editions, some of
         which may survive in only a few copies, few or none of which have been digitized. Moreover, many printers
         undoubtedly owned more fonts than appear here. What’s included in CDT in most cases simply reflects what’s been
@@ -26,7 +26,7 @@
         beyond that set would impair our intention to create a tractable and searchable body of evidence.</p>
       <br/>
       <p>Still, the CDT represents a carefully curated set of more than 15,000 characters extracted from digital copies
-        of more than 1900 editions printed between 1650 and 1710.</p>
+        of more than 1900 editions printed between 1660 and 1700.</p>
       <br/>
 
       <h5>A Note on Printers</h5>

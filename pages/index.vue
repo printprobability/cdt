@@ -73,14 +73,14 @@ const router = useRouter();
 // ********************************
 // Config
 // ********************************
-const MIN_YEAR = 1650;
-const MAX_YEAR = 1710;// Title
+const MIN_YEAR = 1644;
+const MAX_YEAR = 1715;// Title
 const title = ref(
-  `CATALOG of DISTINCTIVE TYPE (CDT), Restoration England (${MIN_YEAR}-${MAX_YEAR})`
+  `CATALOG of DISTINCTIVE TYPE (CDT), Restoration England (1660-1700)`
 );
 // Intro
 const intro = ref(
-  "The CDT is a visual catalog of distinctive and damaged printing type originating in books published in England from 1650 to 1710. These type impressions — 15,000 individual letters or “sorts” —  form a new source of typographic evidence for more than 240 printers working in London during the English Restoration. Users can search by character class (letterform), printer, and date."
+  "The CDT is a visual catalog of distinctive and damaged printing type originating in books published in England from 1660 to 1700. These type impressions — 15,000 individual letters or “sorts” —  form a new source of typographic evidence for more than 240 printers working in London during the English Restoration. Users can search by character class (letterform), printer, and date."
 );
 
 // Head
