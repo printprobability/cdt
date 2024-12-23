@@ -10,6 +10,23 @@ import {removeDuplicateByKey} from "~/scripts/utils"
 // Await previous sync
 await _syncPromise
 
+// Printers need to be deleted
+const deletePrinters = [
+  'Astwood, John',
+  'Dover, Simon',
+  'Harper, Thomas',
+  'Leybourne, Robert',
+  'Thompson, Mary',
+  'Coe, Jane',
+  'Hearne, Richard',
+  'Mathewes, Augustine',
+  'Okes, John',
+  'Oulton, Richard',
+  'Raworth, John',
+  'Raworth, Ruth',
+  'Everingham, Robert'
+]
+
 // *********************************************
 // Utility
 // *********************************************
@@ -214,10 +231,20 @@ for (const character of characters) {
   processPrinterYears(character)
 }
 
+// const t = deletePrinters.filter(p => printers.some(printer => printer.printer_string === p))
+// console.warn(deletePrinters.filter(p => t.indexOf(p) === -1))
 // Import extracted_character_data.json
-await bulkInsert(Character, characters, 'char_id')
+await bulkInsert(
+  Character,
+  characters.filter(character => deletePrinters.indexOf(character.group_label) === -1),
+  'char_id'
+)
 // Import cdt_printers.csv to database
-await bulkInsert(Printer, printers, 'group_id')
-
+await bulkInsert(
+  Printer,
+  printers.filter(printer => deletePrinters.indexOf(printer.printer_string) === -1),
+  'group_id'
+)
+// console.warn(await Character.findAll({ where: { group_label: 'Newcomb, Thomas, Jr.' }, raw: true}))
 // Log
 console.warn('Database has been initialized.')

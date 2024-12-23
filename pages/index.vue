@@ -231,4 +231,6 @@ const {data} = await useAsyncData(
 const characters = ref(data.value?.results ?? []);
 // Total count
 const count = ref(data.value?.count ?? 0);
+
+onMounted(() => window.scrollTo({ top: 0 }))
 </script>

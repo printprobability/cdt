@@ -54,7 +54,7 @@ printer_string,printer_shortname,notes,books_on_workbench,workbench_set,export_c
 "Griffin, Sarah",sgriffin,,4,y,https://printprobdb.psc.edu/api/character_groupings/f7454b65-366b-4301-a524-a43a3213dfea/download/,f7454b65-366b-4301-a524-a43a3213dfea
 "Hills, Henry, Jr.",hhillsjr,,4,y,https://printprobdb.psc.edu/api/character_groupings/2f1d500d-0439-4261-b3aa-5f323e5bc33b/download/,2f1d500d-0439-4261-b3aa-5f323e5bc33b
 "Miller, Abraham",abemiller,,4,y,https://printprobdb.psc.edu/api/character_groupings/2f3c2e49-09ca-432b-a865-3f75ea8d26c1/download/,2f3c2e49-09ca-432b-a865-3f75ea8d26c1
-"Newcomb, Thomas, Jr. ",newcombjr,,4,y,https://printprobdb.psc.edu/api/character_groupings/ab4602de-98d8-43eb-898f-505fe5900232/download/,ab4602de-98d8-43eb-898f-505fe5900232
+"Newcomb, Thomas, Jr.",newcombjr,,4,y,https://printprobdb.psc.edu/api/character_groupings/ab4602de-98d8-43eb-898f-505fe5900232/download/,ab4602de-98d8-43eb-898f-505fe5900232
 "Rawlins, James",jrawlins,"""J. Rawlins"" in Workbench",4,y,https://printprobdb.psc.edu/api/character_groupings/897a62d7-a689-4086-8707-40876dc96d10/download/,897a62d7-a689-4086-8707-40876dc96d10
 "Raworth, John",jraworth,,4,y,https://printprobdb.psc.edu/api/character_groupings/1f3649bc-c1fb-4f7a-a1e3-f2dc3d15bda4/download/,1f3649bc-c1fb-4f7a-a1e3-f2dc3d15bda4
 "Moxon, Joseph",josephmoxon,,4,y,https://printprobdb.psc.edu/api/character_groupings/75581a6c-c7ee-42d8-bfdf-31febe5e0b7d/download/,75581a6c-c7ee-42d8-bfdf-31febe5e0b7d
@@ -91,7 +91,7 @@ printer_string,printer_shortname,notes,books_on_workbench,workbench_set,export_c
 "Clowes, John",jclowes,,2,y,https://printprobdb.psc.edu/api/character_groupings/d025cc02-b4ae-4863-9a6b-3736a30670b8/download/,d025cc02-b4ae-4863-9a6b-3736a30670b8
 "Crouch, Edward",ecrouch,,2,y,https://printprobdb.psc.edu/api/character_groupings/7ca15048-7310-4ac9-b8c4-28560a4ae0e6/download/,7ca15048-7310-4ac9-b8c4-28560a4ae0e6
 "Eld, George",geld,,2,y,,#N/A
-"Flesher, Miles (the younger)",mflesher,post-1678,2,y,,#N/A
+"Flesher, Miles, Jr.",mflesher,post-1678,2,y,,06b4a299-6d34-4072-ac9b-57ece93193a9
 "Johnson, Thomas",tjohnson,,2,y,https://printprobdb.psc.edu/api/character_groupings/9d07da75-f347-4555-8348-0129cf6723c6/download/,9d07da75-f347-4555-8348-0129cf6723c6
 "Maxwell, David",dmaxwell,,2,y,https://printprobdb.psc.edu/api/character_groupings/b97cf614-3c17-4093-b732-80d4ec73c0fd/download/,b97cf614-3c17-4093-b732-80d4ec73c0fd
 "Millet, John",jmillet,,2,y,https://printprobdb.psc.edu/api/character_groupings/6f9d13a0-fedb-44af-9a6e-7c6a22ff88eb/download/,6f9d13a0-fedb-44af-9a6e-7c6a22ff88eb
