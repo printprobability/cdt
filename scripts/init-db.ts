@@ -24,7 +24,6 @@ const deletePrinters = [
   'Oulton, Richard',
   'Raworth, John',
   'Raworth, Ruth',
-  'Everingham, Robert'
 ]
 
 // *********************************************
