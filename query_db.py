@@ -123,6 +123,17 @@ def find_matching_json_by_char_id(database_path: str, json_path: str, unique_id:
         # import pdb; pdb.set_trace()
 
 
+def dump_cached_char_paths(path):
+    connection = sqlite3.connect(database_path)
+    cursor = connection.cursor()
+    # grab web_url field for all characters and convert to list
+    cursor.execute("SELECT web_url FROM characters")
+    rows = cursor.fetchall()
+    urls = [row[0] for row in rows]
+    # replace the iiif url with the local cache char path
+    urls = [url.replace('https://cdt.library.cmu.edu/iiif//', '/home/ppdevs/dldt/dldt_data/iiif-server/cache/').replace('default.jpg', 'color.jpg') for url in urls]
+    print('\n'.join(urls), file=open(path, 'w'))
+    print('Wrote cached char paths to:', path)
 
 
 if __name__ == '__main__':
@@ -133,6 +144,7 @@ if __name__ == '__main__':
     parser.add_argument('--unique_id_list_files', type=str, nargs='+', default='dldt_data/unique_id_flagged_for_deletion_2024-12-02.txt')
     parser.add_argument('--unique_id', type=str, help='Unique id for character in characters table')
     parser.add_argument('--print_tables', action='store_true')
+    parser.add_argument('--dump_cached_char_paths', type=str, default=None, help="Print the paths of all the cached character images (for export)")
     args = parser.parse_args()
 
     database_path = "database.sqlite"
@@ -172,6 +184,11 @@ if __name__ == '__main__':
                 except ValueError as e:
                     print(f'Error: {uid} not in {args.json_path}')
         print(f'Total chars after removing:', len(all_chars))
-        with open(f'dldt_data/extracted_character_data.json', 'w') as f:
-           json.dump(all_chars, f, indent=4)
+
+        if args.dump_cached_char_paths:
+            dump_cached_char_paths(args.dump_cached_char_paths)
+            exit(0)
+        else:
+            with open(f'dldt_data/extracted_character_data.json', 'w') as f:
+                json.dump(all_chars, f, indent=4)
 
