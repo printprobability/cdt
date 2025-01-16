@@ -37,4 +37,5 @@ sudo docker compose start client
 
 ```bash
 python3 query_db.py --dump_cached_char_paths dldt_data/cached_char_paths.txt --remove_chars_from_json_path --unique_id_list_files dldt_data/unique_id_flagged_for_deletion_202*
+tar -cf dldt_data/cached_char_paths.tar -T dldt_data/cached_char_paths.txt
 ```
