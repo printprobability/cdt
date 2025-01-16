@@ -1,26 +1,37 @@
 {
-    "name": "nuxt-app",
-    "private": true,
-    "type": "module",
-    "scripts": {
-        "build": "nuxt build",
-        "dev": "nuxt dev",
-        "generate": "nuxt generate",
-        "preview": "nuxt preview",
-        "postinstall": "nuxt prepare"
-    },
-    "dependencies": {
-        "@mdi/font": "^7.4.47",
-        "@nuxt/content": "^2.12.1",
-        "lodash": "^4.17.21",
-        "openseadragon": "^3.0.0",
-        "sass": "^1.72.0"
-    },
-    "devDependencies": {
-        "@vueuse/core": "^10.9.0",
-        "@vueuse/nuxt": "^10.9.0",
-        "nuxt": "^3.11.1",
-        "vite-plugin-vuetify": "^2.0.3",
-        "vuetify": "^3.5.3"
-    }
+  "name": "nuxt-app",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "build:model": "tsx scripts/build-model.ts",
+    "build:sqlite-ext": "tsx scripts/compile-sqlite-ext.ts",
+    "migrate": "tsx --env-file=.env scripts/init-db.ts --hard-sync",
+    "dev": "nuxt dev",
+    "cleanup": "nuxt cleanup",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "serve": "node ./output"
+  },
+  "dependencies": {
+    "@mdi/font": "^7.4.47",
+    "axios": "^1.7.8",
+    "fuse.js": "^7.0.0",
+    "lodash": "^4.17.21",
+    "openseadragon": "^5.0.0",
+    "sass": "^1.81.0",
+    "sequelize": "^6.37.5",
+    "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.17.13",
+    "@vueuse/core": "^11.3.0",
+    "@vueuse/nuxt": "^11.3.0",
+    "csv-parse": "^5.6.0",
+    "nuxt": "^3.14.1592",
+    "tsx": "^4.19.2",
+    "vite-plugin-vuetify": "^2.0.4",
+    "vuetify": "^3.7.4"
+  }
 }

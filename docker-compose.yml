@@ -1,0 +1,22 @@
+version: "3"
+
+services:
+  client:
+    image: node:22.10-alpine
+    command: sh -c "npm ci && npm run cleanup && npm run build && NODE_ENV=production node .output/server/index.mjs"
+    volumes:
+      - .:/app
+    ports:
+      - "3000:3000"
+    env_file: .env
+    working_dir: /app
+
+  iiif:
+    image: mdlincoln/go-iiif-vips:latest
+    restart: always
+    volumes:
+      - ./iiif:/etc/iiif-server:z
+      - ./dldt_data:/usr/local/images:z
+    ports:
+      - "8001:8001"
+    command: "/bin/iiif-server -host 0.0.0.0 -port 8001 -config-source file:///etc/iiif-server -config-name config.json"

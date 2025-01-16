@@ -1,7 +1,7 @@
 export default defineNuxtPlugin(() => {
-    
+
     return {
-        
+
         provide: {
 
             siteConfig: {
@@ -15,7 +15,7 @@ export default defineNuxtPlugin(() => {
                     books: "Search books indexed by this project based on title, printer, and date.",
                     characters: "Search for characters by type or source book.",
                     groupings: "Curated sets of characters identified by a human & machine-learning pipeline that are useful for identifying certain printers or relationships between them."
-                },                
+                },
 
                 contact: {
 
@@ -31,7 +31,6 @@ export default defineNuxtPlugin(() => {
                 },
 
                 pnpLogo: {
-                    
                     alt: "Print & Probability",
                     image: "/img/pnp_logo.png"
                 },
@@ -40,17 +39,18 @@ export default defineNuxtPlugin(() => {
 
                 maintitle: "Catalog of Distinctive Type",
 
-                navbartitle: "CDT - Restoration England",
+                // navbartitle: "CDT - Restoration England",
+                navbartitle: "Catalog of Distinctive Type (CDT)",
 
                 splashboxes: [
 
-                    {
-                        alt: "Illustrated A character",
-                        image: "/img/a.jpg",
-                        text: "Start from a particular book to see the distinctive character types we have identified in it",
-                        title: "Browse by book",
-                        to: { name: "books" }
-                    },
+                    // {
+                    //     alt: "Illustrated A character",
+                    //     image: "/img/a.jpg",
+                    //     text: "Start from a particular book to see the distinctive character types we have identified in it",
+                    //     title: "Browse by book",
+                    //     to: { name: "books" }
+                    // },
                     {
                         alt: "Ornate I character",
                         image: "/img/i.jpg",
@@ -59,13 +59,13 @@ export default defineNuxtPlugin(() => {
                         to: { name: "characters" }
                     },
 
-                    {
-                        alt: "Ornate I character",
-                        image: "/img/i.jpg",
-                        text: "Explore curated sets of distinctive characters that have been identified by our project team.",
-                        title: "Browse by curated groupings",
-                        to: { name: "groupings" }
-                    },
+                    // {
+                    //     alt: "Ornate I character",
+                    //     image: "/img/i.jpg",
+                    //     text: "Explore curated sets of distinctive characters that have been identified by our project team.",
+                    //     title: "Browse by curated groupings",
+                    //     to: { name: "groupings" }
+                    // },
                     /*{
                         alt: "embellished capital S",
                         image: "/img/s.jpg",

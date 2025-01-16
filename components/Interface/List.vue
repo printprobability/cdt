@@ -1,96 +1,50 @@
 <template>
-    
-    <v-container>
-        
-        <p class="page-title">{{ props.title }}</p>
+  <v-container max-width="1100px">
+    <div class="d-flex">
+      <p v-if="props.title" class="page-title">{{ props.title }}</p>
+      <v-spacer/>
+      <slot name="left"></slot>
+    </div>
 
-        <slot name="intro"></slot>
+    <slot name="intro"></slot>
 
-        <hr />
-        
-        <v-row>
-            
-            <v-col cols="3">
-                <p class="page-header">Filter</p>
-                <v-form>
-                    <slot name="filter"></slot>
-                </v-form>
-            </v-col>
-            
-            <v-col cols="9">
-                <p class="page-header">{{ resultCountString }}</p>
+    <v-row class="mt-5">
+      <v-col cols="12" md="3">
+        <p class="page-header">Search the Catalog</p>
+        <v-form>
+          <slot name="filter"></slot>
+        </v-form>
+<!--        <div v-if="$vuetify.display.mdAndUp" style="height: calc(15vh - 20px)"/>-->
+      </v-col>
 
-                <!-- <v-pagination
-                    :disabled="props.total_rows <= props.page_size"
-                    :length="props.page_size"
-                    :total-rows="props.total_rows"
-                    :value="props.value"
-                    align="center"
-                    @input="$emit('input', $event)"></v-pagination> -->
-                <slot name="results"></slot>
-                <!-- <v-pagination
-                    :disabled="props.total_rows <= props.page_size"
-                    :length="props.page_size"
-                    :total-rows="props.total_rows"
-                    :value="props.value"
-                    align="center"
-                    @input="$emit('input', $event)"></v-pagination> -->
-            </v-col>
-        </v-row> 
+      <v-col cols="12" md="9">
+        <p v-if="empty" class="page-header">Sorry, nothing in the CDT matches your search.</p>
 
-        <slot name="foot"></slot>
+        <slot name="results"></slot>
+      </v-col>
+    </v-row>
 
-    </v-container>
+    <slot name="foot"></slot>
+  </v-container>
 </template>
 
 <script setup>
-
-    const props = defineProps({
-        
-        intro: String,
-        page_size: Number,
-        results_string: String,
-        title: String,
-        total_rows: Number,
-        value: Number
-    });
-
-    const resultCountString = computed(() => {
-
-        let resultStr;
-
-        if ( props.total_rows > 1 ) {
-
-            resultStr = `${props.total_rows} results`;
-        } else if ( props.total_rows == 1 ) {
-
-            resultStr = "1 result";
-        } else {
-
-            resultStr = "No results";
-        }
-
-        return resultStr;
-    });
-
+const props = defineProps({
+  title: String,
+  empty: Boolean,
+});
 </script>
 
 <style>
+.page-header {
+  font-size: 1em;
+  font-weight: 600;
+  //color: #b00;
+}
 
-    .page-header {
-
-        font-family: "Vollkorn";
-        font-size: 1.5em;
-        font-weight: 600;
-        color: #b00;
-    }
-
-    .page-title {
-
-        font-family: "Cinzel";
-        font-size: 2.5em;
-        font-weight: 500;
-        color: #b00;
-    }   
-
+.page-title {
+  font-size: 2.5em;
+  font-weight: 500;
+  //color: #b00;
+}
 </style>

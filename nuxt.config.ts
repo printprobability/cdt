@@ -1,7 +1,7 @@
 // Imports
 // import * as cdt_routes from "./assets/json/cdt_routes.json"
-import { resolve } from "path";
-import vuetify, { transformAssetUrls } from "vite-plugin-vuetify";
+import vuetify, {transformAssetUrls} from "vite-plugin-vuetify";
+import _ from "lodash"
 
 // const getStaticRoutes = async () => {
 
@@ -13,121 +13,123 @@ import vuetify, { transformAssetUrls } from "vite-plugin-vuetify";
 //     const book_routes = books.map(x => "/books/" + x.id);
 //     const grouping_routes = groupings.map(x => "/groupings/" + x.id);
 
-//     return character_routes.concat(book_routes, grouping_routes);    
+//     return character_routes.concat(book_routes, grouping_routes);
 // };
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  // alias: { "@": resolve(__dirname, "/") },
 
-    // alias: { "@": resolve(__dirname, "/") },
+  app: {
+    head: {
+      link: [{rel: 'stylesheet', href: 'https://cdn.jsdelivr.net/npm/vuetify@3.x/dist/vuetify.min.css', preload: true}],
+      htmlAttrs: {
+        lang: 'en'
+      }
+    }
+  },
 
-    build: { transpile: ["vuetify"] },
-    
-    content: {
-    
-        // fullTextSearchFields: ["label", "notes"],
-        // nestedProperties: ["page.sequence"]
-        nestedProperties: [
-            "image.buffer",
-            "image.thumbnail",
-            "image.webUrl",
-            "page.image.iiifBase",
-            "page.sequence"
-        ],
-        experimental: { search: true }
-    },    
+  build: {
+    transpile: ['vuetify']
+  },
 
-    css: [ "~/assets/scss/custom.scss" ],
+  // content: {
+  //   fullTextSearchFields: ["label", "notes"],
+  //   nestedProperties: ["page.sequence"]
+  //   nestedProperties: [
+  //     "image.buffer",
+  //     "image.thumbnail",
+  //     "image.webUrl",
+  //     "page.image.iiifBase",
+  //     "page.sequence"
+  //   ],
+  //   experimental: { search: true }
+  // },
 
-    devtools: { enabled: true },
+  css: ["~/assets/scss/custom.scss"],
 
-    /* hooks: {
-        
-        async "nitro:config"(nitroConfig) {
+  devtools: {enabled: process.env.APP_ENV === 'development'},
 
-            // Fetch the routes from our function above
-            // const slugs = await getStaticRoutes();
+  hooks: {
+    // async "nitro:config"(nitroConfig) {
+    //     // Fetch the routes from our function above
+    //     // const slugs = await getStaticRoutes();
 
-            const character_ids = cdt_routes.characters;
-            const book_ids = cdt_routes.books;
-            const grouping_ids = cdt_routes.groupings;
-            
-            const character_routes = character_ids.map(x => "/characters/" + x.id);
-            const book_routes = book_ids.map(x => "/books/" + x.id);
-            const grouping_routes = grouping_ids.map(x => "/groupings/" + x.id);
+    //     const character_ids = cdt_routes.characters;
+    //     const book_ids = cdt_routes.books;
+    //     const grouping_ids = cdt_routes.groupings;
 
-            const slugs = character_routes.concat(book_routes, grouping_routes);
+    //     const character_routes = character_ids.map(x => "/characters/" + x.id);
+    //     const book_routes = book_ids.map(x => "/books/" + x.id);
+    //     const grouping_routes = grouping_ids.map(x => "/groupings/" + x.id);
 
-            // Add the characters, books, and groupings routes to the nitro config routes list
-            nitroConfig.prerender.routes.push(...slugs);
-        }
-    },*/    
+    //     const slugs = character_routes.concat(book_routes, grouping_routes);
 
-    // hooks: {
-
-    //     async "nitro:config" (nitroConfig) {
-          
-    //         if ( nitroConfig.dev ) {
-
-    //             return;
-    //         }
-            
-    //         // Async logic
-    //         const characters = await queryContent("characters").only(["id"]).find();
-    //         const books = await queryContent("books").only(["id"]).find();
-    //         const groupings = await queryContent("groupings").only(["id"]).find();
-      
-    //         const character_routes = characters.map(x => "/characters/" + x.id);
-    //         const book_routes = books.map(x => "/books/" + x.id);
-    //         const grouping_routes = groupings.map(x => "/groupings/" + x.id);
-
-    //         console.log("CHARACTER ROUTES");
-    //         console.log(JSON.stringify(character_routes));
-      
-    //         // return character_routes.concat(book_routes, grouping_routes);
-            
-    //         nitroConfig.prerender.routes.push(character_routes.concat(book_routes, grouping_routes));
-    //     }
-    // },    
-
-    modules: [
-
-        "@nuxt/content",
-        
-        "@vueuse/nuxt",
-
-        (_options, nuxt) => {
-
-            nuxt.hooks.hook("vite:extendConfig", (config) => {
-
-                // @ts-expect-error
-                config.plugins.push(vuetify({ autoImport: true }));
-            });
-        }        
-    ],    
-
-    // optimizeDeps: {
-        
-    //     exclude: [
-            
-    //         "@nuxt/content",
-    //         "@vueuse/core",
-    //         "@vueuse/nuxt"
-    //     ]
+    //     // Add the characters, books, and groupings routes to the nitro config routes list
+    //     nitroConfig.prerender.routes.push(...slugs);
     // },
 
-    sourcemap: true,
-
-    ssr: true,
-
     vite: {
+      extendConfig(config) {
+        // Vuetify Treeshake
+        config.plugins.push(vuetify())
+        // Vuetify customVariable
+        config.css.preprocessorOptions = {
+          scss: {
+            api: 'modern-compiler',
+            // additionalData: '@import "@/assets/scss/variables.scss";'
+          }
+        }
+      },
 
-        vue: {
-
-            template: {
-
-                transformAssetUrls
-            },
+      vue: {
+        template: {
+          transformAssetUrls,
         },
+      },
     }
+  },
+
+  modules: [
+    // "@nuxt/content",
+    "@vueuse/nuxt",
+  ],
+
+  // optimizeDeps: {
+  //     exclude: [
+  //         "@nuxt/content",
+  //         "@vueuse/core",
+  //         "@vueuse/nuxt"
+  //     ]
+  // },
+
+  sourcemap: process.env.APP_ENV === 'development',
+
+  ssr: true,
+
+
+  runtimeConfig: {
+    public: {
+      API_BASE_URL: process.env.API_BASE_URL,
+      APP_ENV: process.env.APP_ENV,
+      IIIF_HOST: process.env.IIIF_HOST,
+
+      // https://axios-http.com/docs/req_config
+      axios: {
+        headers: {
+          'Accept': 'application/json, text/plain, */*',
+          // 'Authorization': process.env.API_TOKEN,
+        },
+        baseURL: `${_.trimEnd(process.env.API_BASE_URL, '/')}/api`
+      },
+    },
+  },
+
+  nitro: process.env.APP_ENV === 'development' ? {
+    routeRules: {
+      '/iiif//**': {proxy: process.env.IIIF_HOST + '/iiif//**'},
+    }
+  } : {},
+
+  compatibilityDate: "2024-11-26"
 });
